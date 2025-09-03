@@ -1,0 +1,345 @@
+@import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+html {
+    font-size: 16px;
+}
+
+:root {
+    --background-color: white;
+    /* --background-color: rgb(240, 235, 235); */
+    --text-color: black;
+    --button-color: #667eea;
+    --link-color: #667eea;
+    /* --card-background-color: rgb(240, 235, 235); */
+    /* --card-background-color: white; */
+    /* --card-text-color: var(--text-color); */  
+    --card-background-color: rgb(240, 235, 235);
+    --card-text-color: var(--text-color);
+    --card-button-color: white;
+}
+
+body {
+    background-color: var(--background-color);
+    /* padding: 1rem; */
+}
+
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    /* Increased vertical padding */
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Logo container: image + text */
+.logo-container {
+    display: flex;
+    align-items: center;
+    /* vertically center image + text */
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Logo image */
+.logo-image {
+    width: 48px;
+    /* slightly bigger */
+    height: 48px;
+    object-fit: contain;
+    margin-right: 12px;
+}
+
+/* Logo text */
+.logo-text {
+    font-weight: 700;
+    font-size: 2rem;
+    color: #667eea;
+    line-height: 1;
+    letter-spacing: .05rem;
+    font-family: "Passion One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    text-decoration: none;
+
+    /* vertically centered next to image */
+}
+
+/* Profile/login section */
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Login & Signup buttons */
+.btn {
+    padding: 0.5rem 0.5rem;
+    border-radius: 6px;
+    border: 2px solid #667eea;
+    background: transparent;
+    color: #667eea;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.btn:hover {
+    background: #667eea;
+    color: white;
+}
+
+.btn.signup {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.btn.signup:hover {
+    background: #5a67d8;
+    border-color: #5a67d8;
+}
+
+/* Profile picture */
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid #667eea;
+    transition: box-shadow 0.3s ease;
+    padding: .2rem;
+}
+
+.profile-pic:hover {
+    box-shadow: 0 0 8px #667eea;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .navbar {
+        padding: 1rem 1rem;
+    }
+
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .profile-pic {
+        width: 35px;
+        height: 35px;
+    }
+
+    .logo-image {
+        width: 40px;
+        height: 40px;
+        margin-right: 8px;
+    }
+}
+
+div.heading {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+    /* border: 1px solid red; */
+
+}
+
+div.heading h1 {
+    font-family: "Passion One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    text-decoration: none;
+    font-size: 2.5rem;
+}
+
+div.reveal-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0rem 1rem;
+}
+
+p.msg {
+    margin: .4rem 0;
+}
+
+div.reveal-container img {
+    width: 250px;
+    height: 250px;
+}
+
+div.reveal-container a {
+    background-color: var(--link-color);
+    color: var(--card-button-color);    
+    padding: .7rem;
+    border: none;
+    border-radius: .7em;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    /* width: 200px; */
+}
+
+div.cost {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+    margin-top: .3rem;
+}
+
+div.cost img {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+@media (max-width: 500px) {
+    div.reveal-container img {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+
+/* Modal overlay */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5); /* Transparent parent */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal child (white box) */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  /* width: 300px; */
+  width: 500px;
+  position: relative;
+  overflow-y: auto;
+}
+
+@media (max-width: 500px) {
+    .modal-content {
+        height: 400px;
+        padding: 10px 0;
+        width: 95%;
+        /* border: 1px solid red; */
+    }
+}
+
+/* Close (X) button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+div.coin-card-container {
+    /* display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
+    grid-template-rows: repeat(auto-fit, 1fr);
+    gap: 15px; */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 1rem 0;
+    /* border: 1px solid red; */
+    width: 100%;
+}
+
+div.coin-card {
+    background-color: var(--card-background-color);
+    color: var(--card-text-color);
+    /* border: 1px solid green; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: .8em 0 0 0;
+    font-size: .8rem;
+    border-radius: 1em;
+    width: calc((100% - 30px) / 3);
+}
+
+div.coin-image img {
+    width: 100%;
+    height: 40px;
+}
+
+div.gift-image img {
+    width: 100%;
+    height: 80px;
+}
+
+div.gift-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1em;
+}
+
+div.coin-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: .2em;
+}
+
+div.coin-card a {
+    width: 100%;
+    background-color: var(--link-color);
+    color: var(--card-button-color);
+    padding: .4rem;
+    border: none;
+    border-radius: 0 0 .7em .7em;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+}
+
+
+#sparkleCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+    pointer-events: none;
+}

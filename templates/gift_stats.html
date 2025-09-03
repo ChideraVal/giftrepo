@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Gift - Bixy</title>
+  {% load static %}
+  {% load humanize %}
+  {% load timefilters %}
+  <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
+      <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
+      <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+    </div>
+
+    <div class="profile-section" id="profileSection">
+      {% if request.user.is_authenticated %}
+      <div class="cost">
+        <p>{{ request.user.coins|intcomma }}</p>
+        <img src="{% static 'gifts/dollar.png' %}" alt="Coin image">
+      </div>
+      <!-- <div class="cost">
+        <p>{{ request.user.keys|intcomma }}</p>
+        <img src="{% static 'gifts/key.png' %}" alt="Gift image">
+      </div> -->
+      <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
+      {% else %}
+      <a href="{% url 'signin' %}" class="btn login">Login</a>
+      <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main>
+    <section>
+      <div class="heading">
+        <h1>Gift Stats</h1>
+        <p>Fill the form below to complete your purchase.</p>
+      </div>
+
+      <div class="buy">
+        <div class="buy-sub">
+          <div class="gift-info">
+            <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image">
+            <h2>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h2>
+            
+          </div>
+
+          <div class="table-container">
+            <h2>Gift Stats</h2>
+            <table>
+              <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Gifter</td>
+                    <td>{{ gift_transaction.gifter.username }}</td>
+                </tr>
+                <tr>
+                    <td>Winner</td>
+                    {% if gift_transaction.recipient %}
+                    <td>{{ gift_transaction.recipient.username }}</td>
+                    {% else %}
+                    <td>--</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>Dropped</td>
+                    {% if gift_transaction.is_due_for_drop %}
+                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% else %}
+                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>Expired</td>
+                    {% if gift_transaction.is_due_for_expire %}
+                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% else %}
+                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>Fastest Finger</td>
+                    {% if gift_transaction.is_fastest_finger %}
+                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% else %}
+                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% endif %}
+                </tr>
+                {% if gift_transaction.gifter == request.user %}
+                <tr>
+                    <td>Expire rate</td>
+                    <td>{{ gift_transaction.expire_rate|intcomma }} hour{{ gift_transaction.expire_rate|pluralize }}</td>
+                </tr>
+                <tr>
+                    <td>Drop rate</td>
+                    <td>{{ gift_transaction.drop_rate|intcomma }} hour{{ gift_transaction.drop_rate|pluralize }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                  <td>Early Reveal</td>
+                    {% if gift_transaction.cost > 0 %}
+                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% else %}
+                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% endif %}
+                </tr>
+                {% if gift_transaction.cost > 0 %}
+                <tr>
+                  <td>Early Reveal Cost</td>
+                  <td>
+                    <div class="cost td-content">
+                      <p>{{ gift_transaction.cost|intcomma }}</p>
+                      <img src="{% static 'gifts/dollar.png' %}" alt="Coin image">
+                    </div>
+                  </td>
+                </tr>
+                {% endif %}
+                {% if gift_transaction.cost > 0 and gift_transaction.gifter != request.user %}
+                <tr>
+                    <td>Revealed Early</td>
+                    {% if request.user in gift_transaction.paid_users.all %}
+                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% else %}
+                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% endif %}
+                  </tr>
+                {% endif %}
+                {% if gift_transaction.gifter == request.user %}
+                <tr>
+                    <td>No of Reveals</td>
+                    <td>{{ gift_transaction.reveals.all|length|intcomma }}</td>
+                </tr>
+                {% endif %}
+                {% if gift_transaction.cost > 0 and gift_transaction.gifter == request.user %}
+                <tr>
+                    <td>No of Early Reveals</td>
+                    <td>{{ gift_transaction.paid_users.all|length|intcomma }}</td>
+                </tr>
+                {% endif %}
+                {% if gift_transaction.gifter == request.user %}
+                <tr>
+                    <td>Claimed</td>
+                    {% if gift_transaction.is_claimed %}
+                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% else %}
+                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    {% endif %}
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+
+          {% if gift_transaction.is_fastest_finger and gift_transaction.is_due_for_drop %}
+          <div class="table-container">
+            <h2>Top 5 Fastest Fingers</h2>
+            <table>
+              <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Response Time</th>
+                </tr>
+            </thead>
+
+            <tbody>
+              {% for claim in gift_transaction.ff_claims.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ claim.user.username }}</td>
+                    <td>{{ claim.reaction_time_ms|format_seconds }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+            
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
+
+</html>

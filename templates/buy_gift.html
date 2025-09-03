@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Gift - Bixy</title>
+  {% load static %}
+  {% load humanize %}
+  <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
+      <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
+      <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+    </div>
+
+    <div class="profile-section" id="profileSection">
+      {% if request.user.is_authenticated %}
+      <div class="cost">
+        <p>{{ request.user.coins|intcomma }}</p>
+        <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+      </div>
+      <!-- <div class="cost">
+        <p>{{ request.user.keys|intcomma }}</p>
+        <img src="{% static 'gifts/key.png' %}" alt="Gift image">
+      </div> -->
+      <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
+      {% else %}
+      <a href="{% url 'signin' %}" class="btn login">Login</a>
+      <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+      {% endif %}
+    </div>
+  </nav>
+
+
+  <main>
+    <section>
+      <div class="heading">
+        <h1>Buy Gift</h1>
+        <p>Fill the form below to complete your purchase.</p>
+      </div>
+
+      <div class="buy">
+        <div class="buy-sub">
+          <div class="gift-info">
+            <img src="{{ gift.gif.url }}" alt="Gift image">
+            <h2>{{ gift.name }}</h2>
+            <div href="" class="cost">
+              <p>{{ gift.cost|intcomma }}</p>
+              <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+            </div>
+          </div>
+          <form class="login-form" action="{% url 'buy_gift' gift.id %}" method="post" id="buyGiftForm">
+
+            {% csrf_token %}
+            {% for field in form %}
+            {% if field.label == 'Fastest Finger (FF)' %}
+            {{ field }}
+            <label for="{{ field.id_for_label }}" class="inline">{{ field.label }}</label>
+            {% else %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% endif %}
+            <p class="help">{{ field.help_text }}</p>
+
+
+            {% endfor %}
+
+            {% for key, errors in form.errors.items %}
+            {% for error in errors %}
+            <p class="error">{{ error }}</p>
+            {% endfor %}
+            {% endfor %}
+            <button type="submit">
+              <div class="cost">
+                <p id="button">Buy and Send for {{ gift.cost }}</p>
+                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal (hidden by default) -->
+    <div id="coinModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="gift-info">
+          <div class="gift-image">
+            <img src="{% static 'gifts/dollar.gif' %}" alt="Gift image">
+          </div>
+          <h2>Not Enough Coins!</h2>
+          <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong id="neededCoins"></strong>
+          more coins to buy and send this gift.</p>
+
+          <div class="coin-card-container">
+              <div class="coin-card">
+                  <div class="coin-image">
+                      <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                  </div>
+                  <div class="coin-info">
+                      <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
+                  </div>
+                      
+                  <a href="{% url 'buy_gift' gift.id %}">$10</a>
+              </div>
+              <div class="coin-card">
+                  <div class="coin-image">
+                      <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                  </div>
+                  <div class="coin-info">
+                      <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
+                  </div>
+                      
+                  <a href="{% url 'buy_gift' gift.id %}">$10</a>
+              </div>
+              <div class="coin-card">
+                  <div class="coin-image">
+                      <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                  </div>
+                  <div class="coin-info">
+                      <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
+                  </div>
+                      
+                  <a href="{% url 'buy_gift' gift.id %}">$10</a>
+              </div>
+              <div class="coin-card">
+                  <div class="coin-image">
+                      <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                  </div>
+                  <div class="coin-info">
+                      <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
+                  </div>
+                      
+                  <a href="{% url 'buy_gift' gift.id %}">$10</a>
+              </div>
+              <div class="coin-card">
+                  <div class="coin-image">
+                      <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                  </div>
+                  <div class="coin-info">
+                      <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
+                  </div>
+                      
+                  <a href="{% url 'buy_gift' gift.id %}">$10</a>
+              </div>
+              <div class="coin-card">
+                  <div class="coin-image">
+                      <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                  </div>
+                  <div class="coin-info">
+                      <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
+                  </div>
+                      
+                  <a href="{% url 'buy_gift' gift.id %}">$10</a>
+              </div>
+              
+          </div>
+        </div>
+        <!-- <button onclick="document.getElementById('coinModal').style.display='none'">
+          Okay
+        </button> -->
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const numberInput = document.getElementById('id_quantity');
+    const button = document.getElementById('button');
+    let cost = "{{ gift.cost }}";
+
+    button.textContent = `Buy and Send For ${(numberInput.value * cost).toLocaleString()}`;
+
+
+    numberInput.addEventListener('input', () => {
+      if (numberInput.value && numberInput.value > 0) {
+        button.textContent = `Buy and Send For ${(numberInput.value * cost).toLocaleString()}`;
+      } else {
+        button.textContent = `Buy and Send For 0`;
+      }
+    })
+
+    // Example: You’d get these values from Django context
+    const userCoins = parseInt("{{ request.user.coins }}");  
+
+    document.getElementById("buyGiftForm").addEventListener("submit", function(e) {
+      const giftCost = numberInput.value * cost;
+      if (userCoins < giftCost) {
+        e.preventDefault(); // stop form submit
+        const needed = giftCost - userCoins;
+        console.log(needed);
+        document.getElementById("neededCoins").textContent = needed.toLocaleString();
+        document.getElementById("coinModal").style.display = "flex"; // show modal
+      }
+    });
+
+    // Close modal when (X) clicked
+    document.querySelector(".close").onclick = function() {
+      document.getElementById("coinModal").style.display = "none";
+    };
+
+    // Optional: close when clicking outside modal-content
+    // window.onclick = function(event) {
+    //   if (event.target == document.getElementById("coinModal")) {
+    //     document.getElementById("coinModal").style.display = "none";
+    //   }
+    // };
+  </script>
+</body>
+
+</html>

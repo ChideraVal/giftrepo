@@ -1,0 +1,444 @@
+:root {
+    /* --bg-color: #000; */
+    --card-bg: #fff;
+    --text-color: #000;
+    --subtext-color: #333;
+    --tag-bg: #e0e0e0;
+    --tag-text: #333;
+    --button-bg: #6f42c1;
+    --button-hover: #5a34a7;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #f7f7f7;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body.success {
+    display: block;
+    background: #f7f7f7;
+    height: auto;
+}
+
+.refsuc {
+    background: #f7f7f7;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 450px;
+    margin: 2em 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.signup-form h2 {
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.signup-form p {
+    margin-bottom: 1.5rem;
+    color: #666;
+}
+
+.signup-form label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+    color: #555;
+}
+
+.signup-form input[type="text"],
+.signup-form input[type="email"],
+.signup-form input[type="password"],
+.signup-form input[type="number"],
+.signup-form input[type="url"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    /* margin-bottom: 1.2rem; */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    resize: none;
+    transition: border-color 0.3s;
+}
+
+.signup-form label.inline {
+    display: inline-block;
+    margin-bottom: .8em;
+}
+
+.signup-form input:focus,
+textarea:focus,
+select:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.show-password {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.show-password input {
+    margin-right: 0.5rem;
+}
+
+.signup-form button {
+    width: 100%;
+    padding: 0.75rem;
+    /* background: #667eea; */
+    background-color: #6a1b9a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.3s;
+}
+
+.signup-form button.del {
+    background: red;
+}
+
+.signup-form button.verify {
+    background: #6a1b9a;
+}
+
+.links {
+    /* margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem; */
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.links a {
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+li,
+p.error {
+    list-style-type: none;
+    background-color: rgb(243, 203, 203);
+    color: red;
+    padding: 1em;
+    box-sizing: border-box;
+    font-size: .9em;
+    border-radius: .3em;
+    margin-bottom: 1em;
+}
+
+p.help {
+    color: #444;
+    font-size: .9em;
+    margin-bottom: 1rem;
+}
+
+
+@media (max-width: 500px) {
+    body {
+        background: white;
+    }
+
+    .signup-container {
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}
+
+.file-upload-wrapper {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.file-upload-button {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.file-upload-button:hover {
+    background-color: #8e24aa;
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+
+#file-name-display {
+    margin: 2px 0 0.3rem 0;
+    font-size: 14px;
+    color: #444;
+}
+
+/* Products CSS */
+
+
+.scroll-section {
+    /* margin: 0px 20px; */
+    padding: 0 3rem;
+    /* border: 1px solid red; */
+    margin: 15px 0;
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); */
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.scroll-section a {
+    padding: 0.4rem;
+    background-color: #6f42c1;
+    font-size: .9em;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0.5rem 0 1rem 0;
+    margin-right: .5em;
+}
+
+.prize-btns a {
+    padding: 0.4rem;
+    background-color: #6f42c1;
+    font-size: .9em;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0.5rem 0 1rem 0;
+    margin-right: .5em;
+    width: 100%;
+}
+
+.scroll-section a.delete {
+    background-color: red;
+}
+
+.scroll-section a.edit {
+    background-color: orange;
+}
+
+.scroll-container {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* padding-bottom: 10px; */
+
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+
+}
+
+.scroll-container::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari */
+}
+
+.prize-card {
+    flex: 0 0 60%;
+    /* background: var(--card-bg); */
+    border-radius: 10px;
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); */
+    /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); */
+    padding: 0px;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+}
+
+.prize-info {
+    text-align: center;
+    font-weight: bold;
+}
+
+@media (min-width: 600px) {
+    .prize-card {
+        flex: 0 0 32%;
+    }
+
+    .banner-heading {
+        font-size: 40px;
+    }
+
+    .tag {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+
+    .bivly-banner {
+        padding: 50px 40px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .prize-card {
+        flex: 0 0 20%;
+    }
+
+    .banner-heading {
+        font-size: 55px;
+    }
+
+    .tag {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+}
+
+.prize-img {
+    width: 100%;
+    height: auto;
+    max-height: 170px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.prize-name {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.brand-name {
+    color: var(--tag-text);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.meta {
+    color: var(--subtext-color);
+    margin: 5px 0 15px;
+    font-size: 14px;
+}
+
+.prize-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.prize-card .tag {
+    background-color: var(--tag-bg);
+    color: var(--tag-text);
+    padding: 5px 9px;
+    border-radius: 15px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag {
+    background-color: var(--tag-bg);
+    color: var(--tag-text);
+    padding: 5px 9px;
+    border-radius: 15px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.scroll-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.scroll-button {
+    background: var(--button-bg);
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease, opacity 0.3s ease;
+}
+
+.scroll-button svg {
+    width: 18px;
+    height: 18px;
+    fill: white;
+}
+
+.scroll-button:hover:not(:disabled) {
+    background: var(--button-hover);
+}
+
+.scroll-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px 16px;
+    /* border: 2px solid red; */
+}
+
+@media (min-width: 768px) {
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid-container {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* End of products CSS */
+

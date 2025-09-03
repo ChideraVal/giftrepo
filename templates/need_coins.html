@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Gift - Bixy</title>
+  {% load static %}
+  {% load humanize %}
+  <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
+      <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
+      <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+    </div>
+
+    <div class="profile-section" id="profileSection">
+      {% if request.user.is_authenticated %}
+      <div class="cost">
+        <p>{{ request.user.coins }}</p>
+        <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+      </div>
+      <div class="cost">
+        <p>{{ request.user.keys }}</p>
+        <img src="{% static 'gifts/key.png' %}" alt="Gift image">
+      </div>
+      <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
+      {% else %}
+      <a href="{% url 'signin' %}" class="btn login">Login</a>
+      <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+      {% endif %}
+    </div>
+  </nav>
+
+
+  <main>
+    <section>
+      <div class="buy">
+        <div class="buy-sub">
+          <div class="gift-info">
+            <img src="{% static 'gifts/dollar.gif' %}" alt="Gift image">
+            <h2>Not Enough Coins!</h2>
+              <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong>{{ rem_amount|intcomma }}</strong>
+              more coins to {{ message }}.</p>
+              <!-- <div style="text-align: center;">
+                You need             
+                <div class="cost inline">
+                    <p>{{ total_cost|intcomma }}</p>
+                    <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                </div>
+                to buy {{ quantity|intcomma }}x {{ gift.name }} but only have 
+                <div class="cost inline">
+                    <p>{{ request.user.coins|intcomma }}</p>
+                    <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">.
+                </div>
+                Buy more coins to buy and send this gift.
+            </div> -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    const numberInput = document.getElementById('id_quantity');
+    const button = document.getElementById('button');
+    let cost = "{{ gift.cost }}"
+
+    numberInput.addEventListener('input', () => {
+      if (numberInput.value && numberInput.value > 0) {
+        button.textContent = `Buy and Send For ${(numberInput.value * cost).toLocaleString()}`;
+      } else {
+        button.textContent = `Buy and Send For 0`;
+      }
+    })
+  </script>
+</body>
+
+</html>

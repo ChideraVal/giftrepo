@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify email - Bivly</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'verify.css' %}">
+</head>
+
+<body>
+    <div class="signup-container">
+        <form class="signup-form" action="{% url 'verify_email' user.id %}?next={{ next_url }}" method="post">
+            {% if not user.is_verified %}
+            <h2>Verify your email</h2>
+            <p>Hi {{ user.username }}, your account email address ({{ user.email }}) has not been verified. Click the link in the email sent to {{ user.email }} after signup
+                to verify it.
+            </p>
+            {% else %}
+            <h2>Email verified</h2>
+            <p>Hi {{ user.username }}, your account email address ({{ user.email }}) has been verified.
+            </p>
+            {% endif %}
+
+            {% csrf_token %}
+
+            {% if not user.is_verified %}
+            <button type="submit" class="verify">I have clicked the link</button>
+            {% endif %}
+        </form>
+        <div class="links">
+            <p><a href="{% url 'signin' %}?next={{ next_url }}">Back to Login.</a></p>
+        </div>
+    </div>
+</body>
+
+</html>

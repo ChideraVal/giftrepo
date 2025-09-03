@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Bixy</title>
+    {% load static %}
+    {% load humanize %}
+    <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
+            <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
+            <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+        </div>
+
+        <div class="profile-section" id="profileSection">
+            {% if request.user.is_authenticated %}
+            <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
+            {% else %}
+            <a href="{% url 'signin' %}" class="btn login">Login</a>
+            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main>
+        <section>
+            <div class="success">
+                <div class="signup-container">
+                    <img src="{% static 'gifts/x-button.png' %}" alt="Gift image">
+                    <div class="signup-form">
+                        <h2>{{ title }}</h2>
+                        <p>{{ message }}</p>
+                        <a href="{% url 'all_gifts' %}">Back to home</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

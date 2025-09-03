@@ -1,0 +1,21 @@
+show owned coins/keys (done)
+fix buy gift page css, show updated price (done)
+show buy gift success page (done)
+gifter can't claim/pay for their own gift (done)
+claim logic (done)
+ff, early reveal, views, claimed, no of early reveals (done)
+update profile picture (done)
+allow account recovery after deactivation during grace period (done)
+
+order gifts
+dont show (sent, expired, revealed, gifts) on home page
+show "expired" gifts in sent/won/lost page
+
+
+
+future
+- allow player to set gift early reveal cost
+- update (qty, expire/drop rate), delete (dont refund gifter), if not claimed and not expired
+- resend won gifts
+- groups
+

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Gifts - Bixy</title>
+    {% load static %}
+    {% load humanize %}
+    <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
+            <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
+            <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+        </div>
+
+        <div class="profile-section" id="profileSection">
+            {% if request.user.is_authenticated %}
+            <div class="cost">
+                <p>{{ request.user.coins|intcomma }}</p>
+                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+            </div>
+            <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
+            {% else %}
+            <a href="{% url 'signin' %}" class="btn login">Login</a>
+            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <main>
+        <section>
+            <div class="heading">
+                <h1>New Gifts</h1>
+                <p>Recent gifts you might win.</p>
+            </div>
+            {% if gift_transactions|length > 0 %}
+            <div class="card-container">
+                {% for gift_transaction in gift_transactions %}
+                <div class="card">
+                    <div class="gift-image">
+                        {% if gift_transaction.is_visible %}
+                        <img src="{{ gift_transaction.gift.image.url }}" alt="Gift image">
+                        {% else %}
+                        <img src="{% static 'gifts/search.png' %}" alt="Gift image">
+                        {% endif %}
+                    </div>
+                    <div class="gift-info">
+                        {% if gift_transaction.is_visible %}
+                        <h1>{{ gift_transaction.gift.name }}</h1>
+                        {% else %}
+                        <h1>Unknown Gift</h1>
+                        {% endif %}
+
+                        <div class="load">
+                            {% if gift_transaction.drop_rate > 0 %}         
+                                {% if gift_transaction.is_due_for_drop %}  
+                                <div class="bar" id="{{ gift_transaction.expire_bar_percent }}"></div>
+                                {% else %}
+                                <div class="bar" id="{{ gift_transaction.drop_bar_percent }}"></div>
+                                {% endif %}             
+                            {% else %}
+                                <div class="bar" id="{{ gift_transaction.expire_bar_percent }}"></div>
+                            {% endif %}
+                        </div>
+
+                        {% if gift_transaction.drop_rate > 0 %}         
+                            {% if gift_transaction.is_due_for_drop %}  
+                            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+                            {% else %}
+                            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Drops" data-seconds="{{ gift_transaction.seconds_until_drop }}">Drops in --:--:--:--</p>
+                            {% endif %}             
+                        {% else %}
+                            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+                        {% endif %}
+
+                        <div class="tags">
+                            {% if gift_transaction.is_fastest_finger %}
+                                <p class="tag">Fastest Finger</p>
+                            {% endif %}
+
+                            {% if gift_transaction.cost > 0 and not gift_transaction.is_due_for_drop %}
+                                <p class="tag">Early Reveal</p>
+                            {% endif %}
+
+                            {% if request.user in gift_transaction.paid_users.all %}
+                                <p class="tag">Revealed Early</p>
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+
+                    {% if not request.user in gift_transaction.reveals.all %}
+                    <a href="{% url 'reveal_gift' gift_transaction.id %}">Claim</a>
+                    {% else %}
+                    <a href="{% url 'reveal_gift' gift_transaction.id %}" style="background-color: #999;">Claimed</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+                <div class="empty">
+                    <img src="{% static 'gifts/empty-box.png' %}" alt="No content image">
+                    <h1>Oops! Nothing in here right now.</h1>
+                    <a href="{% url 'all_gifts' %}">Refresh</a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+    <a href="{% url 'send_gift' %}" class="send">
+        <img src="{% static 'gifts/giftbox (1).png' %}" alt="Send gift image">
+        <p>Send Gift</p>
+    </a>
+
+    <script>
+        function startCountdown(elementId) {
+            const el = document.getElementById(elementId);
+            let seconds = parseInt(el.dataset.seconds);
+            let prefix = el.dataset.prefix;
+
+            function update() {
+                if (seconds < 0) return;
+
+                let d = Math.floor(seconds / (24 * 3600));
+                let h = Math.floor((seconds % (24 * 3600)) / 3600);
+                let m = Math.floor((seconds % 3600) / 60);
+                let s = seconds % 60;
+
+                el.innerText = `${prefix} in ${d}d ${h}h ${m}m ${s}s`;
+
+                seconds--;
+                setTimeout(update, 1000);
+            }
+
+            update();
+        }
+
+        const timers = document.getElementsByClassName('timer');
+        for (timer of timers) {
+            startCountdown(`${timer.id}`);
+        }
+
+        const bars = document.getElementsByClassName('bar');
+        for (bar of bars) {
+            bar.style.width = `${bar.id}%`;
+        }        
+    </script>
+
+</body>
+
+</html>
