@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseForbidden, HttpResponse
 from .models import *
-from django.db.models import Count, Max
+from django.db.models import BooleanField, DurationField, ExpressionWrapper, Q, F
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, update_session_auth_hash
@@ -386,5 +386,15 @@ def all_gifts(request):
     # gift_transactions = [gt for gt in GiftTransaction.objects.all() if not gt.is_due_for_expire()]
 
     # show gifts that are not sent by user
-    gift_transactions = GiftTransaction.objects.all()
+    gift_transactions = GiftTransaction.objects.annotate(
+        due_for_expire=ExpressionWrapper(
+            Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+        ),
+        seconds_until_drop=ExpressionWrapper(
+            F("drop_date") - timezone.now(), output_field=DurationField()
+        ),
+        seconds_until_expire=ExpressionWrapper(
+            F("expire_date") - timezone.now(), output_field=DurationField()
+        )
+    ).filter(due_for_expire=False).exclude(reveals=request.user).order_by('seconds_until_drop', 'seconds_until_expire')
     return render(request, "all_gifts.html", {"gift_transactions": gift_transactions})
