@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error - Bixy</title>
     {% load static %}
     {% load humanize %}
-    <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
+    {% load timefilters %}
+
+    {% block title %} {% endblock %}
 </head>
 
 <body>
@@ -19,6 +20,10 @@
 
         <div class="profile-section" id="profileSection">
             {% if request.user.is_authenticated %}
+            <div class="cost">
+                <p>{{ request.user.coins|intcomma }}</p>
+                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
+            </div>
             <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
             {% else %}
             <a href="{% url 'signin' %}" class="btn login">Login</a>
@@ -27,20 +32,17 @@
         </div>
     </nav>
 
+
     <main>
         <section>
-            <div class="success">
-                <div class="signup-container">
-                    <img src="{% static 'images/x-button.png' %}" alt="Gift image">
-                    <div class="signup-form">
-                        <h2>{{ title }}</h2>
-                        <p>{{ message }}</p>
-                        <a href="{% url 'all_gifts' %}">Back to home</a>
-                    </div>
-                </div>
-            </div>
+            {% block body %} {% endblock %}
         </section>
     </main>
+
+    {% block send %} {% endblock %}
+
+    {% block scripts %} {% endblock %}
+
 </body>
 
 </html>

@@ -34,10 +34,11 @@ class CustomUserChangeForm(UserChangeForm):
 class GiftForm(forms.ModelForm):
     class Meta:
         model = GiftTransaction
-        fields = ['quantity', 'is_fastest_finger', 'expire_rate', 'drop_rate']
+        fields = ['quantity', 'is_fastest_finger', 'is_visible', 'expire_rate', 'drop_rate']
 
         labels = {
-            'is_fastest_finger': 'Fastest Finger (FF)'
+            'is_fastest_finger': 'Fastest Finger (FF)',
+            'is_visible': 'Show Gift'
             # 'cost': 'Early Reveal Cost'
         }
 

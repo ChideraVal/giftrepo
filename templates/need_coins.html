@@ -21,11 +21,11 @@
       {% if request.user.is_authenticated %}
       <div class="cost">
         <p>{{ request.user.coins }}</p>
-        <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
       </div>
       <div class="cost">
         <p>{{ request.user.keys }}</p>
-        <img src="{% static 'gifts/key.png' %}" alt="Gift image">
+        <img src="{% static 'images/key.png' %}" alt="Gift image">
       </div>
       <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
       {% else %}
@@ -41,7 +41,7 @@
       <div class="buy">
         <div class="buy-sub">
           <div class="gift-info">
-            <img src="{% static 'gifts/dollar.gif' %}" alt="Gift image">
+            <img src="{% static 'images/dollar.gif' %}" alt="Gift image">
             <h2>Not Enough Coins!</h2>
               <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong>{{ rem_amount|intcomma }}</strong>
               more coins to {{ message }}.</p>
@@ -49,12 +49,12 @@
                 You need             
                 <div class="cost inline">
                     <p>{{ total_cost|intcomma }}</p>
-                    <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                 </div>
                 to buy {{ quantity|intcomma }}x {{ gift.name }} but only have 
                 <div class="cost inline">
                     <p>{{ request.user.coins|intcomma }}</p>
-                    <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">.
+                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">.
                 </div>
                 Buy more coins to buy and send this gift.
             </div> -->

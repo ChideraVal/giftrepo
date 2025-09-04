@@ -21,7 +21,7 @@
             {% if request.user.is_authenticated %}
             <div class="cost">
                 <p>{{ request.user.coins|intcomma }}</p>
-                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
             </div>
             <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
             {% else %}
@@ -43,18 +43,10 @@
                 {% for gift_transaction in gift_transactions %}
                 <div class="card">
                     <div class="gift-image">
-                        {% if gift_transaction.is_visible %}
                         <img src="{{ gift_transaction.gift.image.url }}" alt="Gift image">
-                        {% else %}
-                        <img src="{% static 'gifts/search.png' %}" alt="Gift image">
-                        {% endif %}
                     </div>
                     <div class="gift-info">
-                        {% if gift_transaction.is_visible %}
                         <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
-                        {% else %}
-                        <h1>Unknown Gift</h1>
-                        {% endif %}
 
                         <div class="load">
                             {% if gift_transaction.drop_rate > 0 %}         
@@ -68,16 +60,20 @@
                             {% endif %}
                         </div>
 
-                        {% if gift_transaction.drop_rate > 0 %}         
-                            {% if gift_transaction.is_due_for_drop %}  
-                            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+                        {% if not gift_transaction.due_for_expire %}
+                            {% if gift_transaction.drop_rate > 0 %}         
+                                {% if gift_transaction.is_due_for_drop %}  
+                                <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+                                {% else %}
+                                <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Drops" data-seconds="{{ gift_transaction.seconds_until_drop }}">Drops in --:--:--:--</p>
+                                {% endif %}             
                             {% else %}
-                            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Drops" data-seconds="{{ gift_transaction.seconds_until_drop }}">Drops in --:--:--:--</p>
-                            {% endif %}             
+                                <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+                            {% endif %}
                         {% else %}
-                            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+                            <p>Expired</p>
                         {% endif %}
-
+                        
                         <div class="tags">
                             {% if gift_transaction.is_fastest_finger %}
                                 <p class="tag">Fastest Finger</p>
@@ -100,7 +96,7 @@
             </div>
             {% else %}
                 <div class="empty">
-                    <img src="{% static 'gifts/empty-box.png' %}" alt="No content image">
+                    <img src="{% static 'images/empty-box.png' %}" alt="No content image">
                     <h1>Oops! Nothing in here right now.</h1>
                     <a href="{% url 'won_gifts' %}">Refresh</a>
                 </div>

@@ -22,11 +22,11 @@
       {% if request.user.is_authenticated %}
       <div class="cost">
         <p>{{ request.user.coins|intcomma }}</p>
-        <img src="{% static 'gifts/dollar.png' %}" alt="Coin image">
+        <img src="{% static 'images/dollar.png' %}" alt="Coin image">
       </div>
       <!-- <div class="cost">
         <p>{{ request.user.keys|intcomma }}</p>
-        <img src="{% static 'gifts/key.png' %}" alt="Gift image">
+        <img src="{% static 'images/key.png' %}" alt="Gift image">
       </div> -->
       <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
       {% else %}
@@ -46,9 +46,19 @@
       <div class="buy">
         <div class="buy-sub">
           <div class="gift-info">
-            <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image">
-            <h2>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h2>
-            
+            {% if gift_transaction.gifter == request.user or gift_transaction.recipient == request.user %}
+              <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image">
+              <h2>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h2>
+            {% elif gift_transaction.gifter != request.user and gift_transaction.recipient != request.user %}
+              {% if gift_transaction.is_visible or gift_transaction.is_due_for_expire %}
+                <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image">
+                <h2>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h2>
+              {% else %}
+                <img src="{% static 'images/search.gif' %}" alt="Gift image">
+                <h2>Hidden Gift</h2>
+                <p>Gift will be visible when it expires.</p>
+              {% endif %}
+            {% endif %}
           </div>
 
           <div class="table-container">
@@ -66,6 +76,7 @@
                     <td>Gifter</td>
                     <td>{{ gift_transaction.gifter.username }}</td>
                 </tr>
+                {% if gift_transaction.gifter == request.user or gift_transaction.recipient == request.user %}
                 <tr>
                     <td>Winner</td>
                     {% if gift_transaction.recipient %}
@@ -74,28 +85,40 @@
                     <td>--</td>
                     {% endif %}
                 </tr>
+                {% endif %}
+
+                {% if gift_transaction.gifter != request.user and gift_transaction.recipient != request.user and gift_transaction.is_due_for_expire %}
+                <tr>
+                    <td>Winner</td>
+                    {% if gift_transaction.recipient %}
+                    <td>{{ gift_transaction.recipient.username }}</td>
+                    {% else %}
+                    <td>--</td>
+                    {% endif %}
+                </tr>
+                {% endif %}
                 <tr>
                     <td>Dropped</td>
                     {% if gift_transaction.is_due_for_drop %}
-                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20"></td>
                     {% else %}
-                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/x-button.png' %}" alt="player status image" width="20" height="20"></td>
                     {% endif %}
                 </tr>
                 <tr>
                     <td>Expired</td>
                     {% if gift_transaction.is_due_for_expire %}
-                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20"></td>
                     {% else %}
-                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/x-button.png' %}" alt="player status image" width="20" height="20"></td>
                     {% endif %}
                 </tr>
                 <tr>
                     <td>Fastest Finger</td>
                     {% if gift_transaction.is_fastest_finger %}
-                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20"></td>
                     {% else %}
-                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/x-button.png' %}" alt="player status image" width="20" height="20"></td>
                     {% endif %}
                 </tr>
                 {% if gift_transaction.gifter == request.user %}
@@ -111,9 +134,9 @@
                 <tr>
                   <td>Early Reveal</td>
                     {% if gift_transaction.cost > 0 %}
-                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20"></td>
                     {% else %}
-                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/x-button.png' %}" alt="player status image" width="20" height="20"></td>
                     {% endif %}
                 </tr>
                 {% if gift_transaction.cost > 0 %}
@@ -122,7 +145,7 @@
                   <td>
                     <div class="cost td-content">
                       <p>{{ gift_transaction.cost|intcomma }}</p>
-                      <img src="{% static 'gifts/dollar.png' %}" alt="Coin image">
+                      <img src="{% static 'images/dollar.png' %}" alt="Coin image">
                     </div>
                   </td>
                 </tr>
@@ -131,9 +154,9 @@
                 <tr>
                     <td>Revealed Early</td>
                     {% if request.user in gift_transaction.paid_users.all %}
-                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20"></td>
                     {% else %}
-                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/x-button.png' %}" alt="player status image" width="20" height="20"></td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -153,9 +176,9 @@
                 <tr>
                     <td>Claimed</td>
                     {% if gift_transaction.is_claimed %}
-                    <td><img src="{% static 'gifts/check.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20"></td>
                     {% else %}
-                    <td><img src="{% static 'gifts/x-button.png' %}" alt="player status image" width="20" height="20"></td>
+                    <td><img src="{% static 'images/x-button.png' %}" alt="player status image" width="20" height="20"></td>
                     {% endif %}
                 </tr>
                 {% endif %}

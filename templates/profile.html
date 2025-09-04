@@ -21,7 +21,7 @@
             {% if request.user.is_authenticated %}
             <div class="cost">
                 <p>{{ request.user.coins|intcomma }}</p>
-                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
             </div>
             <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
             {% else %}
@@ -66,10 +66,10 @@
             <div class="card-container">
                 <div class="card prf">
                     <div class="prf-image">
-                        <img src="{% static 'gifts/giftbox (1).png' %}" alt="Sent Gifts Image">
+                        <img src="{% static 'images/giftbox (1).png' %}" alt="Sent Gifts Image">
                     </div>
                     <h2>Sent Gifts</h2>
-                    <p>Active gifts you sent to random players.</p>
+                    <p>Gifts you sent to random players.</p>
                     <div class="tags">
                         <p class="tag">{{ sent|intcomma }} gift{{ sent|pluralize }}</p>
                     </div>
@@ -77,10 +77,10 @@
                 </div>
                 <div class="card prf">
                     <div class="prf-image">
-                        <img src="{% static 'gifts/gift-box.png' %}" alt="Won Gifts Image">
+                        <img src="{% static 'images/gift-box.png' %}" alt="Won Gifts Image">
                     </div>
                     <h2>Won Gifts</h2>
-                    <p>Active gifts you revealed and won.</p>
+                    <p>Gifts you revealed and won.</p>
                     <div class="tags">
                         <p class="tag">{{ won|intcomma }} gift{{ won|pluralize }}</p>
                     </div>
@@ -88,10 +88,10 @@
                 </div>
                 <div class="card prf">
                     <div class="prf-image">
-                        <img src="{% static 'gifts/empty-box.png' %}" alt="Lost Gifts Image">
+                        <img src="{% static 'images/empty-box.png' %}" alt="Lost Gifts Image">
                     </div>
                     <h2>Lost Gifts</h2>
-                    <p>Active gifts you revealed but didn't win.</p>
+                    <p>Gifts you revealed but didn't win.</p>
                     <div class="tags">
                         <p class="tag">{{ lost|intcomma }} gift{{ lost|pluralize }}</p>
                     </div>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="card prf">
                     <div class="prf-image">
-                        <img src="{% static 'gifts/dollar.png' %}" alt="Coin Shop Image">
+                        <img src="{% static 'images/dollar.png' %}" alt="Coin Shop Image">
                     </div>
                     <h2>Coin Shop</h2>
                     <p>Buy coins from the marketplace.</p>
@@ -110,7 +110,7 @@
                 </div>
                 <div class="card prf">
                     <div class="prf-image">
-                        <img src="{% static 'gifts/wallet.png' %}" alt="Wallet Image">
+                        <img src="{% static 'images/wallet.png' %}" alt="Wallet Image">
                     </div>
                     <h2>Wallet</h2>
                     <p>All your coins in one place.</p>

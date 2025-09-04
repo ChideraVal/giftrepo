@@ -353,7 +353,17 @@ def profile(request):
 
 @login_required
 def sent_gifts(request):
-    sent = GiftTransaction.objects.filter(gifter=request.user).all()
+    sent = GiftTransaction.objects.annotate(
+        due_for_expire=ExpressionWrapper(
+            Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+        ),
+        seconds_before_drop=ExpressionWrapper(
+            F("drop_date") - timezone.now(), output_field=DurationField()
+        ),
+        seconds_before_expire=ExpressionWrapper(
+            F("expire_date") - timezone.now(), output_field=DurationField()
+        )
+    ).filter(gifter=request.user).all().order_by('seconds_before_drop', 'seconds_before_expire')
     context = {
         "gift_transactions": sent,
     }
@@ -361,7 +371,17 @@ def sent_gifts(request):
 
 @login_required
 def won_gifts(request):
-    won = GiftTransaction.objects.filter(reveals=request.user, recipient=request.user).all()
+    won = GiftTransaction.objects.annotate(
+        due_for_expire=ExpressionWrapper(
+            Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+        ),
+        seconds_before_drop=ExpressionWrapper(
+            F("drop_date") - timezone.now(), output_field=DurationField()
+        ),
+        seconds_before_expire=ExpressionWrapper(
+            F("expire_date") - timezone.now(), output_field=DurationField()
+        )
+    ).filter(reveals=request.user, recipient=request.user).all().order_by('seconds_before_drop', 'seconds_before_expire')
     context = {
         "gift_transactions": won,
     }
@@ -369,7 +389,17 @@ def won_gifts(request):
 
 @login_required
 def lost_gifts(request):
-    lost = GiftTransaction.objects.filter(reveals=request.user).exclude(recipient=request.user).exclude(gifter=request.user).all()
+    lost = GiftTransaction.objects.annotate(
+        due_for_expire=ExpressionWrapper(
+            Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+        ),
+        seconds_before_drop=ExpressionWrapper(
+            F("drop_date") - timezone.now(), output_field=DurationField()
+        ),
+        seconds_before_expire=ExpressionWrapper(
+            F("expire_date") - timezone.now(), output_field=DurationField()
+        )
+    ).filter(reveals=request.user).exclude(recipient=request.user).exclude(gifter=request.user).all().order_by('seconds_before_drop', 'seconds_before_expire')
     context = {
         "gift_transactions": lost,
     }
@@ -390,11 +420,11 @@ def all_gifts(request):
         due_for_expire=ExpressionWrapper(
             Q(expire_date__lt=timezone.now()), output_field=BooleanField()
         ),
-        seconds_until_drop=ExpressionWrapper(
+        seconds_before_drop=ExpressionWrapper(
             F("drop_date") - timezone.now(), output_field=DurationField()
         ),
-        seconds_until_expire=ExpressionWrapper(
+        seconds_before_expire=ExpressionWrapper(
             F("expire_date") - timezone.now(), output_field=DurationField()
         )
-    ).filter(due_for_expire=False).exclude(reveals=request.user).order_by('seconds_until_drop', 'seconds_until_expire')
+    ).filter(due_for_expire=False).exclude(reveals=request.user).exclude(gifter=request.user).order_by('seconds_before_drop', 'seconds_before_expire')
     return render(request, "all_gifts.html", {"gift_transactions": gift_transactions})

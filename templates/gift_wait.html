@@ -35,17 +35,22 @@
                     <p>Oops!</p>
                     <h1>Too Early</h1>
                 </div>
-                <img src="{% static 'gifts/search.gif' %}" alt="Gift image" style="margin: 2rem 0;">
-                <h1>Gift Hidden</h1>
-                <p class="msg">This gift from {{ gift_transaction.gifter.username }} has not dropped yet and you cannot claim or see it.</p>
+                {% if gift_transaction.is_visible %}
+                    <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image" style="margin: 2rem 0;">
+                    <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
+                    <p class="msg">This gift from {{ gift_transaction.gifter.username }} has not dropped yet and you cannot claim it.</p>
+                {% else %}
+                    <img src="{% static 'images/search.gif' %}" alt="Gift image" style="margin: 2rem 0;">
+                    <h1>Gift Hidden</h1>
+                    <p class="msg">This gift from {{ gift_transaction.gifter.username }} has not dropped yet and you cannot claim or see it.</p>
+                {% endif %}
                 <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Try again" data-seconds="{{ gift_transaction.seconds_until_drop }}" style="margin-bottom: .5rem;">Try again in --:--:--:--</p>
-
                 <a href="{% url 'reveal_gift' gift_transaction.id %}">Try again</a>
                 {% if gift_transaction.cost > 0 and not gift_transaction.is_fastest_finger and not gift_transaction.is_due_for_drop and request.user not in gift_transaction.paid_users.all %}
                 <a href="{% url 'reveal_early' gift_transaction.id %}" id="earlyButton" style="margin: .5rem 0 1rem 0;">
                     <div class="cost">
                         <p>Claim now for {{ gift_transaction.cost|intcomma }}</p>
-                        <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                     </div>
                 </a>
                 {% endif %}
@@ -59,7 +64,7 @@
                 <span class="close">&times;</span>
                 <div class="gift-info">
                     <div class="gift-image">
-                        <img src="{% static 'gifts/dollar.gif' %}" alt="Gift image">
+                        <img src="{% static 'images/dollar.gif' %}" alt="Gift image">
                     </div>
                     <h2>Not Enough Coins!</h2>
                     <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong
@@ -69,7 +74,7 @@
                     <div class="coin-card-container">
                         <div class="coin-card">
                             <div class="coin-image">
-                                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                             </div>
                             <div class="coin-info">
                                 <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
@@ -79,7 +84,7 @@
                         </div>
                         <div class="coin-card">
                             <div class="coin-image">
-                                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                             </div>
                             <div class="coin-info">
                                 <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
@@ -89,7 +94,7 @@
                         </div>
                         <div class="coin-card">
                             <div class="coin-image">
-                                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                             </div>
                             <div class="coin-info">
                                 <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
@@ -99,7 +104,7 @@
                         </div>
                         <div class="coin-card">
                             <div class="coin-image">
-                                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                             </div>
                             <div class="coin-info">
                                 <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
@@ -109,7 +114,7 @@
                         </div>
                         <div class="coin-card">
                             <div class="coin-image">
-                                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                             </div>
                             <div class="coin-info">
                                 <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
@@ -119,7 +124,7 @@
                         </div>
                         <div class="coin-card">
                             <div class="coin-image">
-                                <img src="{% static 'gifts/dollar.png' %}" alt="Gift image">
+                                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                             </div>
                             <div class="coin-info">
                                 <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
