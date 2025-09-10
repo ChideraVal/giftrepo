@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 from datetime import timedelta
 from django.utils import timezone
 from django.contrib import messages
-from user_agents import parse
+# from user_agents import parse
 import random
 import uuid
 import secrets
