@@ -150,7 +150,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = str(django_email_host_user)
 EMAIL_HOST_PASSWORD = str(django_email_host_password)
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = f'ShopSwift <{str(django_email_host_user)}>'
+DEFAULT_FROM_EMAIL = f'Bixy <{str(django_email_host_user)}>'
 
 
 # Static files (CSS, JavaScript, Images)
