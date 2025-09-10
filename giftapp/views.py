@@ -238,10 +238,27 @@ def reveal_gift(request, gift_transaction_id):
     if gift_transaction.drop_rate > 0:
         # gift has wait time
         if gift_transaction.is_due_for_drop() or request.user in gift_transaction.paid_users.all():
+
+            # charge player entry fee for FF gift
+            if gift_transaction.fee > 0 and gift_transaction.is_fastest_finger and request.user not in gift_transaction.reveals.all():
+                if gift_transaction.gifter == request.user:
+                    return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to claim your own FF gift.'})
+                total_fee = gift_transaction.fee
+                if request.user.coins < total_fee:
+                    rem_amount = total_fee - request.user.coins
+                    return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this FF gift'})
+                user = request.user
+                updated_coins = user.coins - gift_transaction.fee
+                user.coins = updated_coins
+                user.save()
+                # gift_transaction.reveals.add(request.user)
+                print('CHARGED FOR FF GIFT!')
+            
             # allow claim based on gift mode
             gift_transaction.reveals.add(request.user)
 
             if gift_transaction.is_fastest_finger:
+                
                 if gift_transaction.recipient == None:
                     # user wins, credit coins to user (50% of gift value) only when they claim
                     gift_transaction.recipient = request.user
@@ -410,12 +427,34 @@ def gift_stats(request, gift_transaction_id):
     gift_transaction = get_object_or_404(GiftTransaction, id=gift_transaction_id)
     return render(request, "gift_stats.html", {'gift_transaction': gift_transaction})
 
+
+@login_required
+def buy_coins(request):
+    return render(request, "buy_coins.html")
+
+@login_required
+def wallet(request):
+    return render(request, "wallet.html")
+
 # @login_required
 def all_gifts(request):
     # gift_transactions = GiftTransaction.objects.all().select_related("gifter", "recipient", "claimed_by")
     # gift_transactions = [gt for gt in GiftTransaction.objects.all() if not gt.is_due_for_expire()]
 
     # show gifts that are not sent by user
+    
+    # gift_transactions = GiftTransaction.objects.annotate(
+    #     due_for_expire=ExpressionWrapper(
+    #         Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+    #     ),
+    #     seconds_before_drop=ExpressionWrapper(
+    #         F("drop_date") - timezone.now(), output_field=DurationField()
+    #     ),
+    #     seconds_before_expire=ExpressionWrapper(
+    #         F("expire_date") - timezone.now(), output_field=DurationField()
+    #     )
+    # ).filter(due_for_expire=False).exclude(reveals=request.user).exclude(gifter=request.user).order_by('seconds_before_drop', 'seconds_before_expire')
+
     gift_transactions = GiftTransaction.objects.annotate(
         due_for_expire=ExpressionWrapper(
             Q(expire_date__lt=timezone.now()), output_field=BooleanField()
@@ -426,5 +465,19 @@ def all_gifts(request):
         seconds_before_expire=ExpressionWrapper(
             F("expire_date") - timezone.now(), output_field=DurationField()
         )
-    ).filter(due_for_expire=False).exclude(reveals=request.user).exclude(gifter=request.user).order_by('seconds_before_drop', 'seconds_before_expire')
+    ).filter(due_for_expire=False).order_by('seconds_before_drop', 'seconds_before_expire')
+
+    if request.user.is_authenticated:
+        gift_transactions = GiftTransaction.objects.annotate(
+            due_for_expire=ExpressionWrapper(
+                Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+            ),
+            seconds_before_drop=ExpressionWrapper(
+                F("drop_date") - timezone.now(), output_field=DurationField()
+            ),
+            seconds_before_expire=ExpressionWrapper(
+                F("expire_date") - timezone.now(), output_field=DurationField()
+            )
+        ).filter(due_for_expire=False).exclude(reveals=request.user).exclude(gifter=request.user).order_by('seconds_before_drop', 'seconds_before_expire')
+
     return render(request, "all_gifts.html", {"gift_transactions": gift_transactions})

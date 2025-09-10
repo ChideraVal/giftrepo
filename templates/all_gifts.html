@@ -74,11 +74,16 @@
 
         </div>
 
-        {% if not request.user in gift_transaction.reveals.all %}
-        <a href="{% url 'reveal_gift' gift_transaction.id %}">Claim</a>
-        {% else %}
-        <a href="{% url 'reveal_gift' gift_transaction.id %}" style="background-color: #999;">Claimed</a>
-        {% endif %}
+        <a href="{% url 'reveal_gift' gift_transaction.id %}">
+            {% if gift_transaction.fee > 0 %}
+            <div class="cost">
+                <p>Claim For {{ gift_transaction.fee|intcomma }}</p>
+                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
+            </div>
+            {% else %}
+            Claim
+            {% endif %}
+        </a>
     </div>
     {% endfor %}
 </div>
@@ -91,7 +96,7 @@
 {% endif %}
 {% endblock %}
 
-{% block send %}
+{% block other %}
 <a href="{% url 'send_gift' %}" class="send">
     <img src="{% static 'images/giftbox (1).png' %}" alt="Send gift image">
     <p>Send Gift</p>

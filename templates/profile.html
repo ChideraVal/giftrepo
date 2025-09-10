@@ -1,162 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Gifts - Bixy</title>
-    {% load static %}
-    {% load humanize %}
-    <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
-</head>
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
 
-<body>
-    <nav class="navbar">
-        <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
-            <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
-            <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
-        </div>
+{% block title %}
+<title>New Gifts - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
 
-        <div class="profile-section" id="profileSection">
-            {% if request.user.is_authenticated %}
-            <div class="cost">
-                <p>{{ request.user.coins|intcomma }}</p>
-                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-            </div>
-            <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
+
+{% block body %}
+<div class="heading">
+    <h1>My Profile</h1>
+    <p>Everything about yourself you need to know.</p>
+</div>
+
+<div class="profile-container">
+    <div class="profile-img">
+        <img src="{{ request.user.profile_pic.image.url }}" alt="Profile Picture">
+    </div>
+    <div class="profile-info">
+        <h2>{{ request.user.username }}</h2>
+        <p>{{ request.user.email }}</p>
+        {% if request.user.is_pending_deletion %}
+        <p>Your account is scheduled to be permanently deleted in {{ request.user.days_until_deactivation }} day{{ request.user.days_until_deactivation|pluralize }}.
+            Click the "Cancel Deletion" button to cancel the deletion.
+        </p>
+        {% endif %}
+        <div class="profile-links">
+            <a href="{% url 'edit_profile' %}">Edit Profile</a>
+            <a href="{% url 'change_password' %}">Change Password</a>
+            {% if request.user.is_pending_deletion %}
+            <a href="{% url 'cancel_deletion' %}" style="background-color: #28a745;">Cancel Deletion</a>
             {% else %}
-            <a href="{% url 'signin' %}" class="btn login">Login</a>
-            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+            <a href="{% url 'delete_account' %}" style="background-color: red;">Delete Account</a>
             {% endif %}
         </div>
-    </nav>
+    </div>
+</div>
 
+<div class="card-container">
+    <div class="card prf">
+        <div class="prf-image">
+            <img src="{% static 'images/giftbox (1).png' %}" alt="Sent Gifts Image">
+        </div>
+        <h2>Sent Gifts</h2>
+        <p>Gifts you sent to random players.</p>
+        <div class="tags">
+            <p class="tag">{{ sent|intcomma }} gift{{ sent|pluralize }}</p>
+        </div>
+        <a href="{% url 'sent_gifts' %}">View</a>
+    </div>
+    <div class="card prf">
+        <div class="prf-image">
+            <img src="{% static 'images/gift-box.png' %}" alt="Won Gifts Image">
+        </div>
+        <h2>Won Gifts</h2>
+        <p>Gifts you revealed and won.</p>
+        <div class="tags">
+            <p class="tag">{{ won|intcomma }} gift{{ won|pluralize }}</p>
+        </div>
+        <a href="{% url 'won_gifts' %}">View</a>
+    </div>
+    <div class="card prf">
+        <div class="prf-image">
+            <img src="{% static 'images/empty-box.png' %}" alt="Lost Gifts Image">
+        </div>
+        <h2>Lost Gifts</h2>
+        <p>Gifts you revealed but didn't win.</p>
+        <div class="tags">
+            <p class="tag">{{ lost|intcomma }} gift{{ lost|pluralize }}</p>
+        </div>
+        <a href="{% url 'lost_gifts' %}">View</a>
+    </div>
+    <div class="card prf">
+        <div class="prf-image">
+            <img src="{% static 'images/dollar.png' %}" alt="Coin Shop Image">
+        </div>
+        <h2>Coin Shop</h2>
+        <p>Buy coins from the coin shop.</p>
+        <div class="tags">
+            <p class="tag">{{ request.user.coins|intcomma }} coin{{request.user.coins|pluralize }}</p>
+        </div>
+        <a href="{% url 'buy_coins' %}">Buy Coins</a>
+    </div>
+    <div class="card prf">
+        <div class="prf-image">
+            <img src="{% static 'images/wallet.png' %}" alt="Wallet Image">
+        </div>
+        <h2>Wallet</h2>
+        <p>All your coins in one place.</p>
+        <div class="tags">
+            <p class="tag">{{ request.user.won_coins|intcomma }} coin{{request.user.won_coins|pluralize }}</p>
+        </div>
+        <a href="{% url 'wallet' %}">View</a>
+    </div>
+</div>
+{% endblock %}
 
-    <main>
-        <section>
-            <div class="heading">
-                <h1>My Profile</h1>
-                <p>Everything about yourself you need to know.</p>
-            </div>
-            
-            <div class="profile-container">
-                <div class="profile-img">
-                    <img src="{{ request.user.profile_pic.image.url }}" alt="Profile Picture">
-                </div>
-                <div class="profile-info">
-                    <h2>{{ request.user.username }}</h2>
-                    <p>{{ request.user.email }}</p>
-                    {% if request.user.is_pending_deletion %}
-                    <p>Your account is scheduled to be permanently deleted in {{ request.user.days_until_deactivation }} day{{ request.user.days_until_deactivation|pluralize }}.
-                        Click the "Cancel Deletion" button to cancel the deletion.
-                    </p>
-                    {% endif %}
-                    <div class="profile-links">
-                        <a href="{% url 'edit_profile' %}">Edit Profile</a>
-                        <a href="{% url 'change_password' %}">Change Password</a>
-                        {% if request.user.is_pending_deletion %}
-                        <a href="{% url 'cancel_deletion' %}" style="background-color: #28a745;">Cancel Deletion</a>
-                        {% else %}
-                        <a href="{% url 'delete_account' %}" style="background-color: red;">Delete Account</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-container">
-                <div class="card prf">
-                    <div class="prf-image">
-                        <img src="{% static 'images/giftbox (1).png' %}" alt="Sent Gifts Image">
-                    </div>
-                    <h2>Sent Gifts</h2>
-                    <p>Gifts you sent to random players.</p>
-                    <div class="tags">
-                        <p class="tag">{{ sent|intcomma }} gift{{ sent|pluralize }}</p>
-                    </div>
-                    <a href="{% url 'sent_gifts' %}">View</a>
-                </div>
-                <div class="card prf">
-                    <div class="prf-image">
-                        <img src="{% static 'images/gift-box.png' %}" alt="Won Gifts Image">
-                    </div>
-                    <h2>Won Gifts</h2>
-                    <p>Gifts you revealed and won.</p>
-                    <div class="tags">
-                        <p class="tag">{{ won|intcomma }} gift{{ won|pluralize }}</p>
-                    </div>
-                    <a href="{% url 'won_gifts' %}">View</a>
-                </div>
-                <div class="card prf">
-                    <div class="prf-image">
-                        <img src="{% static 'images/empty-box.png' %}" alt="Lost Gifts Image">
-                    </div>
-                    <h2>Lost Gifts</h2>
-                    <p>Gifts you revealed but didn't win.</p>
-                    <div class="tags">
-                        <p class="tag">{{ lost|intcomma }} gift{{ lost|pluralize }}</p>
-                    </div>
-                    <a href="{% url 'lost_gifts' %}">View</a>
-                </div>
-                <div class="card prf">
-                    <div class="prf-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Coin Shop Image">
-                    </div>
-                    <h2>Coin Shop</h2>
-                    <p>Buy coins from the marketplace.</p>
-                    <div class="tags">
-                        <p class="tag">6 tiers</p>
-                    </div>
-                    <a href="">View</a>
-                </div>
-                <div class="card prf">
-                    <div class="prf-image">
-                        <img src="{% static 'images/wallet.png' %}" alt="Wallet Image">
-                    </div>
-                    <h2>Wallet</h2>
-                    <p>All your coins in one place.</p>
-                    <div class="tags">
-                        <p class="tag">{{ request.user.coins|intcomma }} coin{{request.user.coins|pluralize  }}</p>
-                    </div>
-                    <a href="">View</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        function startCountdown(elementId) {
-            const el = document.getElementById(elementId);
-            let seconds = parseInt(el.dataset.seconds);
-            let prefix = el.dataset.prefix;
-
-            function update() {
-                if (seconds < 0) return;
-
-                let d = Math.floor(seconds / (24 * 3600));
-                let h = Math.floor((seconds % (24 * 3600)) / 3600);
-                let m = Math.floor((seconds % 3600) / 60);
-                let s = seconds % 60;
-
-                el.innerText = `${prefix} in ${d}d ${h}h ${m}m ${s}s`;
-
-                seconds--;
-                setTimeout(update, 1000);
-            }
-
-            update();
-        }
-
-        const timers = document.getElementsByClassName('timer');
-        for (timer of timers) {
-            startCountdown(`${timer.id}`);
-        }
-
-        const bars = document.getElementsByClassName('bar');
-        for (bar of bars) {
-            bar.style.width = `${bar.id}%`;
-        }        
-    </script>
-
-</body>
-
-</html>

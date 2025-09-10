@@ -1,51 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gift Sent Successfully - Bixy</title>
-    {% load static %}
-    {% load humanize %}
-    <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
-</head>
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
 
-<body>
-    <nav class="navbar">
-        <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
-            <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
-            <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+{% block title %}
+<title>Gift Sent Successfully - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
+
+
+{% block body %}
+<div class="success">
+    <div class="signup-container">
+        <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image">
+        <div class="signup-form">
+            <h2>Gift Sent Successfully</h2>
+            <p>You have successfully sent {{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}
+                to someone on Bixy.
+            </p>
+            <a href="{% url 'send_gift' %}">Send another gift</a>
         </div>
-
-        <div class="profile-section" id="profileSection">
-            {% if request.user.is_authenticated %}
-            <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
-            {% else %}
-            <a href="{% url 'signin' %}" class="btn login">Login</a>
-            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
-            {% endif %}
+        <div class="links">
+            <a href="{% url 'sent_gifts' %}">View sent gifts</a>
         </div>
-    </nav>
-
-    <main>
-        <section>
-            <div class="success">
-                <div class="signup-container">
-                    <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image">
-                    <div class="signup-form">
-                        <h2>Gift Sent Successfully</h2>
-                        <p>You have successfully sent {{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}
-                            to someone on Bixy.
-                        </p>
-                        <a href="{% url 'send_gift' %}">Send another gift</a>
-                    </div>
-                    <div class="links">
-                        <a href="{% url 'sent_gifts' %}">View sent gifts</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-</body>
-
-</html>
+    </div>
+</div>
+{% endblock %}

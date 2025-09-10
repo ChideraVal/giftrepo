@@ -8,7 +8,7 @@ GENDERS = (
     ('female', 'Female')
 )
 
-COIN_BASE_PRICE = 16
+COIN_BASE_PRICE = 10
 GRACE_PERIOD_DAYS = 30
 
 
@@ -32,6 +32,9 @@ class User(AbstractUser):
     deactivated_at = models.DateTimeField(null=True, blank=True)
     # Add gender, location, etc. if need
 
+    def total_won_coin_value(self):
+        return self.won_coins * COIN_BASE_PRICE
+    
     def is_pending_deletion(self):
         return self.deactivated_at is not None
 
@@ -70,6 +73,7 @@ class GiftTransaction(models.Model):
     gift = models.ForeignKey(Gift, on_delete=models.CASCADE, related_name='transactions')
     quantity = models.PositiveIntegerField(default=1, help_text="Number of this gift to buy.")
     cost = models.PositiveIntegerField(default=0, help_text="Number of coins paid to reveal the gift early. FF gifts cannot have early reveal cost greater than 0.")
+    fee = models.PositiveIntegerField(default=0, help_text="Number of coins paid to claim FF gifts if paid.")
     paid_users = models.ManyToManyField(User, related_name="paid_gifts", blank=True)
     message = models.CharField(max_length=255, blank=True)
     is_visible = models.BooleanField(default=True, help_text="If the actual gift is shown or hidden.")
@@ -78,7 +82,7 @@ class GiftTransaction(models.Model):
     # expire time set to max of 24 hours
     expire_rate = models.PositiveIntegerField(default=1, help_text="Number of hours before the gift expires (1 - 24). Must be greater than drop rate.")
     # drop time set to max of 23 hours
-    drop_rate = models.PositiveIntegerField(default=0, help_text="Number of hours before the gift drops (0 - 23). Drop rates for non FF gifts must be 0.")
+    drop_rate = models.PositiveIntegerField(default=0, help_text="Number of hours before the gift drops (0 - 23).")
     expire_date = models.DateTimeField(default=timezone.now)
     drop_date = models.DateTimeField(default=timezone.now)
     

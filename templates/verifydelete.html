@@ -1,52 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Account - Bixy</title>
-    {% load static %}
-    {% load humanize %}
-    <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
-</head>
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
 
-<body>
-    <nav class="navbar">
-        <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
-            <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
-            <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+{% block title %}
+<title>New Gifts - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
+
+
+{% block body %}
+<div class="success">
+    <form class="signup-container" action="{% url 'delete_account' %}" method="post">
+        {% csrf_token %}
+        <div class="signup-form">
+            <h2>Delete Account</h2>
+            <p>Deleting your account will schedule your account for permanent deletion in 30 days. You can
+                cancel
+                the deletion anytime before the grace period of 30 days is reached.
+            </p>
+            <button type="submit" style="background-color: red;">Delete Account</button>
         </div>
-
-        <div class="profile-section" id="profileSection">
-            {% if request.user.is_authenticated %}
-            <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
-            {% else %}
-            <a href="{% url 'signin' %}" class="btn login">Login</a>
-            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
-            {% endif %}
+        <div class="links">
+            <p><a href="{% url 'profile' %}">Back to Profile</a></p>
         </div>
-    </nav>
-
-    <main>
-        <section>
-            <div class="success">
-                <form class="signup-container" action="{% url 'delete_account' %}" method="post">
-                    {% csrf_token %}
-                    <div class="signup-form">
-                        <h2>Delete Account</h2>
-                        <p>Deleting your account will schedule your account for permanent deletion in 30 days. You can
-                            cancel
-                            the deletion anytime before the grace period of 30 days is reached.
-                        </p>
-                        <button type="submit" style="background-color: red;">Delete Account</button>
-                    </div>
-                    <div class="links">
-                        <p><a href="{% url 'profile' %}">Back to Profile</a></p>
-                    </div>
-                </form>
-            </div>
-        </section>
-    </main>
-</body>
-
-</html>
+    </form>
+</div>
+{% endblock %}

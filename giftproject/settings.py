@@ -12,21 +12,35 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Env vars 
+
+env_path = BASE_DIR / 'shopapp/.env'
+load_dotenv(env_path)
+
+django_secret_key = os.getenv('DJANGO_SECRET_KEY')
+django_email_host_user = os.getenv('EMAIL_HOST_USER')
+django_email_host_password = os.getenv('EMAIL_HOST_PASSWORD')
+host_domain = os.getenv('HOST_DOMAIN')
+debug = os.getenv('DEBUG')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#(cfpyrw*$39zspdic8zcwb27^4xoy#wf&8v_3%bqi(s+7@487'
+
+SECRET_KEY = str(django_secret_key)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = debug == 'True'
+APPEND_SLASH = True
+ALLOWED_HOSTS = [str(host_domain), '127.0.0.1']
 
 
 # Application definition
@@ -39,11 +53,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'giftapp'
+    'giftapp',
+    'cloudinary',
+    'cloudinary_storage'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -125,11 +142,57 @@ LOGIN_URL = '/signin/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/signin/'
 
+# Email settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = str(django_email_host_user)
+EMAIL_HOST_PASSWORD = str(django_email_host_password)
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = f'ShopSwift <{str(django_email_host_user)}>'
+
+
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# Media files
+
+MEDIA_URL = 'media/'
+if DEBUG:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+#  CSRF cookie settings
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+
+#  Session cookie settings
+
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Strict'
+
+
+# Cloudinary settings
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': str(os.getenv('CLOUDINARY_CLOUD_NAME')),
+    'API_KEY': str(os.getenv('CLOUDINARY_API_KEY')),
+    'API_SECRET': str(os.getenv('CLOUDINARY_API_SECRET')),
+    'SECURE': True
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

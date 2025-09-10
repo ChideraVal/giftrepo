@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
+
+{% block title %}
+<title>Wallet - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
+
+
+{% block body %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <h2>{{ request.user.won_coins|intcomma }}</h2>
+        <div class="stat-label">Total Coins</div>
+    </div>
+    <div class="stat-card">
+        <h2>₦10</h2>
+        <div class="stat-label">Coin Exchange Rate</div>
+    </div>
+    <div class="stat-card">
+        <h2>₦{{ request.user.total_won_coin_value|intcomma }}</h2>
+        <div class="stat-label">Total Coin Value</div>
+    </div>
+    <div class="stat-card">
+        <h2>₦1,000</h2>
+        <div class="stat-label">Minimum Withdrawal Amount</div>
+    </div>
+</div>
+{% endblock %}

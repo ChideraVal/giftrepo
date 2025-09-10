@@ -34,12 +34,13 @@ class CustomUserChangeForm(UserChangeForm):
 class GiftForm(forms.ModelForm):
     class Meta:
         model = GiftTransaction
-        fields = ['quantity', 'is_fastest_finger', 'is_visible', 'expire_rate', 'drop_rate']
+        fields = ['quantity', 'is_fastest_finger', 'cost', 'fee', 'is_visible', 'expire_rate', 'drop_rate']
 
         labels = {
             'is_fastest_finger': 'Fastest Finger (FF)',
-            'is_visible': 'Show Gift'
-            # 'cost': 'Early Reveal Cost'
+            'is_visible': 'Show Gift',
+            'cost': 'Early Reveal Cost',
+            'fee': 'FF entry fee'
         }
 
     def clean(self):
@@ -48,7 +49,8 @@ class GiftForm(forms.ModelForm):
         expire_rate = cleaned_data.get('expire_rate')
         drop_rate = cleaned_data.get('drop_rate')
         is_fastest_finger = cleaned_data.get('is_fastest_finger')
-        # early_reveal_cost = cleaned_data.get('cost')
+        early_reveal_cost = cleaned_data.get('cost')
+        ff_entry_fee = cleaned_data.get('fee')
 
         if quantity <= 0:
             raise forms.ValidationError('Quantity must be 1 or more.')
@@ -68,14 +70,17 @@ class GiftForm(forms.ModelForm):
             raise forms.ValidationError('FF gifts must have drop rates greater than 0.')
         
         # temporary condition to disable wait time for normal gifts
-        if not is_fastest_finger and drop_rate > 0:
-            raise forms.ValidationError('Drop rates for non FF gifts must be 0.')
+        # if not is_fastest_finger and drop_rate > 0:
+        #     raise forms.ValidationError('Drop rates for non FF gifts must be 0.')
 
-        # if is_fastest_finger and early_reveal_cost > 0:
-        #     raise forms.ValidationError('FF gifts must not have early reveal cost greater than 0.')
+        if is_fastest_finger and early_reveal_cost > 0:
+            raise forms.ValidationError('FF gifts must not have early reveal cost greater than 0.')
+
+        if not is_fastest_finger and ff_entry_fee:
+            raise forms.ValidationError('Only FF gifts can have FF entry fee.')
         
         # FIX ERROR MESSAGE TEXT
-        # if drop_rate == 0 and early_reveal_cost > 0:
-        #     raise forms.ValidationError('Gifts with drop rates greater than 1 must have early reveal costs greater than 1.')
+        if drop_rate == 0 and early_reveal_cost > 0:
+            raise forms.ValidationError('Gifts with drop rate of 0 cannot have early reveal cost greater than 0.')
         
         return cleaned_data

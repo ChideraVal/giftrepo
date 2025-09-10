@@ -132,6 +132,7 @@ body {
     border: 2px solid #667eea;
     transition: box-shadow 0.3s ease;
     padding: .2rem;
+    display: block;
 }
 
 .profile-pic:hover {
@@ -274,6 +275,9 @@ div.coin-card {
         padding: 1.5rem 1rem;
     }
 
+    div.coin-card {
+        width: calc((100% - 15px) / 2);
+    }
 
     div.empty img {
         width: 150px;
@@ -291,6 +295,10 @@ div.gift-info {
     flex-direction: column;
     align-items: center;
     padding: 1em;
+}
+
+div.gift-info h1 {
+    text-align: center;
 }
 
 div.coin-image img {
@@ -462,6 +470,11 @@ div.buy-sub {
 div.buy img {
     width: 250px;
     height: 250px;
+}
+
+div.buy img.coin {
+    width: 150px;
+    height: 150px;
 }
 
 @media (max-width: 900px) {
@@ -881,4 +894,34 @@ div.prf a {
         width: 150px;
         height: 150px;
     }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    /* margin-bottom: 2rem; */
+    /* border: 1px solid red; */
+    padding: 1.5rem;
+}
+
+.stat-card {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.stat-card h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    /* color: #6f42c1; */
+    color: var(--link-color);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.4rem;
 }

@@ -130,6 +130,7 @@ body {
     border: 2px solid #667eea;
     transition: box-shadow 0.3s ease;
     padding: .2rem;
+    display: block;
 }
 
 .profile-pic:hover {
@@ -334,6 +335,11 @@ div.coin-card a {
     text-align: center;
 }
 
+@media (max-width: 500px) {
+    div.coin-card {
+        width: calc((100% - 15px) / 2);
+    }
+}
 
 #sparkleCanvas {
     position: fixed;

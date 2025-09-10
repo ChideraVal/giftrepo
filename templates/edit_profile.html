@@ -1,76 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Profile - Bixy</title>
-  {% load static %}
-  {% load humanize %}
-  <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
-</head>
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
 
-<body>
-  <nav class="navbar">
-    <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
-      <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
-      <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
-    </div>
-
-    <div class="profile-section" id="profileSection">
-      {% if request.user.is_authenticated %}
-      <div class="cost">
-        <p>{{ request.user.coins|intcomma }}</p>
-        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-      </div>
-      <!-- <div class="cost">
-        <p>{{ request.user.keys|intcomma }}</p>
-        <img src="{% static 'images/key.png' %}" alt="Gift image">
-      </div> -->
-      <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
-      {% else %}
-      <a href="{% url 'signin' %}" class="btn login">Login</a>
-      <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
-      {% endif %}
-    </div>
-  </nav>
+{% block title %}
+<title>New Gifts - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
 
 
-  <main>
-    <section>
-      <div class="heading">
-        <h1>Edit Profile</h1>
-        <p>Fill the form below to edit your profile.</p>
-      </div>
+{% block body %}
+<div class="heading">
+    <h1>Edit Profile</h1>
+    <p>Fill the form below to edit your profile.</p>
+</div>
 
-      <div class="buy">
-        <div class="buy-sub">
-          
-          <form class="login-form" action="{% url 'edit_profile' %}" method="post">
-
+<div class="buy">
+    <div class="buy-sub">
+        <form class="login-form" action="{% url 'edit_profile' %}" method="post">
             {% csrf_token %}
 
             {% for field in form %}
-                {% if field.label != 'Password' %}
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    <p class="help"></p>
+            {% if field.label != 'Password' %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            <p class="help"></p>
 
-                    {% for error in field.errors %}
-                    <p class="error">{{ error }}</p>
-                    {% endfor %}
-                {% endif %}
+            {% for error in field.errors %}
+            <p class="error">{{ error }}</p>
+            {% endfor %}
+            {% endif %}
             {% endfor %}
             <button type="submit">Save Changes</button>
-          </form>
-          <div class="links">
+        </form>
+        <div class="links">
             <a href="{% url 'change_profile_picture' %}">Change Profile Picture</a>
-          </div>
         </div>
-      </div>
-    </section>
-
-  </main>
-</body>
-
-</html>
+    </div>
+</div>
+{% endblock %}

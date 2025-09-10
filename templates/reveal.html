@@ -1,134 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send Gift - Bixy</title>
-    {% load static %}
-    {% load timefilters %}
-    {% load humanize %}
-    <link rel="stylesheet" href="{% static 'reveal.css' %}">
-</head>
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
 
-<body>
-    <nav class="navbar">
-        <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
-            <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
-            <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
-        </div>
-
-        <div class="profile-section" id="profileSection">
-            {% if request.user.is_authenticated %}
-            <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
-            {% else %}
-            <a href="{% url 'signin' %}" class="btn login">Login</a>
-            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
-            {% endif %}
-        </div>
-    </nav>
+{% block title %}
+<title>Reveal Gift - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/reveal.css' %}">
+{% endblock %}
 
 
-    <main>
-        <section>
-            <div class="reveal-container">
-                {% if is_winner %}
-                    <div class="heading">
-                        <p>Congratulations!</p>
-                        <h1>You Won</h1>
-                    </div>
-                    <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image" style="margin: 2rem 0;">
-                    <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
-                    <p class="msg">Hi {{ request.user.username }}, you have recieved {{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }} from {{ gift_transaction.gifter.username }}.</p>
-                {% else %}
-                    <div class="heading">
-                        <p>Sorry!</p>
-                        <h1>You Lost</h1>
-                    </div>
-                    {% if gift_transaction.is_visible %}
-                        <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image" style="margin: 2rem 0;">
-                        <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
-                        <p class="msg">Hi {{ request.user.username }}, you did not recieve this gift from {{ gift_transaction.gifter.username }}.</p>
-                    {% else %}
-                        <img src="{% static 'images/search.gif' %}" alt="Gift image" style="margin: 2rem 0;">
-                        <h1>Gift Hidden</h1>
-                        <p class="msg">Hi {{ request.user.username }}, you did not recieve this gift from {{ gift_transaction.gifter.username }} and cannot claim or see it.</p>
-                    {% endif %}
-                {% endif %}
-                <a href="{% url 'all_gifts' %}">Browse more gifts</a>
-                <a href="{% url 'view_gift_stats' gift_transaction.id %}" style="margin: .5rem 0 1rem 0;">View Stats</a>
-            </div>
-        </section>
-        <canvas id="sparkleCanvas"></canvas>
-    </main>
+{% block body %}
+<div class="reveal-container">
+    {% if is_winner %}
+    <div class="heading">
+        <p>Congratulations!</p>
+        <h1>You Won</h1>
+    </div>
+    <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image" style="margin: 2rem 0;">
+    <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
+    <p class="msg">Hi {{ request.user.username }}, you have recieved {{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }} from {{ gift_transaction.gifter.username }}.</p>
+    {% else %}
+    <div class="heading">
+        <p>Sorry!</p>
+        <h1>You Lost</h1>
+    </div>
+    {% if gift_transaction.is_visible %}
+    <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image" style="margin: 2rem 0;">
+    <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
+    <p class="msg">Hi {{ request.user.username }}, you did not recieve this gift from {{ gift_transaction.gifter.username }}.</p>
+    {% else %}
+    <img src="{% static 'images/search.gif' %}" alt="Gift image" style="margin: 2rem 0;">
+    <h1>Gift Hidden</h1>
+    <p class="msg">Hi {{ request.user.username }}, you did not recieve this gift from {{ gift_transaction.gifter.username }} and cannot claim or see it.</p>
+    {% endif %}
+    {% endif %}
+    <a href="{% url 'all_gifts' %}">Browse more gifts</a>
+    <a href="{% url 'view_gift_stats' gift_transaction.id %}" style="margin: .5rem 0 1rem 0;">View Stats</a>
+</div>
+{% endblock %}
 
-    <script>
-        const canvas = document.getElementById("sparkleCanvas");
-        const ctx = canvas.getContext("2d");
+{% block other %}
+<canvas id="sparkleCanvas"></canvas>
+{% endblock %}
 
-        // Handle high DPI screens correctly
-        function resizeCanvas() {
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = window.innerWidth * dpr;
-            canvas.height = window.innerHeight * dpr;
-            canvas.style.width = window.innerWidth + "px";
-            canvas.style.height = window.innerHeight + "px";
-            ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
-            ctx.scale(dpr, dpr); // scale so drawings stay consistent
-        }
-
-        resizeCanvas();
-        window.addEventListener("resize", resizeCanvas);
-
-        let stars = [];
-
-        function createStar() {
-            return {
-                x: Math.random() * window.innerWidth,
-                y: window.innerHeight + 10,
-                size: Math.random() * 8 + 5,
-                speed: Math.random() * 2 + 1,
-                opacity: Math.random() * 0.8 + 0.2
-            };
-        }
-
-        function drawStar(star) {
-            const spikes = 4;
-            const outerRadius = star.size;
-            const innerRadius = star.size / 2;
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.translate(star.x, star.y);
-            ctx.moveTo(0, 0 - outerRadius);
-
-            for (let i = 0; i < spikes; i++) {
-                ctx.rotate(Math.PI / spikes);
-                ctx.lineTo(0, 0 - innerRadius);
-                ctx.rotate(Math.PI / spikes);
-                ctx.lineTo(0, 0 - outerRadius);
-            }
-
-            ctx.closePath();
-            ctx.fillStyle = `rgba(102, 126, 234, ${star.opacity})`;
-            ctx.fill();
-            ctx.restore();
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            stars.forEach((star, i) => {
-                star.y -= star.speed;
-                if (star.y < -10) stars[i] = createStar();
-                drawStar(star);
-            });
-            requestAnimationFrame(animate);
-        }
-
-        for (let i = 0; i < 40; i++) stars.push(createStar());
-        animate();
-
-    </script>
-</body>
-
-</html>
+{% block scripts %}
+<script src="{% static 'scripts/sparkles.js' %}"></script>
+{% endblock %}

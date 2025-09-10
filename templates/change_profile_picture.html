@@ -1,63 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send Gift - Bixy</title>
-    {% load static %}
-    {% load humanize %}
-    <link rel="stylesheet" href="{% static 'all_gifts.css' %}">
-</head>
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
 
-<body>
-    <nav class="navbar">
-        <div class="logo-container" onclick="window.location.href='/'" role="link" tabindex="0">
-            <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
-            <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+{% block title %}
+<title>New Gifts - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
+
+
+{% block body %}
+<div class="heading">
+    <h1>Change Profile Picture</h1>
+    <p>Update your profile picture.</p>
+</div>
+{% if profile_pictures|length > 0 %}
+<div class="card-container">
+    {% for picture in profile_pictures %}
+    <div class="card">
+        <div class="gift-image">
+            <img src="{{ picture.image.url }}" alt="Gift image">
+        </div>
+        <div class="gift-info">
+            <h1>{{ picture.name }}</h1>
         </div>
 
-        <div class="profile-section" id="profileSection">
-            {% if request.user.is_authenticated %}
-            <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
-            {% else %}
-            <a href="{% url 'signin' %}" class="btn login">Login</a>
-            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
-            {% endif %}
-        </div>
-    </nav>
-
-
-    <main>
-        <section>
-            <div class="heading">
-                <h1>Change Profile Picture</h1>
-                <p>Update your profile picture.</p>
-            </div>
-            {% if profile_pictures|length > 0 %}
-            <div class="card-container">
-                {% for picture in profile_pictures %}
-                <div class="card">
-                    <div class="gift-image">
-                        <img src="{{ picture.image.url }}" alt="Gift image">
-                    </div>
-                    <div class="gift-info">
-                        <h1>{{ picture.name }}</h1>
-                    </div>
-                        
-                    <a href="{% url 'use_profile_picture' picture.id %}">Use</a>
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-                <div class="empty">
-                    <img src="{% static 'images/empty-box.png' %}" alt="No content image">
-                    <h1>Oops! Nothing in here right now.</h1>
-                    <a href="{% url 'change_profile_picture' %}">Refresh</a>
-                </div>
-            {% endif %}
-        </section>
-    </main>
-</body>
-
-</html>
+        <a href="{% url 'use_profile_picture' picture.id %}">Use</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+    <img src="{% static 'images/empty-box.png' %}" alt="No content image">
+    <h1>Oops! Nothing in here right now.</h1>
+    <a href="{% url 'change_profile_picture' %}">Refresh</a>
+</div>
+{% endif %}
+{% endblock %}
