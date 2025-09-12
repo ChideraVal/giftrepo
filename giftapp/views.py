@@ -255,7 +255,7 @@ def activate_purchase(request, transaction_id):
         return render(request, 'error.html', {'title': 'Error', 'message': 'Transaction ID missing.'})
     transaction_data = check_transaction_status(request, transaction_id)
     if transaction_data:
-        amount = transaction_data['amount']
+        amount = transaction_data['data']['amount']
         coin_amount_mapping = {
             '5': 50,
             '10': 100
