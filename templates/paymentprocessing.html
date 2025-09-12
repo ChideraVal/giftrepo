@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
+
+{% block title %}
+<title>Processing Payment - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
+
+
+{% block body %}
+<div class="success">
+    <div class="signup-container">
+        <img src="{% static 'images/pending.png' %}" alt="Pending Icon">
+        <div class="signup-form">
+            <h2>Processing your Payment...</h2>
+            <p>Your payment of ₦{{ amount|intcomma }} is pending. Please <a href="">Refresh</a> to re-check the current payment status.
+            </p>
+            <a href="{% url 'buy_coins' %}">Buy More coins</a>
+        </div>
+        <div class="links">
+            <a href="{% url 'profile' %}">View Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

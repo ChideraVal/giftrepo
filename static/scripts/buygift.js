@@ -5,14 +5,14 @@ const button = document.getElementById('button');
 console.log(cost);
 
 
-button.textContent = `Buy and Send For ${(numberInput.value * cost).toLocaleString()}`;
+button.textContent = `Send For ${(numberInput.value * cost).toLocaleString()}`;
 
 
 numberInput.addEventListener('input', () => {
     if (numberInput.value && numberInput.value > 0) {
-    button.textContent = `Buy and Send For ${(numberInput.value * cost).toLocaleString()}`;
+    button.textContent = `Send For ${(numberInput.value * cost).toLocaleString()}`;
     } else {
-    button.textContent = `Buy and Send For 0`;
+    button.textContent = `Send For 0`;
     }
 })
 

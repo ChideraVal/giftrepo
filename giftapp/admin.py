@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Gift, GiftTransaction, User, ProfilePicture, FastestFingerClaim
+from .models import Gift, GiftTransaction, User, ProfilePicture, FastestFingerClaim, CoinPurchase
 
 
 @admin.register(User)
@@ -7,6 +7,13 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'coins', 'won_coins', 'keys', 'is_superuser', 'deactivated_at', 'verify_code')
     search_fields = ('username', 'email')
     list_filter = ('is_staff', 'is_superuser')
+
+
+@admin.register(CoinPurchase)
+class CoinPurchaseAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user__username', 'amount')
+    search_fields = ('user__username',)
+    list_filter = ('amount', 'user__username')
 
 
 @admin.register(Gift)

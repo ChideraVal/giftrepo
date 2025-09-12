@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseForbidden, HttpResponse
 from .models import *
 from django.db.models import BooleanField, DurationField, ExpressionWrapper, Q, F
 from .forms import *
@@ -7,16 +6,25 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
-from django.core.exceptions import ValidationError
 from datetime import timedelta
 from django.utils import timezone
-from django.contrib import messages
-# from user_agents import parse
 import random
 import uuid
-import secrets
-import json
 from django.conf import settings
+from dotenv import load_dotenv
+import os
+import requests
+from django.core.mail import EmailMultiAlternatives, send_mail, get_connection
+from django.template.loader import render_to_string
+
+load_dotenv()
+secret_key = os.getenv('SECRET_KEY')
+        
+def not_found(request, exception):
+    return render(request, '404.html')
+
+def server_error(request):
+    return render(request, '500.html')
 
 def sign_in(request):
     path = request.get_full_path()
@@ -138,6 +146,7 @@ def change_password(request):
     form = PasswordChangeForm(user=request.user)
     return render(request, 'change_password.html', {'form': form})
 
+@login_required
 def deactivate_account(request):
     if request.user.is_pending_deletion():
         return redirect('profile')
@@ -148,15 +157,17 @@ def deactivate_account(request):
         return redirect('profile')
     return render(request, 'verifydelete.html')
 
+@login_required
 def cancel_account_deletion(request):
     user = request.user
     user.deactivated_at = None
     user.save()
     return redirect('profile')
 
+@login_required
 def sign_out(request):
     logout(request)
-    return redirect('/signin/')
+    return redirect('signin')
 
 @login_required
 def send_gift(request):
@@ -171,7 +182,7 @@ def buy_gift(request, gift_id):
         total_cost = int(gift.cost * quantity)
         if request.user.coins < total_cost:
             rem_amount = total_cost - request.user.coins
-            return render(request, "need_coins.html", {'gift': gift, 'rem_amount': rem_amount, 'quantity': quantity, 'total_cost': total_cost, 'message': 'buy and send this gift'})
+            return render(request, "need_coins.html", {'gift': gift, 'rem_amount': rem_amount, 'quantity': quantity, 'total_cost': total_cost, 'message': 'send this gift'})
         else:
             form = GiftForm(request.POST)
             if form.is_valid():
@@ -202,6 +213,75 @@ def buy_gift(request, gift_id):
         form = GiftForm()
     return render(request, "buy_gift.html", {'gift': gift, 'form': form})
 
+def check_transaction_status(request, transaction_id):
+    url = f"https://api.flutterwave.com/v3/transactions/{transaction_id}/verify"
+    headers = {
+        "Authorization": f"Bearer {secret_key}"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        print(response.json())
+        return response.json()
+    return None
+
+def send_verification_email(request, coin_purchase_id):
+    coin_purchase = CoinPurchase.objects.get(id=coin_purchase_id)
+    payment_success_mail = EmailMultiAlternatives(
+                    'Payment Made Successfully!',
+f"""
+Hello {coin_purchase.user.username},
+
+your payment of ₦{coin_purchase.amount} was successful.
+""",
+                    str(settings.DEFAULT_FROM_EMAIL),
+                    [str(coin_purchase.user.email)],
+                    reply_to=['pyjamelnoreply@mail.com']
+                )
+    html_page = render_to_string('paymentsuccessmail.html', {
+        "coin_purchase": coin_purchase
+    })
+    payment_success_mail.attach_alternative(html_page, 'text/html')
+    payment_success_mail.send(fail_silently=False)
+    return None
+
+@login_required
+def activate_purchase(request, transaction_id):
+    user = request.user
+    transaction_id = str(transaction_id)
+    transaction_id_exists_for_coin_purchase = CoinPurchase.objects.filter(transaction_id=transaction_id).exists()
+    if transaction_id_exists_for_coin_purchase:
+        return redirect('buy_coins')
+    if not transaction_id:
+        return render(request, 'error.html', {'title': 'Error', 'message': 'Transaction ID missing.'})
+    transaction_data = check_transaction_status(request, transaction_id)
+    if transaction_data:
+        amount = transaction_data['amount']
+        coin_amount_mapping = {
+            '5': 50,
+            '10': 100
+        }
+        coins_bought = coin_amount_mapping.get(amount, 0)
+        if str(transaction_data['status']).lower() == 'success' and str(transaction_data['data']['status']).lower() == 'successful':
+
+            coin_purchase = CoinPurchase.objects.create(
+                transaction_id=transaction_id,
+                user=user,
+                amount=amount
+            )
+
+            updated_coins = user.coins + coins_bought
+            user.coins = updated_coins
+            user.save()
+
+            email_value = send_verification_email(request, coin_purchase.id)
+            print(email_value)
+            return render(request, 'paymentsuccess.html', {'amount': amount, 'coins': coins_bought})
+        elif str(transaction_data['data']['status']).lower() == 'failed':
+            return render(request, 'paymentfailed.html', {'amount': amount, 'coins': coins_bought})
+        else:
+            return render(request, 'paymentprocessing.html', {'amount': amount, 'coins': coins_bought})
+    return render(request, 'error.html', {'title': 'Error', 'message': 'No transaction data.'})
+
 @login_required
 def gift_detail(request, gift_id):
     gift = get_object_or_404(Gift, id=gift_id)
@@ -225,6 +305,13 @@ def reveal_gift_early(request, gift_transaction_id):
         user.save()
         gift_transaction.paid_users.add(request.user)
         print('CHARGED!')
+
+        gifter = gift_transaction.gifter
+        updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.cost)
+        gifter.won_coins = updated_coins
+        gifter.save()
+        print('CREDITED!')
+        
     return redirect('reveal_gift', gift_transaction_id=gift_transaction.id)
 
 @login_required
@@ -253,6 +340,12 @@ def reveal_gift(request, gift_transaction_id):
                 user.save()
                 # gift_transaction.reveals.add(request.user)
                 print('CHARGED FOR FF GIFT!')
+
+                gifter = gift_transaction.gifter
+                updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.fee)
+                gifter.won_coins = updated_coins
+                gifter.save()
+                print('CREDITED FOR FF GIFT!')
             
             # allow claim based on gift mode
             gift_transaction.reveals.add(request.user)
@@ -267,7 +360,7 @@ def reveal_gift(request, gift_transaction_id):
                     gift_transaction.save()
 
                     # credit winner
-                    won_coins_to_credit = settings.COIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
+                    won_coins_to_credit = settings.WIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
                     print("WON COINS TO CREDIT: ", won_coins_to_credit)
                     user = request.user
                     updated_won_coins = user.won_coins + won_coins_to_credit
@@ -300,7 +393,7 @@ def reveal_gift(request, gift_transaction_id):
             else:
                 # credit winner only once
                 if is_winner and not gift_transaction.is_claimed():
-                    won_coins_to_credit = settings.COIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
+                    won_coins_to_credit = settings.WIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
                     print("WON COINS TO CREDIT: ", won_coins_to_credit)
                     user = request.user
                     updated_won_coins = user.won_coins + won_coins_to_credit
@@ -330,7 +423,7 @@ def reveal_gift(request, gift_transaction_id):
 
         # credit winner only once
         if is_winner and not gift_transaction.is_claimed():
-            won_coins_to_credit = settings.COIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
+            won_coins_to_credit = settings.WIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
             print("WON COINS TO CREDIT: ", won_coins_to_credit)
             user = request.user
             updated_won_coins = user.won_coins + won_coins_to_credit

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import Q
 
 GENDERS = (
     ('male', 'Male'),
@@ -52,7 +53,17 @@ class User(AbstractUser):
         if not self.deactivated_at:
             return False
         return self.days_since_deactivation() >= GRACE_PERIOD_DAYS
-    
+
+
+class CoinPurchase(models.Model):
+    transaction_id = models.CharField(max_length=256)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="coin_purchases")
+    amount = models.PositiveIntegerField(help_text="Number of coins user purchased.")
+    purchased_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.transaction_id
+
 
 class Gift(models.Model):
     name = models.CharField(max_length=50, null=True, blank=True)

@@ -10,3 +10,6 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = 'giftapp.views.not_found'
+handler500 = 'giftapp.views.server_error'

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
+
+{% block title %}
+<title>Payment Failed - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
+
+
+{% block body %}
+<div class="success">
+    <div class="signup-container">
+        <img src="{% static 'images/x-button.png' %}" alt="Failed Icon">
+        <div class="signup-form">
+            <h2>Payment Failed!</h2>
+            <p>Your payment of ₦{{ amount|intcomma }} was unsuccessful and no
+                coins were credited to your Bixy account. Please visit the <a href="{% url 'buy_coins' order.id %}">buy coins</a> page to restart the payment process. We
+                also recommend using a different payment method if the issue persists.
+            </p>
+            <a href="{% url 'buy_coins' %}">Buy More coins</a>
+        </div>
+        <div class="links">
+            <a href="{% url 'profile' %}">View Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

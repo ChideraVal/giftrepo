@@ -1,4 +1,2 @@
-shopenv/
 *.env
 staticfiles/
-media/

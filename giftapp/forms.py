@@ -43,6 +43,10 @@ class GiftForm(forms.ModelForm):
             'fee': 'FF entry fee'
         }
 
+        # widgets = {
+        #     'quantity': forms.NumberInput(attrs={'min': 1, 'max': 100}),
+        # }
+
     def clean(self):
         cleaned_data = super().clean()
         quantity = self.cleaned_data.get('quantity')
@@ -53,7 +57,7 @@ class GiftForm(forms.ModelForm):
         ff_entry_fee = cleaned_data.get('fee')
 
         if quantity <= 0:
-            raise forms.ValidationError('Quantity must be 1 or more.')
+            raise forms.ValidationError('Quantity must be greater than 0.')
         
         # temporary condition to max expire rate to 24 hrs
         if expire_rate < 1 or expire_rate > 24:

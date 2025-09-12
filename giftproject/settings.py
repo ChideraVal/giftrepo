@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Env vars 
 
-env_path = BASE_DIR / 'shopapp/.env'
+env_path = BASE_DIR / 'giftapp/.env'
 load_dotenv(env_path)
 
 django_secret_key = os.getenv('DJANGO_SECRET_KEY')
@@ -133,7 +133,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-COIN_PERCENT = 0.5 # 50% of won coins
+WIN_PERCENT = 1 # 100% of won coins
+CREDIT_PERCENT = 0.5 # 50% of spent coins
 
 
 AUTH_USER_MODEL = 'giftapp.User'
@@ -191,10 +192,11 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': str(os.getenv('CLOUDINARY_API_SECRET')),
     'SECURE': True
 }
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+print(f'DEBUG : {DEBUG}')

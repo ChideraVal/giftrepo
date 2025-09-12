@@ -7,6 +7,7 @@
 {% block title %}
 <title>Buy Gift - Bixy</title>
 <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+<script src="https://checkout.flutterwave.com/v3.js"></script>
 {% endblock %}
 
 
@@ -28,7 +29,7 @@
                     <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
                 </div>
     
-                <a href="">$500</a>
+                <button onclick="makePayment(5)">₦5</button>
             </div>
             <div class="coin-card">
                 <div class="coin-image">
@@ -38,7 +39,7 @@
                     <p style="font-weight: bold; font-size: 1rem;">100 coins</p>
                 </div>
     
-                <a href="">$1,000</a>
+                <button onclick="makePayment(10)">₦10</button>
             </div>
             <div class="coin-card">
                 <div class="coin-image">
@@ -48,7 +49,7 @@
                     <p style="font-weight: bold; font-size: 1rem;">250 coins</p>
                 </div>
     
-                <a href="">$2,500</a>
+                <button onclick="makePayment(2500)">₦2,500</button>
             </div>
             <div class="coin-card">
                 <div class="coin-image">
@@ -57,8 +58,8 @@
                 <div class="coin-info">
                     <p style="font-weight: bold; font-size: 1rem;">500 coins</p>
                 </div>
-    
-                <a href="">$5,000</a>
+
+                <button onclick="makePayment(5000)">₦5,000</button>
             </div>
             <div class="coin-card">
                 <div class="coin-image">
@@ -68,7 +69,7 @@
                     <p style="font-weight: bold; font-size: 1rem;">1,000 coins</p>
                 </div>
     
-                <a href="">$10,000</a>
+                <button onclick="makePayment(10000)">₦10,000</button>
             </div>
             <div class="coin-card">
                 <div class="coin-image">
@@ -78,10 +79,18 @@
                     <p style="font-weight: bold; font-size: 1rem;">2,500 coins</p>
                 </div>
     
-                <a href="">$25,000</a>
+                <button onclick="makePayment(25000)">₦25,000</button>
             </div>
     
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const nameValue = "{{ request.user.username }}";
+    const emailValue = "{{ request.user.email }}";
+</script>
+<script src="{% static 'scripts/checkout.js' %}"></script>
 {% endblock %}

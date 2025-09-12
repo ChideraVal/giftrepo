@@ -36,6 +36,7 @@
             {% else %}
             <a href="{% url 'delete_account' %}" style="background-color: red;">Delete Account</a>
             {% endif %}
+            <a href="{% url 'logout' %}" style="background-color: red;">Log Out</a>
         </div>
     </div>
 </div>
@@ -90,7 +91,7 @@
             <img src="{% static 'images/wallet.png' %}" alt="Wallet Image">
         </div>
         <h2>Wallet</h2>
-        <p>All your coins in one place.</p>
+        <p>All your earned coins in one place.</p>
         <div class="tags">
             <p class="tag">{{ request.user.won_coins|intcomma }} coin{{request.user.won_coins|pluralize }}</p>
         </div>

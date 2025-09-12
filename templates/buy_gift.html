@@ -12,7 +12,7 @@
 
 {% block body %}
 <div class="heading">
-    <h1>Buy Gift</h1>
+    <h1>Send Gift</h1>
     <p>Fill the form below to complete your purchase.</p>
 </div>
 
@@ -49,7 +49,7 @@
             {% endfor %}
             <button type="submit">
                 <div class="cost">
-                    <p id="button">Buy and Send for {{ gift.cost }}</p>
+                    <p id="button">Send for {{ gift.cost }}</p>
                     <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                 </div>
             </button>
@@ -69,7 +69,7 @@
             </div>
             <h2>Not Enough Coins!</h2>
             <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong id="neededCoins"></strong>
-                more coins to buy and send this gift.</p>
+                more coins to send this gift.</p>
 
             <div class="coin-card-container">
                 <div class="coin-card">

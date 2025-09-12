@@ -359,7 +359,7 @@ div.card a {
     text-align: center;
 }
 
-div.coin-card a {
+div.coin-card button {
     width: 100%;
     background-color: var(--link-color);
     color: var(--card-button-color);
@@ -368,8 +368,9 @@ div.coin-card a {
     border-radius: 0 0 .7em .7em;
     font-size: 1rem;
     font-weight: bold;
-    text-decoration: none;
+    /* text-decoration: none; */
     text-align: center;
+    cursor: pointer;
 }
 
 a.send {
@@ -924,4 +925,37 @@ div.prf a {
     font-size: 0.9rem;
     color: #666;
     margin-top: 0.4rem;
+}
+
+/* Error CSS */
+
+.notfound {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4em 1em;
+}
+
+.notfound b {
+    font-size: 1.5em;
+    color: red;
+    text-align: center;
+}
+
+.notfound h1 {
+    font-size: 5em;
+    text-align: center;
+}
+
+.notfound p {
+    color: #444;
+    text-align: center;
+}
+
+
+@media (max-width: 700px) {
+    .notfound h1 {
+        font-size: 3em;
+    }
 }

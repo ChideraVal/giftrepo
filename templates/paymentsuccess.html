@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
+
+{% block title %}
+<title>Payment Successful - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
+
+
+{% block body %}
+<div class="success">
+    <div class="signup-container">
+        <img src="{% static 'images/check.png' %}" alt="Success Icon">
+        <div class="signup-form">
+            <h2>Payment Successful!</h2>
+            <p>Your payment of ₦{{ amount|intcomma }} was successful and {{ coins|intcomma }}
+                coin{{ coins|pluralize }} has been credited to your Bixy account.
+            </p>
+            <a href="{% url 'buy_coins' %}">Buy More coins</a>
+        </div>
+        <div class="links">
+            <a href="{% url 'profile' %}">View Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

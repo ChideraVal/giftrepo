@@ -31,14 +31,14 @@
             </div>
         </div>
 
-        <a href="{% url 'buy_gift' gift.id %}">Buy</a>
+        <a href="{% url 'buy_gift' gift.id %}">Send</a>
     </div>
     {% endfor %}
 </div>
 {% else %}
 <div class="empty">
     <img src="{% static 'images/empty-box.png' %}" alt="No content image">
-    <h1>Oops! Nothing in here right now.</h1>
+    <h1>Feels Empty Here.</h1>
     <a href="{% url 'send_gift' %}">Refresh</a>
 </div>
 {% endif %}
