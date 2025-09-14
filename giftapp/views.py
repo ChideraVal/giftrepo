@@ -260,7 +260,7 @@ def activate_purchase(request, transaction_id):
             '5': 50,
             '10': 100
         }
-        coins_bought = coin_amount_mapping.get(amount, 0)
+        coins_bought = coin_amount_mapping.get(str(amount), 0)
         if str(transaction_data['status']).lower() == 'success' and str(transaction_data['data']['status']).lower() == 'successful':
 
             coin_purchase = CoinPurchase.objects.create(
