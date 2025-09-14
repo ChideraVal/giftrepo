@@ -7,7 +7,7 @@ function makePayment(amount) {
     console.log(refValue);
 
     FlutterwaveCheckout({
-        public_key: "FLWPUBK-4665a5bfdd9fe8535fa8c74f0d845b09-X",
+        public_key: "FLWPUBK-0396a7fbcc03eea93b5096689b6226b7-X",
         tx_ref: `${refValue}`,
         amount: Number(amount),
         currency: "NGN",
