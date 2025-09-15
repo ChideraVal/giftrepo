@@ -22,7 +22,8 @@ from .mails import (
     send_email_verification_email,
     send_email_verified_email,
     send_change_code_email,
-    send_email_changed_email
+    send_email_changed_email,
+    send_new_gift_email
 )
 
 load_dotenv()
@@ -249,6 +250,8 @@ def buy_gift(request, gift_id):
                 gift_transaction.drop_date = drop_date
 
                 gift_transaction.save()
+                email_value = send_new_gift_email(request, user.id)
+                print(email_value)
                 return render(request, 'gift_success.html', {'gift_transaction': gift_transaction})
     else:
         form = GiftForm()
