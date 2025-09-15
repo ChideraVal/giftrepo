@@ -25,7 +25,7 @@
             {% if field.label != 'Password' %}
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field }}
-            <p class="help"></p>
+            <p class="help">{{ field.help_text }}</p>
 
             {% for error in field.errors %}
             <p class="error">{{ error }}</p>

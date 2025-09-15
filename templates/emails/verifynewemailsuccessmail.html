@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load humanize %}
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: "DM Sans", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+        }
+
+        
+        div.page {
+            width: 40%;
+            margin: 3em auto;
+            background-color: #f3f3f3;
+        }
+
+        .header {
+            background-color: black;
+            padding: 1em;
+            box-sizing: border-box;
+        }
+
+        .header h1 {
+            font-family: "Passion One", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            color: #667eea;
+            text-align: center;
+        }
+
+        .content {
+            padding: 1em;
+            box-sizing: border-box;
+        }
+
+        .payintro {
+            margin-bottom: 1em;
+        }
+
+        .payheader, .payintro p, .payintro h2 {
+            text-align: center;
+        }
+
+        .payintro p {
+            font-size: 1.1em;
+            color: #444;
+            margin-top: .5em;
+        }
+
+        .payintro h2 {
+            font-size: 2.2em;
+            color: rgb(43, 41, 41);
+            margin-top: .5em;
+        }
+
+        a {
+            text-decoration: underline;
+            color: black;
+            font-size: 1.1em;
+            font-weight: 400;
+        }
+
+        .payinfo {
+            border-top: 1px solid #ddd;
+            padding-top: 1em;
+            box-sizing: border-box;
+        }
+
+        .payinfo p {
+            font-size: 1.1em;
+            color: black;
+            margin-top: .5em;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .paydetails {
+            margin-top: .5em;
+        }
+
+        .detail {
+            margin-bottom: 1em;
+        }
+
+        .detail p, .detail p {
+            text-align: initial;
+        }
+
+        .detail b {
+            margin-bottom: 1em;
+        }
+
+        .detail p {
+            color: #444;
+            font-size: .96em;
+            font-weight: normal;
+        }
+
+        .help {
+            text-align: center;
+            font-size: .85em;
+            margin-top: 2em;
+            margin-bottom: 1em;
+        }
+        
+        .small {
+            font-size: small;
+            color: rgb(146, 144, 144);
+            border-top: 1px solid #ddd;
+            padding-top: .5em;
+            box-sizing: border-box;
+        }
+
+        div.logo {
+            display: flex;
+            align-items: center;
+        }
+
+        div.logo p.small {
+            color: rgb(146, 144, 144);
+            letter-spacing: .03em;
+            margin-top: 1em;
+            border: none;
+        }
+
+        @media (max-width: 1000px) {
+            div.page {
+                width: 80%;
+            }
+        }
+
+        @media (max-width: 500px) {
+            div.page {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="header">
+            <h1>Bixy</h1>
+        </div>
+
+        <div class="content">
+
+            <div class="payintro">
+                <h3 class="payheader">
+                    New Email Address Verification Successful.
+                </h3>
+               <p>Hi {{ user.username }}, your new account email address ({{ user.email }}) has been verified. Click
+                    <a href="https://giftrepo.onrender.com/signin/">here</a>
+                    to login to your Bixy account.
+                </p>
+                <!-- <h2>₦{{ coin_purchase.amount|intcomma }}</h2> -->
+            </div>
+
+            <!-- <p class="help">
+                Need help with your order? Contact support at <a href="mailto:swsupport@gmail.com">swsupport@gmail.com</a>
+            </p> -->
+
+            <p class="small">
+                You received this mandatory email service announcement to update you about important changes to your
+                Bixy account.
+            </p>
+
+            <div class="logo">
+                <p class="small">Bixy Online Services</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

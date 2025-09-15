@@ -322,7 +322,7 @@ div.coin-info {
     padding: .2em;
 }
 
-div.coin-card a {
+div.coin-card button {
     width: 100%;
     background-color: var(--link-color);
     color: var(--card-button-color);
@@ -331,8 +331,9 @@ div.coin-card a {
     border-radius: 0 0 .7em .7em;
     font-size: 1rem;
     font-weight: bold;
-    text-decoration: none;
+    /* text-decoration: none; */
     text-align: center;
+    cursor: pointer;
 }
 
 @media (max-width: 500px) {

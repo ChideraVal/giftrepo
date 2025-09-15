@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Change email - Bivly</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/verify.css' %}">
+</head>
+
+<body>
+    <div class="signup-container">
+        <form class="signup-form" action="{% url 'profile' %}" method="get">
+            <h2>Email Changed</h2>
+            <p>Hi {{ user.username }}, your account email address has been changed from {{ fm }} to {{ user.email }}.
+            </p>
+
+            <button type="submit" class="verify">View Profile</button>
+        </form>
+        <div class="links">
+            <p><a href="{% url 'signin' %}">Back to Login.</a></p>
+        </div>
+    </div>
+</body>
+
+</html>

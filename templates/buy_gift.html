@@ -71,69 +71,7 @@
             <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong id="neededCoins"></strong>
                 more coins to send this gift.</p>
 
-            <div class="coin-card-container">
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="{% url 'buy_gift' gift.id %}">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="{% url 'buy_gift' gift.id %}">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="{% url 'buy_gift' gift.id %}">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="{% url 'buy_gift' gift.id %}">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="{% url 'buy_gift' gift.id %}">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="{% url 'buy_gift' gift.id %}">$10</a>
-                </div>
-
-            </div>
+            {% include 'coin_tier.html' %}
         </div>
         <!-- <button onclick="document.getElementById('coinModal').style.display='none'">
           Okay
@@ -148,4 +86,10 @@
   const userCoins = parseInt("{{ request.user.coins }}");  
 </script>
 <script src="{% static 'scripts/buygift.js' %}"></script>
+
+<script>
+    const nameValue = "{{ request.user.username }}";
+    const emailValue = "{{ request.user.email }}";
+</script>
+<script src="{% static 'scripts/checkout.js' %}"></script>
 {% endblock %}

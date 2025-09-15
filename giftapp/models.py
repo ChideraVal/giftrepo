@@ -25,13 +25,18 @@ class User(AbstractUser):
     gender = models.CharField(max_length=6, choices=GENDERS, default=GENDERS[0][0])
     is_verified = models.BooleanField(default=False, help_text="If the user's email address is verified or not.")
     email = models.EmailField(unique=True, blank=False, null=False)
+    new_email = models.EmailField(unique=False, blank=True, null=True)
     coins = models.PositiveIntegerField(default=0)
     won_coins = models.PositiveIntegerField(default=0)
     keys = models.PositiveIntegerField(default=0)
     verify_code = models.CharField(max_length=255, null=True, blank=True)
+    change_email_code = models.CharField(max_length=255, null=True, blank=True)
     profile_pic = models.ForeignKey(ProfilePicture, on_delete=models.SET_NULL, related_name='owners', null=True)
     deactivated_at = models.DateTimeField(null=True, blank=True)
     # Add gender, location, etc. if need
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
     def total_won_coin_value(self):
         return self.won_coins * COIN_BASE_PRICE

@@ -9,13 +9,17 @@ class CustomAuthForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
         self.fields["username"].widget.attrs['autocomplete'] = 'off'
+        self.fields["username"].label = 'Email Address'
 
 
 class CustomUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
         self.fields["username"].widget.attrs['autocomplete'] = 'off'
+        self.fields["username"].widget.attrs['autofocus'] = 'on'
         self.fields["email"].widget.attrs['autocomplete'] = 'off'
+        self.fields["email"].label = 'Email Address'
+
     
     class Meta:
         model = User
@@ -28,6 +32,20 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ['username', 'email', 'gender']
         widgets = {
             'username': forms.TextInput(attrs={'autocomplete': 'off'})
+        }
+
+        labels = {
+            'email': 'Email Address'
+        }
+
+        error_messages = {
+            'email': {
+                'unique': "This email is already associated with another account."
+            }
+        }
+
+        help_texts = {
+            'email': "When you change your email address, the new email isn't set immediately, instead an email will be sent to the new email address with a link to verify the new email. Click the link to finalize changes."
         }
 
 

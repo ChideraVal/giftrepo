@@ -159,38 +159,13 @@
 
             <div class="payintro">
                 <h3 class="payheader">
-                    Payment Successful!
+                    Verify Your New Email Address.
                 </h3>
-                <p>
-                    Hello {{ coin_purchase.user.username }}, your payment of ₦{{ coin_purchase.amount|intcomma }} was successful.
+               <p>Hi {{ user.username }}, your account new email address ({{ user.new_email }}) has not been verified. Click
+                    <a href="https://giftrepo.onrender.com/changeemail/{{ user.change_email_code }}/">here</a>
+                    to verify your new email address.
                 </p>
-
-                <h2>₦{{ coin_purchase.amount|intcomma }}</h2>
-            </div>
-            
-            <div class="payinfo">
-                <p>Purchase Summary</p>
-                <div class="paydetails">
-                    <div class="detail">
-                        <b>Purchase Id</b>
-                        <p>{{ coin_purchase.transaction_id }}</p>
-                    </div>
-
-                    <div class="detail">
-                        <b>Purchase Status</b>
-                        <p>Confirmed</p>
-                    </div>
-
-                    <div class="detail">
-                        <b>Purchase Date</b>
-                        <p>{{ coin_purchase.purchased_at.date }}</p>
-                    </div>
-
-                    <div class="detail">
-                        <b>Purchase Time</b>
-                        <p>{{ coin_purchase.purchased_at.time }}</p>
-                    </div>
-                </div>
+                <!-- <h2>₦{{ coin_purchase.amount|intcomma }}</h2> -->
             </div>
 
             <!-- <p class="help">

@@ -19,70 +19,16 @@
         <h2>Not Enough Coins!</h2>
         <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong>{{ rem_amount|intcomma }}</strong>
         more coins to {{ message }}.</p>
-        <div class="coin-card-container">
-            <div class="coin-card">
-                <div class="coin-image">
-                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                </div>
-                <div class="coin-info">
-                    <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                </div>
-    
-                <a href="">$10</a>
-            </div>
-            <div class="coin-card">
-                <div class="coin-image">
-                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                </div>
-                <div class="coin-info">
-                    <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                </div>
-    
-                <a href="">$10</a>
-            </div>
-            <div class="coin-card">
-                <div class="coin-image">
-                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                </div>
-                <div class="coin-info">
-                    <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                </div>
-    
-                <a href="">$10</a>
-            </div>
-            <div class="coin-card">
-                <div class="coin-image">
-                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                </div>
-                <div class="coin-info">
-                    <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                </div>
-    
-                <a href="">$10</a>
-            </div>
-            <div class="coin-card">
-                <div class="coin-image">
-                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                </div>
-                <div class="coin-info">
-                    <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                </div>
-    
-                <a href="">$10</a>
-            </div>
-            <div class="coin-card">
-                <div class="coin-image">
-                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                </div>
-                <div class="coin-info">
-                    <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                </div>
-    
-                <a href="">$10</a>
-            </div>
-    
-        </div>
+        
+        {% include 'coin_tier.html' %}
     </div>
 </div>
 {% endblock %}
 
+{% block scripts %}
+<script>
+    const nameValue = "{{ request.user.username }}";
+    const emailValue = "{{ request.user.email }}";
+</script>
+<script src="{% static 'scripts/checkout.js' %}"></script>
+{% endblock %}

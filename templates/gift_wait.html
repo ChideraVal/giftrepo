@@ -67,69 +67,7 @@
             <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong id="neededCoins"></strong>
                 more coins to reveal this gift early.</p>
 
-            <div class="coin-card-container">
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="">$10</a>
-                </div>
-                <div class="coin-card">
-                    <div class="coin-image">
-                        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-                    </div>
-                    <div class="coin-info">
-                        <p style="font-weight: bold; font-size: 1rem;">50 coins</p>
-                    </div>
-
-                    <a href="">$10</a>
-                </div>
-
-            </div>
+            {% include 'coin_tier.html' %}
         </div>
         <!-- <button onclick="document.getElementById('coinModal').style.display='none'">
                 Okay
@@ -148,4 +86,10 @@
 <script src="{% static 'scripts/timer.js' %}"></script>
 <script src="{% static 'scripts/sparkles.js' %}"></script>
 <script src="{% static 'scripts/payearlyreveal.js' %}"></script>
+
+<script>
+    const nameValue = "{{ request.user.username }}";
+    const emailValue = "{{ request.user.email }}";
+</script>
+<script src="{% static 'scripts/checkout.js' %}"></script>
 {% endblock %}

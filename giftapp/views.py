@@ -16,6 +16,7 @@ import os
 import requests
 from django.core.mail import EmailMultiAlternatives, send_mail, get_connection
 from django.template.loader import render_to_string
+from .mails import send_payment_verification_email, send_email_verification_email, send_email_verified_email, send_change_code_email, send_email_changed_email
 
 load_dotenv()
 secret_key = os.getenv('SECRET_KEY')
@@ -74,6 +75,8 @@ def sign_up(request):
                     return redirect('all_gifts')
                 return redirect(next_url)
             else:
+                email_value = send_email_verification_email(request, user.id)
+                print(email_value)
                 return redirect(f'/verifyemail/{user.id}/?next={next_url}')
         else:
             print(form.errors)
@@ -101,15 +104,46 @@ def verify_email(request, user_id):
 def verify_user(request, verify_code):
     user = get_object_or_404(User, verify_code=verify_code)
     user.is_verified = True
+    user.verify_code = None
     user.save()
+    email_value = send_email_verified_email(request, user.id)
+    print(email_value)
     return render(request, 'verifyemail.html', {'user': user})
+
+def change_email(request, change_email_code):
+    user = get_object_or_404(User, change_email_code=change_email_code)
+    former_email = user.email
+    user.email = user.new_email
+    user.new_email = None
+    user.change_email_code = None
+    user.save()
+    email_value = send_email_changed_email(request, user.id)
+    print(email_value)
+    return render(request, 'emailchanged.html', {'user': user, 'fm': former_email})
 
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
         form = CustomUserChangeForm(instance=request.user, data=request.POST)
+        old_email = request.user.email
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.email = old_email
+            user.new_email = form.cleaned_data['email']
+
+            # generate user unique change email code
+            change_email_code = str(uuid.uuid4())
+            while True:
+                print('VERIFY CODE: ', change_email_code)
+                if User.objects.filter(change_email_code=change_email_code).exists():
+                    change_email_code = str(uuid.uuid4())
+                else:
+                    break
+            user.change_email_code = str(change_email_code)
+            user.save()
+
+            email_value = send_change_code_email(request, user.id)
+            print(email_value)
             return redirect('profile')
         else:
             print(form.errors)
@@ -224,26 +258,6 @@ def check_transaction_status(request, transaction_id):
         return response.json()
     return None
 
-def send_verification_email(request, coin_purchase_id):
-    coin_purchase = CoinPurchase.objects.get(id=coin_purchase_id)
-    payment_success_mail = EmailMultiAlternatives(
-                    'Payment Made Successfully!',
-f"""
-Hello {coin_purchase.user.username},
-
-your payment of ₦{coin_purchase.amount} was successful.
-""",
-                    str(settings.DEFAULT_FROM_EMAIL),
-                    [str(coin_purchase.user.email)],
-                    reply_to=['pyjamelnoreply@mail.com']
-                )
-    html_page = render_to_string('paymentsuccessmail.html', {
-        "coin_purchase": coin_purchase
-    })
-    payment_success_mail.attach_alternative(html_page, 'text/html')
-    payment_success_mail.send(fail_silently=False)
-    return None
-
 @login_required
 def activate_purchase(request, transaction_id):
     user = request.user
@@ -257,10 +271,14 @@ def activate_purchase(request, transaction_id):
     if transaction_data:
         amount = transaction_data['data']['amount']
         coin_amount_mapping = {
-            '5': 50,
-            '10': 100
+            '500': 50,
+            '1000': 100,
+            '2500': 250,
+            '5000': 500,
+            '10000': 1000,
+            '25000': 2500,
+
         }
-        print(type(amount))
         coins_bought = coin_amount_mapping.get(str(amount), 0)
         if str(transaction_data['status']).lower() == 'success' and str(transaction_data['data']['status']).lower() == 'successful':
 
@@ -274,7 +292,7 @@ def activate_purchase(request, transaction_id):
             user.coins = updated_coins
             user.save()
 
-            email_value = send_verification_email(request, coin_purchase.id)
+            email_value = send_payment_verification_email(request, coin_purchase.id)
             print(email_value)
             return render(request, 'paymentsuccess.html', {'amount': amount, 'coins': coins_bought})
         elif str(transaction_data['data']['status']).lower() == 'failed':

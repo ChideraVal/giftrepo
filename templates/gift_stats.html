@@ -147,6 +147,7 @@
                         </td>
                     </tr>
                     {% endif %}
+                    {% if not gift_transaction.is_fastest_finger %}
                     <tr>
                         <td>Early Reveal</td>
                         {% if gift_transaction.cost > 0 %}
@@ -157,6 +158,7 @@
                                 height="20"></td>
                         {% endif %}
                     </tr>
+                    {% endif %}
                     {% if gift_transaction.cost > 0 %}
                     <tr>
                         <td>Early Reveal Cost</td>

@@ -6,6 +6,7 @@ urlpatterns = [
     path('signup/', views.sign_up, name='signup'),
     path('verifyemail/<int:user_id>/', views.verify_email, name='verify_email'),
     path('verifyuser/<slug:verify_code>/', views.verify_user, name='verify_user'),
+    path('changeemail/<slug:change_email_code>/', views.change_email, name='change_email'),
     path('logout/', views.sign_out, name='logout'),
     path("gifts/send/", views.send_gift, name="send_gift"),
     path("gifts/buy/<int:gift_id>/", views.buy_gift, name="buy_gift"),
