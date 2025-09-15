@@ -20,10 +20,12 @@
 
         <div class="profile-section" id="profileSection">
             {% if request.user.is_authenticated %}
-            <div class="cost">
-                <p>{{ request.user.coins|intcomma }}</p>
-                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-            </div>
+            <a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
+                <div class="cost">
+                    <p>{{ request.user.coins|intcomma }}</p>
+                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">
+                </div>
+            </a>
             <a href="{% url 'profile' %}">
                 <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
             </a>

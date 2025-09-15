@@ -20,37 +20,33 @@
 
             <div class="payintro">
                 <h3 class="payheader">
-                    Payment Successful!
+                    Payment Recieved!
                 </h3>
                 <p>
-                    Hi {{ coin_purchase.user.username }}, your payment of ₦{{ coin_purchase.amount|intcomma }} was successful
-                    and {{ coin_purchase.coins|intcomma }} coin{{ coin_purchase.coins|pluralize }} has been credited to your Bixy account.
+                    Hi {{ gift_transaction.gifter.username }}, you have received a payment of {{ coins|intcomma }} coin{{ coins|pluralize }}
+                    from {{ buyer.username }} for a gift. Click <a href="https://giftrepo.onrender.com/gifts/{{ gift_transaction.id }}/stats/">here</a>
+                    to view gift stats.
                 </p>
 
-                <h2>₦{{ coin_purchase.amount|intcomma }}</h2>
+                <h2>{{ coins|intcomma }} coin{{ coins|pluralize }}</h2>
             </div>
             
             <div class="payinfo">
-                <p>Purchase Summary</p>
+                <p>Payment Summary</p>
                 <div class="paydetails">
                     <div class="detail">
-                        <b>Purchase Id</b>
-                        <p>{{ coin_purchase.transaction_id }}</p>
+                        <b>Gift</b>
+                        <p>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</p>
                     </div>
 
                     <div class="detail">
-                        <b>Purchase Status</b>
+                        <b>Payment Status</b>
                         <p>Confirmed</p>
                     </div>
 
                     <div class="detail">
-                        <b>Purchase Date</b>
-                        <p>{{ coin_purchase.purchased_at.date }}</p>
-                    </div>
-
-                    <div class="detail">
-                        <b>Purchase Time</b>
-                        <p>{{ coin_purchase.purchased_at.time }}</p>
+                        <b>Payment Type</b>
+                        <p>{{ type }}</p>
                     </div>
                 </div>
             </div>

@@ -16,7 +16,14 @@ import os
 import requests
 from django.core.mail import EmailMultiAlternatives, send_mail, get_connection
 from django.template.loader import render_to_string
-from .mails import send_payment_verification_email, send_email_verification_email, send_email_verified_email, send_change_code_email, send_email_changed_email
+from .mails import (
+    send_payment_verification_email,
+    send_coin_payment_email,
+    send_email_verification_email,
+    send_email_verified_email,
+    send_change_code_email,
+    send_email_changed_email
+)
 
 load_dotenv()
 secret_key = os.getenv('SECRET_KEY')
@@ -282,15 +289,16 @@ def activate_purchase(request, transaction_id):
         coins_bought = coin_amount_mapping.get(str(amount), 0)
         if str(transaction_data['status']).lower() == 'success' and str(transaction_data['data']['status']).lower() == 'successful':
 
-            coin_purchase = CoinPurchase.objects.create(
-                transaction_id=transaction_id,
-                user=user,
-                amount=amount
-            )
-
             updated_coins = user.coins + coins_bought
             user.coins = updated_coins
             user.save()
+
+            coin_purchase = CoinPurchase.objects.create(
+                transaction_id=transaction_id,
+                user=user,
+                amount=amount,
+                coins=coins_bought
+            )
 
             email_value = send_payment_verification_email(request, coin_purchase.id)
             print(email_value)
@@ -330,6 +338,8 @@ def reveal_gift_early(request, gift_transaction_id):
         gifter.won_coins = updated_coins
         gifter.save()
         print('CREDITED!')
+        email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.cost, 'Early Reveal')
+        print(email_value)
         
     return redirect('reveal_gift', gift_transaction_id=gift_transaction.id)
 
@@ -365,6 +375,8 @@ def reveal_gift(request, gift_transaction_id):
                 gifter.won_coins = updated_coins
                 gifter.save()
                 print('CREDITED FOR FF GIFT!')
+                email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.fee, 'FF Entry Fee')
+                print(email_value)
             
             # allow claim based on gift mode
             gift_transaction.reveals.add(request.user)

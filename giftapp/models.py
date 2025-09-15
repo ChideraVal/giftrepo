@@ -64,6 +64,7 @@ class CoinPurchase(models.Model):
     transaction_id = models.CharField(max_length=256)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="coin_purchases")
     amount = models.PositiveIntegerField(help_text="Number of coins user purchased.")
+    coins = models.PositiveIntegerField(default=0)
     purchased_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
