@@ -314,6 +314,7 @@ div.coin-info {
 }
 
 div.load {
+    display: none;
     background-color: var(--background-color);
     border-radius: .7em;
     width: 70%;
@@ -322,6 +323,7 @@ div.load {
 }
 
 div.bar {
+    display: none;
     background-color: var(--button-color);
     border-radius: .7em;
     padding: .25em 0;
