@@ -13,7 +13,7 @@
 {% block body %}
 <div class="heading">
     <h1>New Gifts</h1>
-    <p>Recent gifts you might win.</p>
+    <p>Active gifts you haven't claimed.</p>
 </div>
 {% if gift_transactions|length > 0 %}
 <div class="card-container">
@@ -64,24 +64,29 @@
                 {% endif %}
 
                 {% if gift_transaction.cost > 0 and not gift_transaction.is_due_for_drop %}
-                <p class="tag">Early Reveal</p>
+                <p class="tag">Early Claim</p>
                 {% endif %}
 
                 {% if request.user in gift_transaction.paid_users.all %}
-                <p class="tag">Revealed Early</p>
+                <p class="tag">Claimed Early</p>
                 {% endif %}
             </div>
 
         </div>
 
         <a href="{% url 'reveal_gift' gift_transaction.id %}">
-            {% if gift_transaction.fee > 0 %}
+            {% if gift_transaction.is_fastest_finger and gift_transaction.fee > 0 %}
             <div class="cost">
-                <p>Claim For {{ gift_transaction.fee|intcomma }}</p>
+                <p>{{ gift_transaction.fee|intcomma }}</p>
+                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
+            </div>
+            {% elif not gift_transaction.is_fastest_finger and gift_transaction.cost > 0 %}
+            <div class="cost">
+                <p>{{ gift_transaction.cost|intcomma }}</p>
                 <img src="{% static 'images/dollar.png' %}" alt="Gift image">
             </div>
             {% else %}
-            Claim
+            FREE
             {% endif %}
         </a>
     </div>

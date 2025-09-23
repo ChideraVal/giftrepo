@@ -5,7 +5,7 @@
 {% load timefilters %}
 
 {% block title %}
-<title>New Gifts - Bixy</title>
+<title>Gift Stats - Bixy</title>
 <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
 {% endblock %}
 
@@ -13,7 +13,7 @@
 {% block body %}
 <div class="heading">
     <h1>Gift Stats</h1>
-    <p>Fill the form below to complete your purchase.</p>
+    <p>Information about this gift.</p>
 </div>
 
 <div class="buy">
@@ -149,7 +149,7 @@
                     {% endif %}
                     {% if not gift_transaction.is_fastest_finger %}
                     <tr>
-                        <td>Early Reveal</td>
+                        <td>Early Claim</td>
                         {% if gift_transaction.cost > 0 %}
                         <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20">
                         </td>
@@ -161,7 +161,7 @@
                     {% endif %}
                     {% if gift_transaction.cost > 0 %}
                     <tr>
-                        <td>Early Reveal Cost</td>
+                        <td>Early Claim Fee</td>
                         <td>
                             <div class="cost td-content">
                                 <p>{{ gift_transaction.cost|intcomma }}</p>
@@ -172,7 +172,7 @@
                     {% endif %}
                     {% if gift_transaction.cost > 0 and gift_transaction.gifter != request.user %}
                     <tr>
-                        <td>Revealed Early</td>
+                        <td>Claimed Early</td>
                         {% if request.user in gift_transaction.paid_users.all %}
                         <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20">
                         </td>
@@ -184,19 +184,19 @@
                     {% endif %}
                     {% if gift_transaction.gifter == request.user %}
                     <tr>
-                        <td>No of Reveals</td>
+                        <td>No of Claims</td>
                         <td>{{ gift_transaction.reveals.all|length|intcomma }}</td>
                     </tr>
                     {% endif %}
                     {% if gift_transaction.cost > 0 and gift_transaction.gifter == request.user %}
                     <tr>
-                        <td>No of Early Reveals</td>
+                        <td>No of Early Claims</td>
                         <td>{{ gift_transaction.paid_users.all|length|intcomma }}</td>
                     </tr>
                     {% endif %}
                     {% if gift_transaction.gifter == request.user %}
                     <tr>
-                        <td>Claimed</td>
+                        <td>Winner Claimed</td>
                         {% if gift_transaction.is_claimed %}
                         <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20">
                         </td>

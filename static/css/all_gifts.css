@@ -27,6 +27,7 @@ html {
     --card-button-color: white;
     --tag-bg: #dbd7d7;
     --tag-text: black;
+    --padding-value: 1rem;
 }
 
 body {
@@ -39,13 +40,15 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 1rem var(--padding-value);
     /* Increased vertical padding */
     background: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
+    /* margin-bottom: .5rem; */
+    /* border: 1px solid green; */
 }
 
 /* Logo container: image + text */
@@ -141,9 +144,9 @@ body {
 
 /* Responsive */
 @media (max-width: 500px) {
-    .navbar {
+    /* .navbar {
         padding: 1rem 1rem;
-    }
+    } */
 
     .btn {
         padding: 0.4rem 0.8rem;
@@ -163,7 +166,7 @@ body {
 }
 
 div.heading {
-    padding: 1.5rem 1.5rem 0 1.5rem;
+    padding: 1rem var(--padding-value);
     /* border: 1px solid red; */
 
 }
@@ -177,6 +180,10 @@ div.heading h1 {
     font-size: 2.5rem;
 }
 
+div.heading p {
+    color: #444;
+}
+
 div.card-container {
     /* display: grid;
     grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
@@ -185,7 +192,8 @@ div.card-container {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
-    padding: 1.5rem;
+    padding: 1rem var(--padding-value);
+    /* border: 1px solid red; */
 }
 
 div.coin-card-container {
@@ -207,6 +215,7 @@ div.empty {
     align-items: center;
     text-align: center;
     padding: 2rem 1rem;
+    /* border: 1px solid red; */
 }
 
 div.empty img {
@@ -272,7 +281,7 @@ div.coin-card {
 
 @media (max-width: 500px) {
     div.card-container {
-        padding: 1.5rem 1rem;
+        padding: 1rem var(--padding-value);
     }
 
     div.coin-card {
@@ -295,6 +304,7 @@ div.gift-info {
     flex-direction: column;
     align-items: center;
     padding: 1em;
+    /* border: 1px solid red; */
 }
 
 div.gift-info h1 {
@@ -462,12 +472,13 @@ div.buy {
     flex-direction: column;
     align-items: center;
     /* text-align: center; */
-    padding: 2rem 1rem;
+    padding: 2rem var(--padding-value);
     /* border: 1px solid red; */
 }
 
 div.buy-sub {
     width: 40%;
+    /* border: 1px solid green; */
 }
 
 div.buy img {
@@ -498,7 +509,7 @@ div.buy img.coin {
     }
 
     div.buy {
-        padding: 0 1rem 1rem 1rem;
+        padding: 0 var(--padding-value) 1rem var(--padding-value);
     }
 
     div.buy img {
@@ -768,7 +779,7 @@ div.profile-container {
     /* max-width: 700px; */
     /* border: 1px solid red; */
     /* background-color: #ddd; */
-    padding: 2rem;
+    padding: 1rem var(--padding-value);
 }
 
 .profile-img {
@@ -883,7 +894,6 @@ div.prf a {
     div.profile-container {
         flex-direction: column;
         text-align: center;
-        padding: 2rem;
         /* border: 1px solid red; */
     }
 
@@ -905,7 +915,7 @@ div.prf a {
     gap: 1rem;
     /* margin-bottom: 2rem; */
     /* border: 1px solid red; */
-    padding: 1.5rem;
+    padding: 1rem var(--padding-value);
 }
 
 .stat-card {

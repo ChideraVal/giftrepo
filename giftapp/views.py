@@ -83,8 +83,8 @@ def sign_up(request):
                     return redirect('all_gifts')
                 return redirect(next_url)
             else:
-                email_value = send_email_verification_email(request, user.id)
-                print(email_value)
+                # email_value = send_email_verification_email(request, user.id)
+                # print(email_value)
                 return redirect(f'/verifyemail/{user.id}/?next={next_url}')
         else:
             print(form.errors)
@@ -150,8 +150,9 @@ def edit_profile(request):
             user.change_email_code = str(change_email_code)
             user.save()
 
-            email_value = send_change_code_email(request, user.id)
-            print(email_value)
+            if old_email != form.cleaned_data['email']:
+                email_value = send_change_code_email(request, user.id)
+                print(email_value)
             return redirect('profile')
         else:
             print(form.errors)
@@ -250,8 +251,8 @@ def buy_gift(request, gift_id):
                 gift_transaction.drop_date = drop_date
 
                 gift_transaction.save()
-                email_value = send_new_gift_email(request, user.id)
-                print(email_value)
+                # email_value = send_new_gift_email(request, user.id)
+                # print(email_value)
                 return render(request, 'gift_success.html', {'gift_transaction': gift_transaction})
     else:
         form = GiftForm()
@@ -328,7 +329,7 @@ def reveal_gift_early(request, gift_transaction_id):
         total_cost = gift_transaction.cost
         if request.user.coins < total_cost:
             rem_amount = total_cost - request.user.coins
-            return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_cost, 'message': 'reveal this gift early'})
+            return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_cost, 'message': 'claim this gift early'})
         user = request.user
         updated_coins = user.coins - gift_transaction.cost
         user.coins = updated_coins

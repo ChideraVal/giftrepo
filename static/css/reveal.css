@@ -26,6 +26,7 @@ html {
     --card-background-color: rgb(240, 235, 235);
     --card-text-color: var(--text-color);
     --card-button-color: white;
+    --padding-value: 1rem;
 }
 
 body {
@@ -38,7 +39,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 1rem var(--padding-value);
     /* Increased vertical padding */
     background: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -185,6 +186,8 @@ div.reveal-container {
 
 p.msg {
     margin: .4rem 0;
+    color: #444;
+    font-size: .95rem;
 }
 
 div.reveal-container img {
@@ -196,12 +199,15 @@ div.reveal-container a {
     background-color: var(--link-color);
     color: var(--card-button-color);    
     padding: .7rem;
+    padding: .5rem;
     border: none;
     border-radius: .7em;
     font-size: 1rem;
+    font-size: .95rem;
     font-weight: bold;
     text-decoration: none;
     text-align: center;
+    margin-bottom: .7rem;
     /* width: 200px; */
 }
 

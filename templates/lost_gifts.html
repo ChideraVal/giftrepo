@@ -5,7 +5,7 @@
 {% load timefilters %}
 
 {% block title %}
-<title>New Gifts - Bixy</title>
+<title>Lost Gifts - Bixy</title>
 <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
 {% endblock %}
 
@@ -13,7 +13,7 @@
 {% block body %}
 <div class="heading">
     <h1>Lost Gifts</h1>
-    <p>Active gifts you revealed but didn't win.</p>
+    <p>Gifts you claimed but didn't win.</p>
 </div>
 {% if gift_transactions|length > 0 %}
 <div class="card-container">
@@ -68,11 +68,11 @@
                 {% endif %}
 
                 {% if gift_transaction.cost > 0 and not gift_transaction.is_due_for_drop %}
-                <p class="tag">Early Reveal</p>
+                <p class="tag">Early Claim</p>
                 {% endif %}
 
                 {% if request.user in gift_transaction.paid_users.all %}
-                <p class="tag">Revealed Early</p>
+                <p class="tag">Claimed Early</p>
                 {% endif %}
             </div>
 

@@ -5,7 +5,7 @@
 {% load timefilters %}
 
 {% block title %}
-<title>Reveal Gift - Bixy</title>
+<title>Claim Gift - Bixy</title>
 <link rel="stylesheet" href="{% static 'css/reveal.css' %}">
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 {% endblock %}
@@ -25,11 +25,10 @@
     {% else %}
     <img src="{% static 'images/search.gif' %}" alt="Gift image" style="margin: 2rem 0;">
     <h1>Gift Hidden</h1>
-    <p class="msg">This gift from {{ gift_transaction.gifter.username }} has not dropped yet and you cannot claim or see
-        it.</p>
+    <p class="msg">This gift from {{ gift_transaction.gifter.username }} has not dropped yet and you cannot claim it.</p>
     {% endif %}
     <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Try again"
-        data-seconds="{{ gift_transaction.seconds_until_drop }}" style="margin-bottom: .5rem;">Try again in --:--:--:--
+        data-seconds="{{ gift_transaction.seconds_until_drop }}" style="margin-bottom: .5rem; color: #444; font-size: .95rem;">Try again in --:--:--:--
     </p>
 
     {% if gift_transaction.is_fastest_finger and gift_transaction.fee > 0 %}
@@ -44,15 +43,16 @@
     {% endif %}
     
     {% if gift_transaction.cost > 0 and not gift_transaction.is_fastest_finger and not gift_transaction.is_due_for_drop and request.user not in gift_transaction.paid_users.all %}
-    <a href="{% url 'reveal_early' gift_transaction.id %}" id="earlyButton" style="margin: .5rem 0 1rem 0;">
+    <a href="{% url 'reveal_early' gift_transaction.id %}" id="earlyButton">
         <div class="cost">
             <p>Claim now for {{ gift_transaction.cost|intcomma }}</p>
             <img src="{% static 'images/dollar.png' %}" alt="Gift image">
         </div>
     </a>
     {% endif %}
-    <a href="{% url 'view_gift_stats' gift_transaction.id %}" style="margin: .5rem 0 1rem 0;">View Stats</a>
-    <!-- <a href="{% url 'all_gifts' %}">Browse more gifts</a> -->
+    <a href="{% url 'view_gift_stats' gift_transaction.id %}">View Stats</a>
+    <a href="{% url 'all_gifts' %}">Browse more gifts</a>
+    
 </div>
 {% endblock %}
 
@@ -66,7 +66,7 @@
             </div>
             <h2>Not Enough Coins!</h2>
             <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong id="neededCoins"></strong>
-                more coins to reveal this gift early.</p>
+                more coins to claim this gift early.</p>
 
             {% include 'coin_tier.html' %}
         </div>

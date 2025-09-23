@@ -8,7 +8,7 @@ import random
 class CustomAuthForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
-        self.fields["username"].widget.attrs['autocomplete'] = 'off'
+        # self.fields["username"].widget.attrs['autocomplete'] = 'off'
         self.fields["username"].label = 'Email Address'
 
 
@@ -17,7 +17,7 @@ class CustomUserCreationForm(UserCreationForm):
         super().__init__(*args, *kwargs)
         self.fields["username"].widget.attrs['autocomplete'] = 'off'
         self.fields["username"].widget.attrs['autofocus'] = 'on'
-        self.fields["email"].widget.attrs['autocomplete'] = 'off'
+        # self.fields["email"].widget.attrs['autocomplete'] = 'off'
         self.fields["email"].label = 'Email Address'
 
     
@@ -57,8 +57,11 @@ class GiftForm(forms.ModelForm):
         labels = {
             'is_fastest_finger': 'Fastest Finger (FF)',
             'is_visible': 'Show Gift',
-            'cost': 'Early Reveal Cost',
-            'fee': 'FF entry fee'
+            'cost': 'Early Claim Fee',
+            'fee': 'FF Entry Fee',
+            'expire_rate': 'Expire Rate',
+            'drop_rate': 'Drop Rate'
+
         }
 
         # widgets = {
@@ -96,13 +99,13 @@ class GiftForm(forms.ModelForm):
         #     raise forms.ValidationError('Drop rates for non FF gifts must be 0.')
 
         if is_fastest_finger and early_reveal_cost > 0:
-            raise forms.ValidationError('FF gifts must not have early reveal cost greater than 0.')
+            raise forms.ValidationError('FF gifts must not have early claim fee greater than 0.')
 
         if not is_fastest_finger and ff_entry_fee:
             raise forms.ValidationError('Only FF gifts can have FF entry fee.')
         
         # FIX ERROR MESSAGE TEXT
         if drop_rate == 0 and early_reveal_cost > 0:
-            raise forms.ValidationError('Gifts with drop rate of 0 cannot have early reveal cost greater than 0.')
+            raise forms.ValidationError('Gifts with drop rate of 0 cannot have early claim fee greater than 0.')
         
         return cleaned_data

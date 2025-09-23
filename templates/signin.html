@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - Bivly</title>
+  <title>Login - Bixy</title>
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/signin.css' %}">
 </head>
@@ -11,7 +11,7 @@
   <div class="login-container">
     <form class="login-form" action="{% url 'signin' %}?next={{ request.get_full_path|cut:'/signin/?next=' }}" method="post">
       <h2>Welcome Back</h2>
-      <p>Please login to your account</p>
+      <p>Login to your Bixy account</p>
         {% csrf_token %}
         {% for field in form %}
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -32,7 +32,7 @@
       <button type="submit">Login</button>
       
       <div class="links">
-        <a href="">Forgot password?</a>
+        <!-- <a href="">Forgot password?</a> -->
         <a href="{% url 'signup' %}?next={{ request.get_full_path|cut:'/signin/?next=' }}">Create account</a>
       </div>
     </form>

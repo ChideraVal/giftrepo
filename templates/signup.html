@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signup - Bivly</title>
+  <title>Sign Up - Bixy</title>
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/signup.css' %}">
 </head>
@@ -11,7 +11,7 @@
   <div class="signup-container">
     <form class="signup-form" action="{% url 'signup' %}?next={{ request.get_full_path|cut:'/signup/?next=' }}" method="post">
       <h2>Create Account</h2>
-      <p>Join Bivly by filling out the form below</p>
+      <p>Join Bixy by filling out the form below</p>
 
       {% csrf_token %}
         {% for field in form %}

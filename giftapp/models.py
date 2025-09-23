@@ -89,7 +89,7 @@ class GiftTransaction(models.Model):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="gifts_received", null=True, blank=True)
     gift = models.ForeignKey(Gift, on_delete=models.CASCADE, related_name='transactions')
     quantity = models.PositiveIntegerField(default=1, help_text="Number of this gift to buy.")
-    cost = models.PositiveIntegerField(default=0, help_text="Number of coins paid to reveal the gift early. FF gifts cannot have early reveal cost greater than 0.")
+    cost = models.PositiveIntegerField(default=0, help_text="Number of coins paid to claim the gift early. FF gifts cannot have early claim fee greater than 0.")
     fee = models.PositiveIntegerField(default=0, help_text="Number of coins paid to claim FF gifts if paid.")
     paid_users = models.ManyToManyField(User, related_name="paid_gifts", blank=True)
     message = models.CharField(max_length=255, blank=True)
@@ -177,8 +177,7 @@ class FastestFingerClaim(models.Model):
         """
         Returns the number of seconds the winner claimed the FF gift.
         """
-        drop_date = self.gift_transaction.created_at + timedelta(hours=self.gift_transaction.drop_rate)
-        delta = self.claim_time - drop_date
+        # drop_date = self.gift_transaction.created_at + timedelta(hours=self.gift_transaction.drop_rate)
+        delta = self.claim_time - self.gift_transaction.drop_date
         return max(0, round(delta.total_seconds(), 1))
-
 

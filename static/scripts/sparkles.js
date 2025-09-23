@@ -28,7 +28,7 @@ function createStar() {
 }
 
 function drawStar(star) {
-    const spikes = 4;
+    const spikes = 5;
     const outerRadius = star.size;
     const innerRadius = star.size / 2;
 

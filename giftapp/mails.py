@@ -12,7 +12,7 @@ def send_payment_verification_email(request, coin_purchase_id):
 f"""
 Hi {coin_purchase.user.username},
 
-your payment of ₦{coin_purchase.amount} was successful and {coin_purchase.coins} coin{ 's' if coin_purchase.coins == 0 or coin_purchase.coins > 1 else '' } has been credited to your Bixy account.
+your payment of ₦{coin_purchase.amount} was successful and {coin_purchase.coins} coin{'s' if coin_purchase.coins == 0 or coin_purchase.coins > 1 else ''} has been credited to your Bixy account.
 """,
                     str(settings.DEFAULT_FROM_EMAIL),
                     [str(coin_purchase.user.email)],

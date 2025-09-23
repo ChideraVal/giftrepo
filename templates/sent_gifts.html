@@ -5,7 +5,7 @@
 {% load timefilters %}
 
 {% block title %}
-<title>New Gifts - Bixy</title>
+<title>Sent Gifts - Bixy</title>
 <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
 {% endblock %}
 
@@ -13,7 +13,7 @@
 {% block body %}
 <div class="heading">
     <h1>Sent Gifts</h1>
-    <p>Gifts you sent to random players.</p>
+    <p>Gifts you sent on Bixy.</p>
 </div>
 {% if gift_transactions|length > 0 %}
 <div class="card-container">
@@ -60,7 +60,7 @@
                 {% endif %}
 
                 {% if gift_transaction.cost > 0 %}
-                <p class="tag">Early Reveal</p>
+                <p class="tag">Early Claim</p>
                 {% endif %}
             </div>
 

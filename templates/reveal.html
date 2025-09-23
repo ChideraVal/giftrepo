@@ -5,7 +5,7 @@
 {% load timefilters %}
 
 {% block title %}
-<title>Reveal Gift - Bixy</title>
+<title>Claim Gift - Bixy</title>
 <link rel="stylesheet" href="{% static 'css/reveal.css' %}">
 {% endblock %}
 
@@ -19,7 +19,7 @@
     </div>
     <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image" style="margin: 2rem 0;">
     <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
-    <p class="msg">Hi {{ request.user.username }}, you have recieved {{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }} from {{ gift_transaction.gifter.username }}.</p>
+    <p class="msg">Hi {{ request.user.username }}, you have won and claimed {{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }} from {{ gift_transaction.gifter.username }}.</p>
     {% else %}
     <div class="heading">
         <p>Sorry!</p>
@@ -28,11 +28,11 @@
     {% if gift_transaction.is_visible %}
     <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image" style="margin: 2rem 0;">
     <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
-    <p class="msg">Hi {{ request.user.username }}, you did not recieve this gift from {{ gift_transaction.gifter.username }}.</p>
+    <p class="msg">Hi {{ request.user.username }}, you did not win this gift from {{ gift_transaction.gifter.username }} and cannot claim it.</p>
     {% else %}
     <img src="{% static 'images/search.gif' %}" alt="Gift image" style="margin: 2rem 0;">
     <h1>Gift Hidden</h1>
-    <p class="msg">Hi {{ request.user.username }}, you did not recieve this gift from {{ gift_transaction.gifter.username }} and cannot claim or see it.</p>
+    <p class="msg">Hi {{ request.user.username }}, you did not win this gift from {{ gift_transaction.gifter.username }} and cannot claim it.</p>
     {% endif %}
     {% endif %}
     <a href="{% url 'all_gifts' %}">Browse more gifts</a>
