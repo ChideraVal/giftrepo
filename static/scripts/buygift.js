@@ -1,7 +1,6 @@
 const numberInput = document.getElementById('id_quantity');
 const button = document.getElementById('button');
 
-// let cost = "{{ gift.cost }}";
 console.log(cost);
 
 

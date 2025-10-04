@@ -323,27 +323,27 @@ def reveal_gift_early(request, gift_transaction_id):
     gift_transaction = get_object_or_404(GiftTransaction, id=gift_transaction_id)
     if gift_transaction.is_due_for_expire():
         return render(request, 'error.html', {'title': 'Error', 'message': f'This gift has expired and is unavailable.'})
-    if gift_transaction.cost > 0 and not gift_transaction.is_fastest_finger and not gift_transaction.is_due_for_drop() and request.user not in gift_transaction.paid_users.all():
+    if gift_transaction.early_claim_fee > 0 and not gift_transaction.is_fastest_finger and not gift_transaction.is_due_for_drop() and request.user not in gift_transaction.paid_users.all():
         if gift_transaction.gifter == request.user:
             return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to view your own gift early.'})
-        total_cost = gift_transaction.cost
+        total_cost = gift_transaction.early_claim_fee
         if request.user.coins < total_cost:
             rem_amount = total_cost - request.user.coins
             return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_cost, 'message': 'claim this gift early'})
         user = request.user
-        updated_coins = user.coins - gift_transaction.cost
+        updated_coins = user.coins - gift_transaction.early_claim_fee
         user.coins = updated_coins
         user.save()
         gift_transaction.paid_users.add(request.user)
         print('CHARGED!')
 
-        gifter = gift_transaction.gifter
-        updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.cost)
-        gifter.won_coins = updated_coins
-        gifter.save()
-        print('CREDITED!')
-        email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.cost, 'Early Reveal')
-        print(email_value)
+        # gifter = gift_transaction.gifter
+        # updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.early_claim_fee)
+        # gifter.won_coins = updated_coins
+        # gifter.save()
+        # print('CREDITED!')
+        # email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.early_claim_fee, 'Early Reveal')
+        # print(email_value)
         
     return redirect('reveal_gift', gift_transaction_id=gift_transaction.id)
 
@@ -360,33 +360,55 @@ def reveal_gift(request, gift_transaction_id):
         if gift_transaction.is_due_for_drop() or request.user in gift_transaction.paid_users.all():
 
             # charge player entry fee for FF gift
-            if gift_transaction.fee > 0 and gift_transaction.is_fastest_finger and request.user not in gift_transaction.reveals.all():
+            # if gift_transaction.claim_fee > 0 and gift_transaction.is_fastest_finger and request.user not in gift_transaction.reveals.all():
+                # if gift_transaction.gifter == request.user:
+                #     return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to claim your own FF gift.'})
+                # total_fee = gift_transaction.claim_fee
+                # if request.user.coins < total_fee:
+                #     rem_amount = total_fee - request.user.coins
+                #     return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this FF gift'})
+                # user = request.user
+                # updated_coins = user.coins - gift_transaction.claim_fee
+                # user.coins = updated_coins
+                # user.save()
+                # # gift_transaction.reveals.add(request.user)
+                # print('CHARGED FOR FF GIFT!')
+
+                # gifter = gift_transaction.gifter
+                # updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.claim_fee)
+                # gifter.won_coins = updated_coins
+                # gifter.save()
+                # print('CREDITED FOR FF GIFT!')
+                # email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.claim_fee, 'FF Entry Fee')
+                # print(email_value)
+            if gift_transaction.claim_fee > 0 and request.user not in gift_transaction.reveals.all():
                 if gift_transaction.gifter == request.user:
-                    return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to claim your own FF gift.'})
-                total_fee = gift_transaction.fee
+                    return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to claim your own gift.'})
+                total_fee = gift_transaction.claim_fee
                 if request.user.coins < total_fee:
                     rem_amount = total_fee - request.user.coins
-                    return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this FF gift'})
+                    return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this gift'})
                 user = request.user
-                updated_coins = user.coins - gift_transaction.fee
+                updated_coins = user.coins - gift_transaction.claim_fee
                 user.coins = updated_coins
                 user.save()
                 # gift_transaction.reveals.add(request.user)
-                print('CHARGED FOR FF GIFT!')
+                print('CHARGED FOR GIFT!')
 
-                gifter = gift_transaction.gifter
-                updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.fee)
-                gifter.won_coins = updated_coins
-                gifter.save()
-                print('CREDITED FOR FF GIFT!')
-                email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.fee, 'FF Entry Fee')
-                print(email_value)
-            
+                # gifter = gift_transaction.gifter
+                # updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.claim_fee)
+                # gifter.won_coins = updated_coins
+                # gifter.save()
+                # print('CREDITED FOR FF GIFT!')
+                # email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.claim_fee, 'FF Entry Fee')
+                # print(email_value)
+
+
             # allow claim based on gift mode
             gift_transaction.reveals.add(request.user)
 
             if gift_transaction.is_fastest_finger:
-                
+        
                 if gift_transaction.recipient == None:
                     # user wins, credit coins to user (50% of gift value) only when they claim
                     gift_transaction.recipient = request.user

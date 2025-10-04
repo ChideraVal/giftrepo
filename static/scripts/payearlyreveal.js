@@ -1,4 +1,4 @@
-// let cost = "{{ gift_transaction.cost }}";
+// let cost = "{{ gift_transaction.early_claim_fee }}";
 
 // Example: You’d get these values from Django context
 // const userCoins = parseInt("{{ request.user.coins }}");

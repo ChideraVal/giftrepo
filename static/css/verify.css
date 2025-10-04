@@ -5,8 +5,8 @@
     --subtext-color: #333;
     --tag-bg: #e0e0e0;
     --tag-text: #333;
-    --button-bg: #667eea;
-    --button-hover: #5a34a7;
+    --button-bg: #6f42c1;
+    --button-hover: #7f53d2;
 }
 
 * {
@@ -89,7 +89,7 @@ textarea {
 .signup-form input:focus,
 textarea:focus,
 select:focus {
-    border-color: #667eea;
+    border-color: #6f42c1;
     outline: none;
 }
 
@@ -108,8 +108,8 @@ select:focus {
 .signup-form button {
     width: 100%;
     padding: 0.75rem;
-    /* background: #667eea; */
-    background-color: #667eea;
+    /* background: #6f42c1; */
+    background-color: #6f42c1;
     color: white;
     border: none;
     border-radius: 8px;
@@ -124,7 +124,7 @@ select:focus {
 }
 
 .signup-form button.verify {
-    background: #667eea;
+    background: #6f42c1;
 }
 
 .links {
@@ -138,7 +138,7 @@ select:focus {
 }
 
 .links a {
-    color: #667eea;
+    color: #6f42c1;
     text-decoration: none;
     transition: color 0.2s;
 }

@@ -133,7 +133,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-WIN_PERCENT = 1 # 100% of won coins
+WIN_PERCENT = 0.7 # 70% of won coins
 CREDIT_PERCENT = 0.5 # 50% of spent coins
 
 

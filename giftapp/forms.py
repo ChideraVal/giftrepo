@@ -52,13 +52,13 @@ class CustomUserChangeForm(UserChangeForm):
 class GiftForm(forms.ModelForm):
     class Meta:
         model = GiftTransaction
-        fields = ['quantity', 'is_fastest_finger', 'cost', 'fee', 'is_visible', 'expire_rate', 'drop_rate']
+        fields = ['quantity', 'is_fastest_finger', 'early_claim_fee', 'is_visible', 'expire_rate', 'drop_rate']
 
         labels = {
             'is_fastest_finger': 'Fastest Finger (FF)',
             'is_visible': 'Show Gift',
-            'cost': 'Early Claim Fee',
-            'fee': 'FF Entry Fee',
+            'early_claim_fee': 'Early Claim Fee',
+            # 'claim_fee': 'Claim Fee',
             'expire_rate': 'Expire Rate',
             'drop_rate': 'Drop Rate'
 
@@ -74,8 +74,8 @@ class GiftForm(forms.ModelForm):
         expire_rate = cleaned_data.get('expire_rate')
         drop_rate = cleaned_data.get('drop_rate')
         is_fastest_finger = cleaned_data.get('is_fastest_finger')
-        early_reveal_cost = cleaned_data.get('cost')
-        ff_entry_fee = cleaned_data.get('fee')
+        early_claim_fee = cleaned_data.get('early_claim_fee')
+        # claim_fee = cleaned_data.get('claim_fee')
 
         if quantity <= 0:
             raise forms.ValidationError('Quantity must be greater than 0.')
@@ -98,14 +98,15 @@ class GiftForm(forms.ModelForm):
         # if not is_fastest_finger and drop_rate > 0:
         #     raise forms.ValidationError('Drop rates for non FF gifts must be 0.')
 
-        if is_fastest_finger and early_reveal_cost > 0:
+        if is_fastest_finger and early_claim_fee > 0:
             raise forms.ValidationError('FF gifts must not have early claim fee greater than 0.')
 
-        if not is_fastest_finger and ff_entry_fee:
-            raise forms.ValidationError('Only FF gifts can have FF entry fee.')
+        # previous validator to allow claim fee for only FF gifts
+        # if not is_fastest_finger and claim_fee:
+        #     raise forms.ValidationError('Only FF gifts can have FF entry fee.')
         
         # FIX ERROR MESSAGE TEXT
-        if drop_rate == 0 and early_reveal_cost > 0:
+        if drop_rate == 0 and early_claim_fee > 0:
             raise forms.ValidationError('Gifts with drop rate of 0 cannot have early claim fee greater than 0.')
         
         return cleaned_data

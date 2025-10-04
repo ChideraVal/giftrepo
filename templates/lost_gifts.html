@@ -67,7 +67,7 @@
                 <p class="tag">Fastest Finger</p>
                 {% endif %}
 
-                {% if gift_transaction.cost > 0 and not gift_transaction.is_due_for_drop %}
+                {% if gift_transaction.early_claim_fee > 0 and not gift_transaction.is_due_for_drop %}
                 <p class="tag">Early Claim</p>
                 {% endif %}
 

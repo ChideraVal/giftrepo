@@ -11,6 +11,18 @@
 
 
 {% block body %}
+<!-- Banner -->
+<section class="bixy-banner">
+    <!-- <img src="smiling.png" alt="Referral Logo"
+        class="banner-logo"> -->
+    <h1 class="banner-heading">Welcome to Bixy Season 1</h1>
+    <p class="banner-subtext">Join the fun! Send and claim gifts on Bixy.</p>
+    <form class="banner-form" action="{% url 'send_gift' %}" method="get">
+        <button type="submit">Join the Fun</button>
+    </form>
+    <p class="banner-disclaimer">Season ending in 6 days.</p>
+</section>
+
 <div class="heading">
     <h1>New Gifts</h1>
     <p>Active gifts you haven't claimed.</p>
@@ -63,7 +75,7 @@
                 <p class="tag">Fastest Finger</p>
                 {% endif %}
 
-                {% if gift_transaction.cost > 0 and not gift_transaction.is_due_for_drop %}
+                {% if gift_transaction.early_claim_fee > 0 and not gift_transaction.is_due_for_drop %}
                 <p class="tag">Early Claim</p>
                 {% endif %}
 
@@ -71,24 +83,16 @@
                 <p class="tag">Claimed Early</p>
                 {% endif %}
             </div>
-
         </div>
 
         <a href="{% url 'reveal_gift' gift_transaction.id %}">
-            {% if gift_transaction.is_fastest_finger and gift_transaction.fee > 0 %}
             <div class="cost">
-                <p>{{ gift_transaction.fee|intcomma }}</p>
+                <p>{{ gift_transaction.claim_fee|intcomma }}</p>
                 <img src="{% static 'images/dollar.png' %}" alt="Gift image">
             </div>
-            {% elif not gift_transaction.is_fastest_finger and gift_transaction.cost > 0 %}
-            <div class="cost">
-                <p>{{ gift_transaction.cost|intcomma }}</p>
-                <img src="{% static 'images/dollar.png' %}" alt="Gift image">
-            </div>
-            {% else %}
-            FREE
-            {% endif %}
         </a>
+
+        <!-- <a href="{% url 'reveal_gift' gift_transaction.id %}">Claim</a> -->
     </div>
     {% endfor %}
 </div>

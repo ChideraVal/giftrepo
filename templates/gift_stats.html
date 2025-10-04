@@ -112,20 +112,18 @@
                                 height="20"></td>
                         {% endif %}
                     </tr>
-                    {% if gift_transaction.fee > 0 %}
                     <tr>
-                        <td>FF Entry Fee</td>
+                        <td>Claim Fee</td>
                         <td>
                             <div class="cost td-content">
-                                <p>{{ gift_transaction.fee|intcomma }}</p>
+                                <p>{{ gift_transaction.claim_fee|intcomma }}</p>
                                 <img src="{% static 'images/dollar.png' %}" alt="Coin image">
                             </div>
                         </td>
                     </tr>
-                    {% endif %}
-                    {% if gift_transaction.gifter != request.user and gift_transaction.fee > 0 and gift_transaction.is_fastest_finger %}
+                    {% if gift_transaction.gifter != request.user %}
                     <tr>
-                        <td>Paid FF Entry Fee</td>
+                        <td>Claimed</td>
                         {% if request.user in gift_transaction.reveals.all %}
                         <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20">
                         </td>
@@ -150,7 +148,7 @@
                     {% if not gift_transaction.is_fastest_finger %}
                     <tr>
                         <td>Early Claim</td>
-                        {% if gift_transaction.cost > 0 %}
+                        {% if gift_transaction.early_claim_fee > 0 %}
                         <td><img src="{% static 'images/check.png' %}" alt="player status image" width="20" height="20">
                         </td>
                         {% else %}
@@ -159,18 +157,18 @@
                         {% endif %}
                     </tr>
                     {% endif %}
-                    {% if gift_transaction.cost > 0 %}
+                    {% if gift_transaction.early_claim_fee > 0 %}
                     <tr>
                         <td>Early Claim Fee</td>
                         <td>
                             <div class="cost td-content">
-                                <p>{{ gift_transaction.cost|intcomma }}</p>
+                                <p>{{ gift_transaction.early_claim_fee|intcomma }}</p>
                                 <img src="{% static 'images/dollar.png' %}" alt="Coin image">
                             </div>
                         </td>
                     </tr>
                     {% endif %}
-                    {% if gift_transaction.cost > 0 and gift_transaction.gifter != request.user %}
+                    {% if gift_transaction.early_claim_fee > 0 and gift_transaction.gifter != request.user %}
                     <tr>
                         <td>Claimed Early</td>
                         {% if request.user in gift_transaction.paid_users.all %}
@@ -188,7 +186,7 @@
                         <td>{{ gift_transaction.reveals.all|length|intcomma }}</td>
                     </tr>
                     {% endif %}
-                    {% if gift_transaction.cost > 0 and gift_transaction.gifter == request.user %}
+                    {% if gift_transaction.early_claim_fee > 0 and gift_transaction.gifter == request.user %}
                     <tr>
                         <td>No of Early Claims</td>
                         <td>{{ gift_transaction.paid_users.all|length|intcomma }}</td>
@@ -223,8 +221,8 @@
                 <thead>
                     <tr>
                         <th>Rank</th>
-                        <th>Player</th>
-                        <th>Response Time</th>
+                        <th>Username</th>
+                        <th>Claimed In</th>
                     </tr>
                 </thead>
 

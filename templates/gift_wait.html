@@ -31,21 +31,18 @@
         data-seconds="{{ gift_transaction.seconds_until_drop }}" style="margin-bottom: .5rem; color: #444; font-size: .95rem;">Try again in --:--:--:--
     </p>
 
-    {% if gift_transaction.is_fastest_finger and gift_transaction.fee > 0 %}
     <a href="{% url 'reveal_gift' gift_transaction.id %}">
         <div class="cost">
-            <p>Try again for {{ gift_transaction.fee|intcomma }}</p>
+            <p>Try again for {{ gift_transaction.claim_fee|intcomma }}</p>
             <img src="{% static 'images/dollar.png' %}" alt="Gift image">
         </div>
     </a>
-    {% else %}
-    <a href="{% url 'reveal_gift' gift_transaction.id %}">Try again</a>
-    {% endif %}
     
-    {% if gift_transaction.cost > 0 and not gift_transaction.is_fastest_finger and not gift_transaction.is_due_for_drop and request.user not in gift_transaction.paid_users.all %}
+    
+    {% if gift_transaction.early_claim_fee > 0 and not gift_transaction.is_fastest_finger and not gift_transaction.is_due_for_drop and request.user not in gift_transaction.paid_users.all %}
     <a href="{% url 'reveal_early' gift_transaction.id %}" id="earlyButton">
         <div class="cost">
-            <p>Claim now for {{ gift_transaction.cost|intcomma }}</p>
+            <p>Claim now for {{ gift_transaction.early_claim_fee|intcomma }}</p>
             <img src="{% static 'images/dollar.png' %}" alt="Gift image">
         </div>
     </a>
@@ -81,7 +78,7 @@
 
 {% block scripts %}
 <script>
-  let cost = "{{ gift_transaction.cost }}";
+  let cost = "{{ gift_transaction.early_claim_fee }}";
   const userCoins = parseInt("{{ request.user.coins }}");  
 </script>
 <script src="{% static 'scripts/timer.js' %}"></script>

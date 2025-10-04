@@ -18,8 +18,11 @@ html {
     --background-color: white;
     /* --background-color: rgb(240, 235, 235); */
     --text-color: black;
-    --button-color: #667eea;
-    --link-color: #667eea;
+    /* --button-color: var(--button-color);
+    --link-color: var(--button-color); */
+    --button-color: #6f42c1;
+    --link-color: #6f42c1;
+    --button-hover-color: #7f53d2;
     /* --card-background-color: rgb(240, 235, 235); */
     /* --card-background-color: white; */
     /* --card-text-color: var(--text-color); */  
@@ -70,7 +73,7 @@ body {
 .logo-text {
     font-weight: 700;
     font-size: 2rem;
-    color: #667eea;
+    color: var(--button-color);
     line-height: 1;
     letter-spacing: .05rem;
     font-family: "Passion One", sans-serif;
@@ -92,9 +95,9 @@ body {
 .btn {
     padding: 0.5rem 0.5rem;
     border-radius: 6px;
-    border: 2px solid #667eea;
+    border: 2px solid var(--button-color);
     background: transparent;
-    color: #667eea;
+    color: var(--button-color);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -106,19 +109,19 @@ body {
 }
 
 .btn:hover {
-    background: #667eea;
+    background: var(--button-hover-color);
     color: white;
 }
 
 .btn.signup {
-    background: #667eea;
+    background: var(--button-color);
     color: white;
-    border-color: #667eea;
+    border-color: var(--button-color);
 }
 
 .btn.signup:hover {
-    background: #5a67d8;
-    border-color: #5a67d8;
+    background: var(--button-hover-color);
+    border-color: var(--button-hover-color);
 }
 
 /* Profile picture */
@@ -128,14 +131,14 @@ body {
     border-radius: 50%;
     object-fit: cover;
     cursor: pointer;
-    border: 2px solid #667eea;
+    border: 2px solid var(--button-color);
     transition: box-shadow 0.3s ease;
     padding: .2rem;
     display: block;
 }
 
 .profile-pic:hover {
-    box-shadow: 0 0 8px #667eea;
+    box-shadow: 0 0 8px var(--button-hover-color);
 }
 
 /* Responsive */
