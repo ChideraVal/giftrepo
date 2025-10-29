@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.onrender.giftrepo_xqmh.twa",
+    "sha256_cert_fingerprints": ["E7:A4:48:8B:12:A0:E4:26:8B:5A:D8:7C:17:B2:FE:D6:B7:E9:52:38:43:CD:08:C8:1F:C7:A3:D6:2F:D2:38:67"]
+  }
+}]
