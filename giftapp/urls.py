@@ -2,7 +2,9 @@ from django.urls import path
 from . import views
 from django.views.generic import RedirectView
 from django.templatetags.static import static
-
+from django.views.static import serve
+from django.conf import settings
+import os
 
 urlpatterns = [
     path('signin/', views.sign_in, name='signin'),
@@ -37,8 +39,9 @@ urlpatterns = [
         url=static('manifest.json'),
         permanent=True
     )),
-    path('service-worker.js', RedirectView.as_view(
-        url=static('service-worker.js'),
-        permanent=True
-    )),
+    path('service-worker.js', lambda request: serve(
+    request,
+    'service-worker.js',
+    document_root=os.path.join(settings.BASE_DIR, 'static')
+)),
 ]
