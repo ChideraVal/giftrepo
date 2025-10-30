@@ -31,7 +31,7 @@
   });
 
     if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('OneSignalSDKWorker.js')
+    navigator.serviceWorker.register('/OneSignalSDKWorker.js')
       .then(reg => alert(`OS Service Worker registered: ${reg}`))
       .catch(err => alert(`OS Service Worker failed: ${err}`));
     }
