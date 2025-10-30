@@ -1,5 +1,10 @@
 from django.urls import path
 from . import views
+from django.views.generic import RedirectView
+from django.templatetags.static import static
+from django.views.static import serve
+from django.conf import settings
+import os
 
 urlpatterns = [
     path('signin/', views.sign_in, name='signin'),
@@ -29,4 +34,25 @@ urlpatterns = [
     path("gifts/<int:gift_transaction_id>/reveal/", views.reveal_gift, name="reveal_gift"),
     path("gifts/<int:gift_transaction_id>/revealearly/", views.reveal_gift_early, name="reveal_early"),
     path("gifts/<int:gift_id>/claim/", views.claim_gift, name="claim_gift"), #temp
+    # PWA: Manifest and Service Worker
+    path('manifest.json', RedirectView.as_view(
+        url=static('manifest.json'),
+        permanent=True
+    )),
+    path('service-worker.js', lambda request: serve(
+    request,
+    'service-worker.js',
+    document_root=os.path.join(settings.BASE_DIR, 'static')
+    )),
+    path('OneSignalSDKWorker.js', lambda request: serve(
+    request,
+    'OneSignalSDKWorker.js',
+    document_root=os.path.join(settings.BASE_DIR, 'static')
+    )),
+    # Asset Links for Android (can stay direct too)
+    path('.well-known/assetlinks.json', lambda request: serve(
+        request,
+        'assetlinks.json',
+        document_root=os.path.join(settings.BASE_DIR, 'static/.well-known'),
+    )),
 ]
