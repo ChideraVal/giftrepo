@@ -14,8 +14,8 @@
     <script>
     if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
-      .then(reg => alert(`Service Worker registered: ${reg}`))
-      .catch(err => alert(`Service Worker failed: ${err}`));
+      .then(reg => console.log(`Service Worker registered: ${reg}`))
+      .catch(err => console.log(`Service Worker failed: ${err}`));
   }
     </script>
 </head>
@@ -28,7 +28,7 @@
         </div>
 
         <div class="profile-section" id="profileSection">
-            {% if request.user.is_authenticated %}
+            
             <a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
                 <div class="cost">
                     <p>{{ request.user.coins|intcomma }}</p>
@@ -38,10 +38,7 @@
             <a href="{% url 'profile' %}">
                 <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
             </a>
-            {% else %}
-            <a href="{% url 'signin' %}" class="btn login">Login</a>
-            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
-            {% endif %}
+            
         </div>
     </nav>
 
