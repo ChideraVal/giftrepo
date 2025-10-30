@@ -586,7 +586,7 @@ def buy_coins(request):
 def wallet(request):
     return render(request, "wallet.html")
 
-# @login_required
+@login_required
 def all_gifts(request):
     # gift_transactions = GiftTransaction.objects.all().select_related("gifter", "recipient", "claimed_by")
     # gift_transactions = [gt for gt in GiftTransaction.objects.all() if not gt.is_due_for_expire()]
@@ -605,7 +605,7 @@ def all_gifts(request):
     #     )
     # ).filter(due_for_expire=False).exclude(reveals=request.user).exclude(gifter=request.user).order_by('seconds_before_drop', 'seconds_before_expire')
 
-    gift_transactions = GiftTransaction.objects.annotate(
+    c = """gift_transactions = GiftTransaction.objects.annotate(
         due_for_expire=ExpressionWrapper(
             Q(expire_date__lt=timezone.now()), output_field=BooleanField()
         ),
@@ -615,7 +615,7 @@ def all_gifts(request):
         seconds_before_expire=ExpressionWrapper(
             F("expire_date") - timezone.now(), output_field=DurationField()
         )
-    ).filter(due_for_expire=False).order_by('seconds_before_drop', 'seconds_before_expire')
+    ).filter(due_for_expire=False).order_by('seconds_before_drop', 'seconds_before_expire')"""
 
     if request.user.is_authenticated:
         gift_transactions = GiftTransaction.objects.annotate(
