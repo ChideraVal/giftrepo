@@ -18,6 +18,24 @@
       .catch(err => console.log(`Service Worker failed: ${err}`));
   }
     </script>
+    <script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "4fcc438a-3f0a-4dbc-b59d-4d185994a301",
+      safari_web_id: "web.onesignal.auto.5f176c09-6482-49c9-87ea-0c57aa3981a0",
+      notifyButton: {
+        enable: true,
+      },
+    });
+  });
+
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('OneSignalSDKWorker.js')
+      .then(reg => alert(`OS Service Worker registered: ${reg}`))
+      .catch(err => alert(`OS Service Worker failed: ${err}`));
+    }
+    </script>
 </head>
 
 <body>
