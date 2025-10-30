@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load timefilters %}
+
+{% block title %}
+<title>Not Enough Keys - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+{% endblock %}
+
+
+{% block body %}
+<div class="success">
+    <div class="gift-info">
+        <div class="gift-image">
+            <img src="{% static 'images/key.gif' %}" alt="Gift image">
+        </div>
+        <h2>Not Enough Keys!</h2>
+        <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong>{{ rem_amount|intcomma }}</strong>
+        more keys to {{ message }}.</p>
+        <a href="" style="text-decoration: none; font-weight: bold; color: white; background-color: rebeccapurple; border-radius: .4em; padding: .7em; font-size: .9em; margin-top: .5em;">
+            Watch Ad
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const nameValue = "{{ request.user.username }}";
+    const emailValue = "{{ request.user.email }}";
+</script>
+<script src="{% static 'scripts/checkout.js' %}"></script>
+{% endblock %}

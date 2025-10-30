@@ -26,6 +26,12 @@
                     <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                 </div>
             </a>
+            <a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
+                <div class="cost">
+                    <p>{{ request.user.keys|intcomma }}</p>
+                    <img src="{% static 'images/key.png' %}" alt="Gift image">
+                </div>
+            </a>
             <a href="{% url 'profile' %}">
                 <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
             </a>

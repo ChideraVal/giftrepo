@@ -79,12 +79,13 @@
         <div class="prf-image">
             <img src="{% static 'images/dollar.png' %}" alt="Coin Shop Image">
         </div>
-        <h2>Coin Shop</h2>
-        <p>Buy coins from the coin shop.</p>
+        <h2>Coins & Keys</h2>
+        <p>Get coins and keys from the shop.</p>
         <div class="tags">
             <p class="tag">{{ request.user.coins|intcomma }} coin{{request.user.coins|pluralize }}</p>
+            <p class="tag">{{ request.user.keys|intcomma }} key{{request.user.keys|pluralize }}</p>
         </div>
-        <a href="{% url 'buy_coins' %}">Buy Coins</a>
+        <a href="{% url 'buy_coins' %}">Visit Shop</a>
     </div>
     <div class="card prf">
         <div class="prf-image">

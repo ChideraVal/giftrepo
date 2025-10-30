@@ -34,7 +34,7 @@
     <a href="{% url 'reveal_gift' gift_transaction.id %}">
         <div class="cost">
             <p>Try again for {{ gift_transaction.claim_fee|intcomma }}</p>
-            <img src="{% static 'images/dollar.png' %}" alt="Gift image">
+            <img src="{% static 'images/key.png' %}" alt="Gift image">
         </div>
     </a>
     
@@ -43,7 +43,7 @@
     <a href="{% url 'reveal_early' gift_transaction.id %}" id="earlyButton">
         <div class="cost">
             <p>Claim now for {{ gift_transaction.early_claim_fee|intcomma }}</p>
-            <img src="{% static 'images/dollar.png' %}" alt="Gift image">
+            <img src="{% static 'images/key.png' %}" alt="Gift image">
         </div>
     </a>
     {% endif %}
@@ -59,13 +59,15 @@
         <span class="close">&times;</span>
         <div class="gift-info">
             <div class="gift-image">
-                <img src="{% static 'images/dollar.gif' %}" alt="Gift image">
+                <img src="{% static 'images/key.gif' %}" alt="Gift image">
             </div>
-            <h2>Not Enough Coins!</h2>
+            <h2>Not Enough Keys!</h2>
             <p style="text-align: center;  color: #444; font-size: .9rem;">You need <strong id="neededCoins"></strong>
-                more coins to claim this gift early.</p>
+                more keys to claim this gift early. Watch ads to get keys on Bixy.</p>
 
-            {% include 'coin_tier.html' %}
+            <a href="" style="text-decoration: none; font-weight: bold; color: white; background-color: rebeccapurple; border-radius: .4em; padding: .7em; font-size: .9em; margin-top: .5em;">
+                Watch Ad
+            </a>
         </div>
         <!-- <button onclick="document.getElementById('coinModal').style.display='none'">
                 Okay
@@ -79,15 +81,15 @@
 {% block scripts %}
 <script>
   let cost = "{{ gift_transaction.early_claim_fee }}";
-  const userCoins = parseInt("{{ request.user.coins }}");  
+  const userCoins = parseInt("{{ request.user.keys }}");  
 </script>
 <script src="{% static 'scripts/timer.js' %}"></script>
 <script src="{% static 'scripts/sparkles.js' %}"></script>
 <script src="{% static 'scripts/payearlyreveal.js' %}"></script>
-
+<!-- 
 <script>
     const nameValue = "{{ request.user.username }}";
     const emailValue = "{{ request.user.email }}";
 </script>
-<script src="{% static 'scripts/checkout.js' %}"></script>
+<script src="{% static 'scripts/checkout.js' %}"></script> -->
 {% endblock %}

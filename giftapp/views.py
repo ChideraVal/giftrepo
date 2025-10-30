@@ -325,14 +325,14 @@ def reveal_gift_early(request, gift_transaction_id):
         return render(request, 'error.html', {'title': 'Error', 'message': f'This gift has expired and is unavailable.'})
     if gift_transaction.early_claim_fee > 0 and not gift_transaction.is_fastest_finger and not gift_transaction.is_due_for_drop() and request.user not in gift_transaction.paid_users.all():
         if gift_transaction.gifter == request.user:
-            return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to view your own gift early.'})
+            return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay keys to view your own gift early.'})
         total_cost = gift_transaction.early_claim_fee
-        if request.user.coins < total_cost:
-            rem_amount = total_cost - request.user.coins
-            return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_cost, 'message': 'claim this gift early'})
+        if request.user.keys < total_cost:
+            rem_amount = total_cost - request.user.keys
+            return render(request, "need_keys.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_cost, 'message': 'claim this gift early'})
         user = request.user
-        updated_coins = user.coins - gift_transaction.early_claim_fee
-        user.coins = updated_coins
+        updated_keys = user.keys - gift_transaction.early_claim_fee
+        user.keys = updated_keys
         user.save()
         gift_transaction.paid_users.add(request.user)
         print('CHARGED!')
@@ -354,7 +354,7 @@ def reveal_gift(request, gift_transaction_id):
     if gift_transaction.is_due_for_expire():
         return render(request, 'error.html', {'title': 'Error', 'message': f'This gift has expired and is unavailable.'})
     if gift_transaction.gifter == request.user:
-        return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot reveal your own gift.'})
+        return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot claim your own gift.'})
     if gift_transaction.drop_rate > 0:
         # gift has wait time
         if gift_transaction.is_due_for_drop() or request.user in gift_transaction.paid_users.all():
@@ -381,16 +381,16 @@ def reveal_gift(request, gift_transaction_id):
                 # print('CREDITED FOR FF GIFT!')
                 # email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.claim_fee, 'FF Entry Fee')
                 # print(email_value)
-            if gift_transaction.claim_fee > 0 and request.user not in gift_transaction.reveals.all():
+            if gift_transaction.claim_fee > 0 and request.user not in gift_transaction.reveals.all() and request.user not in gift_transaction.paid_users.all():
                 if gift_transaction.gifter == request.user:
                     return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to claim your own gift.'})
                 total_fee = gift_transaction.claim_fee
-                if request.user.coins < total_fee:
-                    rem_amount = total_fee - request.user.coins
-                    return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this gift'})
+                if request.user.keys < total_fee:
+                    rem_amount = total_fee - request.user.keys
+                    return render(request, "need_keys.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this gift'})
                 user = request.user
-                updated_coins = user.coins - gift_transaction.claim_fee
-                user.coins = updated_coins
+                updated_keys = user.keys - gift_transaction.claim_fee
+                user.keys = updated_keys
                 user.save()
                 # gift_transaction.reveals.add(request.user)
                 print('CHARGED FOR GIFT!')
