@@ -44,6 +44,11 @@ urlpatterns = [
     'service-worker.js',
     document_root=os.path.join(settings.BASE_DIR, 'static')
     )),
+    path('OneSignalSDKWorker.js', lambda request: serve(
+    request,
+    'OneSignalSDKWorker.js',
+    document_root=os.path.join(settings.BASE_DIR, 'static')
+    )),
     # Asset Links for Android (can stay direct too)
     path('.well-known/assetlinks.json', lambda request: serve(
         request,
