@@ -104,11 +104,14 @@
             }
         }
 
-        window.addEventListener("pageshow", () => {
-            if (theme === 'dark') {
-                body.classList.add('dark-mode');
-            } else {
-                body.classList.remove('dark-mode');
+        window.addEventListener("pageshow", (e) => {
+            if (e.persisted) {
+               const theme = localStorage.getItem('theme');
+               if (theme === 'dark') {
+                   body.classList.add('dark-mode');
+               } else {
+                   body.classList.remove('dark-mode');
+               }
             }
         })
         // Toggle theme
