@@ -10,6 +10,13 @@
     {% load timefilters %}
 
     {% block title %} {% endblock %}
+    <script>
+    // Apply saved theme immediately (before styles load)
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark-mode');
+    }
+    </script>
     <link rel="manifest" href="/manifest.json">
     <script>
     if ('serviceWorker' in navigator) {
