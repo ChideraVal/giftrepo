@@ -103,7 +103,14 @@
                 body.classList.remove('dark-mode');
             }
         }
-        
+
+        window.addEventListener("pageshow", () => {
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+            }
+        })
         // Toggle theme
         btn.addEventListener('click', () => {
             body.classList.toggle('dark-mode')
