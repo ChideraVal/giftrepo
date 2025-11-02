@@ -19,6 +19,12 @@ html {
     --background-color: white;
     /* --background-color: rgb(240, 235, 235); */
     --text-color: black;
+    --label-color: #555;
+    --even-row-color: #f9f9f9;
+    --input-background-color: white;
+    --input-text-color: black;
+    --input-border-color: #ccc;
+    --sub-text-color: #444;
     /* --button-color: #667eea;
     --link-color: #667eea; */
     --button-color: #6f42c1;
@@ -33,6 +39,22 @@ html {
     --padding-value: 1rem;
 }
 
+.dark-mode {
+    --background-color: black;
+    --text-color: white;
+    --label-color: white;
+    --even-row-color: rgb(34, 33, 33);
+    --input-background-color: rgb(34, 33, 33);
+    --input-text-color: white;
+    --input-border-color: rgb(34, 33, 33);
+    --sub-text-color: #999;
+    --card-background-color: rgb(34, 33, 33);
+    --card-text-color: var(--text-color);
+    --card-button-color: white;
+    --tag-bg: #1a1919;
+    --tag-text: white;
+}
+
 body {
     background-color: var(--background-color);
     /* padding: 1rem; */
@@ -45,7 +67,7 @@ body {
     align-items: center;
     padding: 1rem var(--padding-value);
     /* Increased vertical padding */
-    background: white;
+    background: var(--background-color);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
@@ -232,13 +254,12 @@ body {
 
 .banner-disclaimer {
     font-size: 14px;
-    color: #444;
+    color: var(--sub-text-color);
 }
 
 div.heading {
     padding: 1rem var(--padding-value);
     /* border: 1px solid red; */
-
 }
 
 div.heading h1 {
@@ -248,10 +269,11 @@ div.heading h1 {
     font-style: normal;
     text-decoration: none;
     font-size: 2.5rem;
+    color: var(--text-color);
 }
 
 div.heading p {
-    color: #444;
+    color: var(--sub-text-color);
 }
 
 div.card-container {
@@ -381,6 +403,14 @@ div.gift-info h1 {
     text-align: center;
 }
 
+div.gift-info h2 {
+    color: var(--text-color);
+}
+
+div.gift-info p {
+    color: var(--sub-text-color);
+}
+
 div.coin-image img {
     width: 100%;
     height: 40px;
@@ -506,6 +536,7 @@ div.cost {
     gap: 5px;
     justify-content: center;
     margin-top: .3rem;
+    color: var(--text-color);
 }
 
 div.td-content {
@@ -603,7 +634,7 @@ div.buy img.coin {
     display: block;
     margin-bottom: 0.3rem;
     font-weight: bold;
-    color: #555;
+    color: var(--label-color);
 }
 
 .login-form label.inline {
@@ -619,9 +650,11 @@ select,
     width: 100%;
     padding: 0.75rem;
     margin-bottom: .2rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border-color);
     border-radius: 8px;
     transition: border-color 0.3s;
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
 }
 
 .login-form input:focus, select:focus {
@@ -659,7 +692,7 @@ p.error {
 }
 
 p.help {
-    color: #444;
+    color: var(--sub-text-color);
     font-size: .9em;
     margin-bottom: 1rem;
 }
@@ -682,7 +715,7 @@ p.help {
 
 /* Modal child (white box) */
 .modal-content {
-    background: #fff;
+    background: var(--background-color);
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -709,15 +742,20 @@ p.help {
     font-size: 22px;
     font-weight: bold;
     cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: 5em;
+    background-color: white;
 }
 
 /* Table CSS */
 .table-container {
-    background: #fff;
+    background: var(--background-color);
     /* border-radius: 10px; */
     /* padding: 1.2rem; */
     /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); */
     overflow-x: auto;
+    color: var(--text-color);
 }
 
 .table-container h2 {
@@ -731,7 +769,7 @@ table {
 }
 
 tr:nth-of-type(even) {
-    background-color: #f9f9f9;
+    background-color: var(--even-row-color);
 }
 
 th,
@@ -743,8 +781,8 @@ td {
 
 
 th {
-    background-color: #f2f2f2;
-    color: #333;
+    background-color: var(--even-row-color);
+    color: var(--sub-text-color);
 }
 
 tr.clickable-row {
@@ -769,7 +807,7 @@ div.success {
 }
 
 .signup-container {
-    background: white;
+    background: var(--background-color);
     padding: 2rem;
     border-radius: 15px;
     width: 100%;
@@ -788,13 +826,13 @@ div.success {
 
 .signup-form h2 {
     margin: 0.5rem 0;
-    /* color: #333; */
+    color: var(--text-color);
     text-align: center;
 }
 
 .signup-form p {
     margin-bottom: 1rem;
-    color: #666;
+    color: var(--sub-text-color);
     text-align: center;
 }
 
@@ -951,7 +989,7 @@ div.prf h2 {
 
 div.prf p:not(.tag) {
     font-size: .9rem;
-    color: #444;
+    color: var(--sub-text-color);
 }
 
 div.prf a {
@@ -1039,7 +1077,7 @@ div.prf a {
 }
 
 .notfound p {
-    color: #444;
+    color: var(--sub-text-color);
     text-align: center;
 }
 
