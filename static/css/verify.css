@@ -1,12 +1,15 @@
 :root {
-    /* --bg-color: #000; */
-    --card-bg: #fff;
-    --text-color: #000;
-    --subtext-color: #333;
-    --tag-bg: #e0e0e0;
-    --tag-text: #333;
-    --button-bg: #6f42c1;
-    --button-hover: #7f53d2;
+    --background-color: white;
+    /* --background-color: rgb(240, 235, 235); */
+    --text-color: black;
+    --button-color: #6f42c1;
+    --link-color: #6f42c1;
+    --button-hover-color: #7f53d2;
+}
+
+.dark-mode {
+    --background-color: black;
+    --text-color: white;
 }
 
 * {
@@ -17,7 +20,7 @@
 }
 
 body {
-    background: #f7f7f7;
+    background: var(--background-color);
     height: auto;
     display: flex;
     justify-content: center;
@@ -26,12 +29,12 @@ body {
 
 body.success {
     display: block;
-    background: #f7f7f7;
+    background: var(--background-color);
     height: auto;
 }
 
 .refsuc {
-    background: #f7f7f7;
+    background: var(--background-color);
     height: auto;
     display: flex;
     justify-content: center;
@@ -39,7 +42,7 @@ body.success {
 }
 
 .signup-container {
-    background: white;
+    background: var(--background-color);
     padding: 2rem;
     border-radius: 15px;
     width: 100%;
@@ -50,12 +53,12 @@ body.success {
 
 .signup-form h2 {
     margin-bottom: 0.5rem;
-    color: #333;
+    color: var(--text-color);
 }
 
 .signup-form p {
     margin-bottom: 1.5rem;
-    color: #666;
+    color: var(--text-color);
 }
 
 .signup-form label {
@@ -164,7 +167,7 @@ p.help {
 
 @media (max-width: 500px) {
     body {
-        background: white;
+        background: var(--background-color);
     }
 
     .signup-container {

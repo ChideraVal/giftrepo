@@ -5,6 +5,32 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+:root {
+    --background-color: white;
+    /* --background-color: rgb(240, 235, 235); */
+    --text-color: black;
+    --label-color: #555;
+    --input-background-color: white;
+    --input-text-color: black;
+    --input-border-color: #ccc;
+    --sub-text-color: #444;
+    /* --button-color: #667eea;
+    --link-color: #667eea; */
+    --button-color: #6f42c1;
+    --link-color: #6f42c1;
+    --button-hover-color: #7f53d2;
+}
+
+.dark-mode {
+    --background-color: black;
+    --text-color: white;
+    --label-color: white;
+    --input-background-color: rgb(34, 33, 33);
+    --input-text-color: white;
+    --input-border-color: rgb(34, 33, 33);
+    --sub-text-color: #999;
+}
+
 body {
     background: linear-gradient(135deg, #6f42c1, #764ba2);
     height: auto;
@@ -14,7 +40,7 @@ body {
 }
 
 .signup-container {
-    background: white;
+    background: var(--background-color);
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
@@ -25,19 +51,19 @@ body {
 
 .signup-form h2 {
     margin-bottom: 0.5rem;
-    color: #333;
+    color: var(--text-color);
 }
 
 .signup-form p {
     margin-bottom: 1.5rem;
-    color: #666;
+    color: var(--sub-text-color);
 }
 
 .signup-form label {
     display: block;
     margin-bottom: 0.3rem;
     font-weight: bold;
-    color: #555;
+    color: var(--label-color);
 }
 
 .signup-form input[type="text"],
@@ -47,9 +73,11 @@ select {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1.2rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border-color);
     border-radius: 8px;
     transition: border-color 0.3s;
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
 }
 
 .signup-form input:focus {
@@ -115,7 +143,7 @@ li, p.error {
 
 @media (max-width: 500px) {
     body {
-        background: white;
+        background: var(--background-color);
     }
 
     .signup-container {
