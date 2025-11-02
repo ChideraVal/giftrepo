@@ -3,6 +3,6 @@
   "target": {
     "namespace": "android_app",
     "package_name": "com.onrender.giftrepo_xqmh.twa",
-    "sha256_cert_fingerprints": ["72:20:30:2B:68:A5:79:3F:13:7A:D7:79:D1:ED:B5:63:61:39:29:B2:85:7A:E8:44:7E:B6:12:AE:37:A6:B7:B5"]
+    "sha256_cert_fingerprints": ["1B:DC:E7:0F:5B:A9:40:08:94:EC:AE:BB:9B:1C:44:67:CA:BB:6E:96:2B:6E:53:7D:3D:F6:94:F1:B1:A1:38:E9"]
   }
 }]
