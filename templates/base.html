@@ -23,11 +23,7 @@
   
     if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/OneSignalSDKWorker.js')
-<<<<<<< HEAD
-      .then(reg => console.log(`OS Service Worker registered: ${reg}`))
-      .catch(err => console.log(`OS Service Worker failed: ${err}`));
-=======
-      .then(reg => {
+        .then(reg => {
           alert(`OS Service Worker registered: ${reg}`);
           window.OneSignalDeferred = window.OneSignalDeferred || [];
           OneSignalDeferred.push(async function(OneSignal) {
@@ -41,7 +37,6 @@
       });
       })
       .catch(err => alert(`OS Service Worker failed: ${err}`));
->>>>>>> ef6b5bce5f7329fca6b42b0a5e3cd48f732bdcbf
     }
     </script>
 </head>
