@@ -1,10 +1,10 @@
 {
-  "name": "Bixie Games",
-  "short_name": "Bixie",
+  "name": "Bixy Games",
+  "short_name": "Bixy",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "black",
-  "theme_color": "black",
+  "background_color": "white",
+  "theme_color": "white",
   "icons": [
     {
       "src": "/static/images/heart (1).png",
