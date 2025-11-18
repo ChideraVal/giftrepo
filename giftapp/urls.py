@@ -7,6 +7,9 @@ from django.conf import settings
 import os
 
 urlpatterns = [
+    path('issue_token/', views.issue_token),
+    path('verify_result/', views.verify_result),
+    path('tap/', views.tap),
     path('signin/', views.sign_in, name='signin'),
     path('signup/', views.sign_up, name='signup'),
     path('verifyemail/<int:user_id>/', views.verify_email, name='verify_email'),

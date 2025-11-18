@@ -28,7 +28,97 @@ from .mails import (
 
 load_dotenv()
 secret_key = os.getenv('SECRET_KEY')
-        
+
+# START
+import json, time, hmac, hashlib, secrets
+from django.http import JsonResponse
+
+SERVER_SECRET = b"supersecretkey"  # keep this safe
+
+def issue_token(request):
+    interval = 150
+    range_n = 30
+    target = secrets.randbelow(11) + 1
+    nonce = secrets.token_hex(8)
+    expires_at = int(time.time() * 1000) + 5*60_000  # 5 min
+
+    payload = {
+        "interval": interval,
+        "range": range_n,
+        "target": target,
+        "nonce": nonce,
+        "expires_at": expires_at
+    }
+
+    payload_json = json.dumps(payload, separators=(',', ':'))
+    signature = hmac.new(SERVER_SECRET, payload_json.encode(), hashlib.sha256).hexdigest()
+
+    # Store nonce server-side to prevent replay
+    request.session[f"nonce_{nonce}"] = True
+
+    return JsonResponse({"payload": payload, "signature": signature})
+
+
+
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt
+def verify_result(request):
+    body = json.loads(request.body)
+    payload = body['payload']
+    signature = body['signature']
+    elapsed = body['elapsed']
+    elapsed_sig = body['elapsed_sig']
+
+    # 1️⃣ verify server-signed payload
+    payload_json = json.dumps(payload, separators=(',', ':'))
+    expected_sig = hmac.new(SERVER_SECRET, payload_json.encode(), hashlib.sha256).hexdigest()
+    if signature != expected_sig:
+        return JsonResponse({"result": "invalid_signature"})
+
+    # 2️⃣ anti-replay & expiry
+    nonce = payload['nonce']
+    if not request.session.get(f"nonce_{nonce}"):
+        return JsonResponse({"result": "nonce_replayed"})
+    del request.session[f"nonce_{nonce}"]
+
+    if int(time.time()*1000) > payload['expires_at']:
+        return JsonResponse({"result": "expired"})
+
+    # 3️⃣ verify client-signed elapsed
+    # derive session key from server secret + nonce
+    # session_key = hmac.new(SERVER_SECRET, nonce.encode(), hashlib.sha256).digest()
+    # expected_elapsed_sig = hmac.new(session_key, str(elapsed).encode(), hashlib.sha256).hexdigest()
+    session_key = hmac.new(SERVER_SECRET, nonce.encode(), hashlib.sha256).hexdigest()
+    expected_elapsed_sig = hmac.new(
+        bytes.fromhex(session_key), str(elapsed).encode(), hashlib.sha256
+    ).hexdigest()
+    if elapsed_sig != expected_elapsed_sig:
+        return JsonResponse({"result": "elapsed_tampered"})
+
+    # 4️⃣ compute current number with ±1 tick tolerance
+    interval = payload['interval']
+    range_n = payload['range']
+    target = payload['target']
+
+    tick_index = elapsed // interval
+    current_number = (tick_index % range_n) + 1
+    allowed = [(target-1) % range_n + 1, target, (target+1-1) % range_n + 1]
+    allowed = [target]
+    
+    
+    print('YOU GOT: ', current_number)
+    if current_number in allowed:
+        return JsonResponse({"result": "win"})
+    else:
+        return JsonResponse({"result": "lose"})
+
+# END
+
+def tap(request):
+    return render(request, 'tap.html')
+
 def not_found(request, exception):
     return render(request, '404.html')
 

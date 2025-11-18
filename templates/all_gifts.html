@@ -12,16 +12,16 @@
 
 {% block body %}
 <!-- Banner -->
-<section class="bixy-banner">
-    <!-- <img src="smiling.png" alt="Referral Logo"
-        class="banner-logo"> -->
+<!-- <section class="bixy-banner">
+    <img src="smiling.png" alt="Referral Logo"
+        class="banner-logo">
     <h1 class="banner-heading">Welcome to Bixy Season 1</h1>
     <p class="banner-subtext">Join the fun! Send and claim gifts on Bixy.</p>
     <form class="banner-form" action="{% url 'send_gift' %}" method="get">
         <button type="submit">Join the Fun</button>
     </form>
     <p class="banner-disclaimer">Season ending in 6 days.</p>
-</section>
+</section> -->
 
 <div class="heading">
     <h1>New Gifts</h1>
@@ -86,7 +86,7 @@
         </div>
 
         <a href="{% url 'reveal_gift' gift_transaction.id %}">
-            <div class="cost">
+            <div class="cost wh">
                 <p>{{ gift_transaction.claim_fee|intcomma }}</p>
                 <img src="{% static 'images/key.png' %}" alt="Gift image">
             </div>

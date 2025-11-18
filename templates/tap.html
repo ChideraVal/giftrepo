@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- {% load static %}
+    <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}"> -->
+</head>
+
+<body>
+
+    <canvas id="c" width="320" height="200"></canvas>
+    <button id="tap">Freeze</button>
+    <script>
+        async function startGame() {
+            // 1️⃣ get server token
+            const res = await fetch("/issue_token/");
+            const { payload, signature } = await res.json();
+            console.log(payload)
+
+            const startTime = performance.now();
+            const interval = payload.interval;
+            const range = payload.range;
+            const target = payload.target;
+            const nonce = payload.nonce;
+
+            const canvas = document.getElementById("c");
+            const ctx = canvas.getContext("2d");
+            let alive = true;
+
+            function getCurrentNumber() {
+                const elapsed = performance.now() - startTime;
+                return Math.floor(elapsed / interval) % range + 1;
+            }
+
+            function render() {
+                if (!alive) return;
+                const num = getCurrentNumber();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#0f0";
+                ctx.font = "80px sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(num, canvas.width / 2, canvas.height / 2);
+                requestAnimationFrame(render);
+            }
+            render();
+
+            document.getElementById("tap").onclick = async () => {
+                if (!alive) return;
+                alive = false;
+                const elapsed = Math.round(performance.now() - startTime);
+
+                // 2️⃣ derive session key and sign elapsed
+                // async function computeHMAC(key, message) {
+                //     const enc = new TextEncoder();
+                //     const cryptoKey = await crypto.subtle.importKey(
+                //         "raw", enc.encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+                //     );
+                //     const sig = await crypto.subtle.sign("HMAC", cryptoKey, enc.encode(message));
+                //     return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+                // }
+
+                // const sessionKey = await computeHMAC("supersecretkey", nonce);
+                // const elapsed_sig = await computeHMAC(sessionKey, elapsed.toString());
+
+                async function computeHMAC(keyHex, message) {
+                    const enc = new TextEncoder();
+                    const keyBytes = Uint8Array.from(keyHex.match(/.{2}/g).map(b => parseInt(b, 16)));
+                    const cryptoKey = await crypto.subtle.importKey(
+                        "raw", keyBytes, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+                    );
+                    const sig = await crypto.subtle.sign("HMAC", cryptoKey, enc.encode(message));
+                    return Array.from(new Uint8Array(sig))
+                        .map(b => b.toString(16).padStart(2, "0"))
+                        .join("");
+                }
+
+                // 1️⃣ Get session_key (hex string, same as Python)
+                const sessionKey = await computeHMAC(
+                    Array.from(new TextEncoder().encode("supersecretkey"))
+                        .map(b => b.toString(16).padStart(2, "0")).join(""),
+                    nonce
+                );
+
+                // 2️⃣ Use it to sign elapsed
+                const elapsed_sig = await computeHMAC(sessionKey, elapsed.toString());
+
+
+                const resultRes = await fetch("/verify_result/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ payload, signature, elapsed, elapsed_sig })
+                });
+
+                const data = await resultRes.json();
+                alert(`Result: ${data.result}`);
+            };
+        }
+        startGame();
+    </script>
+</body>
+
+</html>

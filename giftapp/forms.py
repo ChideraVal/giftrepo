@@ -45,7 +45,7 @@ class CustomUserChangeForm(UserChangeForm):
         }
 
         help_texts = {
-            'email': "When you change your email address, the new email address isn't set immediately, instead an email will be sent to the new email address with a link to verify the new email. Click the link to finalize changes."
+            'email': "When you change your email address, the new address isn't set immediately, instead an email will be sent to the new address with a link to verify the new address. Click the link to finalize changes."
         }
 
 
