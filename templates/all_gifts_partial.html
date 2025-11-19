@@ -1,0 +1,82 @@
+{% load humanize %}
+{% load timefilters %}
+{% load static %}
+
+<div class="heading">
+    <h1>New Gifts</h1>
+    <p>Active gifts you haven't claimed.</p>
+</div>
+
+{% if gift_transactions|length > 0 %}
+<div class="card-container">
+    {% for gift_transaction in gift_transactions %}
+    <div class="card">
+        <div class="gift-image">
+            {% if gift_transaction.is_visible %}
+            <img src="{{ gift_transaction.gift.image.url }}" alt="Gift image">
+            {% else %}
+            <img src="{% static 'images/search.png' %}" alt="Gift image">
+            {% endif %}
+        </div>
+        <div class="gift-info">
+            {% if gift_transaction.is_visible %}
+            <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
+            {% else %}
+            <h1>Hidden Gift</h1>
+            {% endif %}
+
+            <div class="load">
+                {% if gift_transaction.drop_rate > 0 %}
+                {% if gift_transaction.is_due_for_drop %}
+                <div class="bar" id="{{ gift_transaction.expire_bar_percent }}"></div>
+                {% else %}
+                <div class="bar" id="{{ gift_transaction.drop_bar_percent }}"></div>
+                {% endif %}
+                {% else %}
+                <div class="bar" id="{{ gift_transaction.expire_bar_percent }}"></div>
+                {% endif %}
+            </div>
+
+            {% if gift_transaction.drop_rate > 0 %}
+            {% if gift_transaction.is_due_for_drop %}
+            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+            {% else %}
+            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Drops" data-seconds="{{ gift_transaction.seconds_until_drop }}">Drops in --:--:--:--</p>
+            {% endif %}
+            {% else %}
+            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+            {% endif %}
+
+            <div class="tags">
+                {% if gift_transaction.is_fastest_finger %}
+                <p class="tag">Fastest Finger</p>
+                {% endif %}
+
+                {% if gift_transaction.early_claim_fee > 0 and not gift_transaction.is_due_for_drop %}
+                <p class="tag">Early Claim</p>
+                {% endif %}
+
+                {% if request.user in gift_transaction.paid_users.all %}
+                <p class="tag">Claimed Early</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <a href="{% url 'reveal_gift' gift_transaction.id %}">
+            <div class="cost wh">
+                <p>{{ gift_transaction.claim_fee|intcomma }}</p>
+                <img src="{% static 'images/key.png' %}" alt="Gift image">
+            </div>
+        </a>
+
+        <!-- <a href="{% url 'reveal_gift' gift_transaction.id %}">Claim</a> -->
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+    <img src="{% static 'images/empty-box.png' %}" alt="No content image">
+    <h1>Feels Empty Here.</h1>
+    <a href="{% url 'all_gifts' %}">Refresh</a>
+</div>
+{% endif %}

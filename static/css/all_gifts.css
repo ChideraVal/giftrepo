@@ -135,7 +135,7 @@ body {
 }
 
 .btn:hover {
-    background: var(--button-hover-color);
+    background: var(--button-color);
     color: white;
 }
 
@@ -145,10 +145,10 @@ body {
     border-color: var(--button-color);
 }
 
-.btn.signup:hover {
+/* .btn.signup:hover {
     background: var(--button-hover-color);
     border-color: var(--button-hover-color);
-}
+} */
 
 /* Profile picture */
 .profile-pic {
@@ -311,12 +311,12 @@ div.empty {
 }
 
 div.empty h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
 }
 
 div.empty img {
-    width: 250px;
-    height: 250px;
+    width: 150px;
+    height: 150px;
 }
 
 div.empty a {
@@ -389,8 +389,8 @@ div.coin-card {
     }
 
     div.empty img {
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
     }
 }
 

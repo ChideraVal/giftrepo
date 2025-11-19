@@ -15,11 +15,12 @@
     <!-- <script>
     if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
-      .then(reg => console.log(`Service Worker registered: ${reg}`))
-      .catch(err => console.log(`Service Worker failed: ${err}`));
+      .then(reg => alert(`Service Worker registered: ${reg}`))
+      .catch(err => alert(`Service Worker failed: ${err}`));
   }
-    </script>
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    </script> -->
+
+    <!-- <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
   
     if ('serviceWorker' in navigator) {
@@ -51,35 +52,34 @@
 
         <div class="profile-section" id="profileSection">
             
-            {% if request.user.is_authenticated %}
             <a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
                 <div class="cost">
-                    <p>{{ request.user.coins|intcomma }}</p>
+                    <!-- <p>{{ request.user.coins|intcomma }}</p> -->
+                     <p>-</p>
                     <img src="{% static 'images/dollar.png' %}" alt="Gift image">
                 </div>
             </a>
             <a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
                 <div class="cost">
-                    <p>{{ request.user.keys|intcomma }}</p>
+                    <!-- <p>{{ request.user.keys|intcomma }}</p> -->
+                     <p>-</p>
                     <img src="{% static 'images/key.png' %}" alt="Gift image">
                 </div>
             </a>
 
 
             <a href="{% url 'profile' %}">
-                <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
+                <!-- <img src="{{ request.user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" /> -->
+                <img src="{% static 'images/user.png' %}" alt="Profile picture" class="profile-pic" />
             </a>
-            {% else %}
-            <a href="{% url 'signin' %}" class="btn login">Login</a>
-            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
-            {% endif %}
+
             
         </div>
     </nav>
 
 
     <main>
-        <section>
+        <section id="main-content">
             {% block body %} {% endblock %}
         </section>
     </main>
@@ -87,44 +87,6 @@
     {% block other %} {% endblock %}
 
     {% block scripts %} {% endblock %}
-
-    <script>
-        const body = document.body;
-        const btn = document.getElementById('themebtn');
-
-        // Load saved theme (if any)
-        const theme = localStorage.getItem('theme');
-        console.log(theme)
-        if (!theme) {
-            localStorage.setItem('theme', 'light')
-        } else {
-            if (theme === 'dark') {
-                body.classList.add('dark-mode');
-            } else {
-                body.classList.remove('dark-mode');
-            }
-        }
-
-        window.addEventListener("pageshow", (e) => {
-            if (e.persisted) {
-               const theme = localStorage.getItem('theme');
-               if (theme === 'dark') {
-                   body.classList.add('dark-mode');
-               } else {
-                   body.classList.remove('dark-mode');
-               }
-            }
-        })
-        // Toggle theme
-        btn.addEventListener('click', () => {
-            body.classList.toggle('dark-mode')
-            // Save preference
-            const isDark = body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light')
-        })
-
-        
-    </script>
 </body>
 
 </html>

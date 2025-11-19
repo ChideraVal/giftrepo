@@ -8,6 +8,14 @@
 <title>Buy Coins - Bixy</title>
 <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
 <script src="https://checkout.flutterwave.com/v3.js"></script>
+<script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => alert(`Service Worker registered: ${reg}`))
+        .catch(err => alert(`Service Worker failed: ${err}`));
+    }
+</script>
+
 {% endblock %}
 
 

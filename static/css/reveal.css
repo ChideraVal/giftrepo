@@ -200,6 +200,10 @@ div.reveal-container img {
     height: 250px;
 }
 
+div.reveal-container h1 {
+    font-size: 1.8rem;
+}
+
 div.reveal-container a {
     background-color: var(--link-color);
     color: var(--card-button-color);    

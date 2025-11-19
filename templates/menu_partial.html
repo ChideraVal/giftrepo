@@ -1,0 +1,25 @@
+{% load humanize %}
+{% load static %}
+
+{% if user.is_authenticated %}
+<a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
+    <div class="cost">
+        <p>{{ user.coins|intcomma }}</p>
+        <img src="{% static 'images/dollar.png' %}" alt="Gift image">
+    </div>
+</a>
+<a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
+    <div class="cost">
+        <p>{{ user.keys|intcomma }}</p>
+        <img src="{% static 'images/key.png' %}" alt="Gift image">
+    </div>
+</a>
+
+
+<a href="{% url 'profile' %}">
+    <img src="{{ user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
+</a>
+{% else %}
+<a href="{% url 'signin' %}" class="btn login">Login</a>
+<a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+{% endif %}

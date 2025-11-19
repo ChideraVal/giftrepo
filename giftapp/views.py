@@ -25,6 +25,9 @@ from .mails import (
     send_email_changed_email,
     send_new_gift_email
 )
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
 
 load_dotenv()
 secret_key = os.getenv('SECRET_KEY')
@@ -119,6 +122,50 @@ def verify_result(request):
 def tap(request):
     return render(request, 'tap.html')
 
+
+
+# @login_required
+def all_gifts_data(request):
+    gift_transactions = GiftTransaction.objects.annotate(
+        due_for_expire=ExpressionWrapper(
+            Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+        ),
+        seconds_before_drop=ExpressionWrapper(
+            F("drop_date") - timezone.now(), output_field=DurationField()
+        ),
+        seconds_before_expire=ExpressionWrapper(
+            F("expire_date") - timezone.now(), output_field=DurationField()
+        )
+    ).filter(due_for_expire=False).order_by('seconds_before_drop', 'seconds_before_expire')
+
+    if request.user.is_authenticated:
+        gift_transactions = GiftTransaction.objects.annotate(
+            due_for_expire=ExpressionWrapper(
+                Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+            ),
+            seconds_before_drop=ExpressionWrapper(
+                F("drop_date") - timezone.now(), output_field=DurationField()
+            ),
+            seconds_before_expire=ExpressionWrapper(
+                F("expire_date") - timezone.now(), output_field=DurationField()
+            )
+        ).filter(due_for_expire=False).exclude(reveals=request.user).exclude(gifter=request.user).order_by('seconds_before_drop', 'seconds_before_expire')
+
+    menu_html = render_to_string('menu_partial.html', {'user': request.user})
+    main_html = render_to_string('all_gifts_partial.html', {'gift_transactions': gift_transactions})
+    return JsonResponse({
+        'menu_html': menu_html,
+        'main_html': main_html
+    })
+
+
+@login_required
+def send_gift_data(request):
+    menu_html = render_to_string('menu_partial.html', {'user': request.user})
+    return JsonResponse({
+        'menu_html': menu_html,
+    })
+    
 def not_found(request, exception):
     return render(request, '404.html')
 
@@ -302,10 +349,11 @@ def sign_out(request):
     logout(request)
     return redirect('signin')
 
-@login_required
+# @login_required
 def send_gift(request):
     gifts = Gift.objects.all()
     return render(request, "send_gifts.html", {'gifts': gifts})
+    # return render(request, "send_gifts.html")
 
 @login_required
 def buy_gift(request, gift_id):
@@ -695,29 +743,31 @@ def all_gifts(request):
     #     )
     # ).filter(due_for_expire=False).exclude(reveals=request.user).exclude(gifter=request.user).order_by('seconds_before_drop', 'seconds_before_expire')
 
-    gift_transactions = GiftTransaction.objects.annotate(
-        due_for_expire=ExpressionWrapper(
-            Q(expire_date__lt=timezone.now()), output_field=BooleanField()
-        ),
-        seconds_before_drop=ExpressionWrapper(
-            F("drop_date") - timezone.now(), output_field=DurationField()
-        ),
-        seconds_before_expire=ExpressionWrapper(
-            F("expire_date") - timezone.now(), output_field=DurationField()
-        )
-    ).filter(due_for_expire=False).order_by('seconds_before_drop', 'seconds_before_expire')
+    # gift_transactions = GiftTransaction.objects.annotate(
+    #     due_for_expire=ExpressionWrapper(
+    #         Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+    #     ),
+    #     seconds_before_drop=ExpressionWrapper(
+    #         F("drop_date") - timezone.now(), output_field=DurationField()
+    #     ),
+    #     seconds_before_expire=ExpressionWrapper(
+    #         F("expire_date") - timezone.now(), output_field=DurationField()
+    #     )
+    # ).filter(due_for_expire=False).order_by('seconds_before_drop', 'seconds_before_expire')
 
-    if request.user.is_authenticated:
-        gift_transactions = GiftTransaction.objects.annotate(
-            due_for_expire=ExpressionWrapper(
-                Q(expire_date__lt=timezone.now()), output_field=BooleanField()
-            ),
-            seconds_before_drop=ExpressionWrapper(
-                F("drop_date") - timezone.now(), output_field=DurationField()
-            ),
-            seconds_before_expire=ExpressionWrapper(
-                F("expire_date") - timezone.now(), output_field=DurationField()
-            )
-        ).filter(due_for_expire=False).exclude(reveals=request.user).exclude(gifter=request.user).order_by('seconds_before_drop', 'seconds_before_expire')
+    # if request.user.is_authenticated:
+    #     gift_transactions = GiftTransaction.objects.annotate(
+    #         due_for_expire=ExpressionWrapper(
+    #             Q(expire_date__lt=timezone.now()), output_field=BooleanField()
+    #         ),
+    #         seconds_before_drop=ExpressionWrapper(
+    #             F("drop_date") - timezone.now(), output_field=DurationField()
+    #         ),
+    #         seconds_before_expire=ExpressionWrapper(
+    #             F("expire_date") - timezone.now(), output_field=DurationField()
+    #         )
+    #     ).filter(due_for_expire=False).exclude(reveals=request.user).exclude(gifter=request.user).order_by('seconds_before_drop', 'seconds_before_expire')
 
-    return render(request, "all_gifts.html", {"gift_transactions": gift_transactions})
+    # return render(request, "all_gifts.html", {"gift_transactions": gift_transactions})
+    return render(request, "all_gifts.html")
+
