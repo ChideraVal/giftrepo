@@ -5,6 +5,10 @@ const STATIC_ASSETS = [
   '/',
   '/signin/',
   '/signup/',
+  '/static/css/signin.css',
+  '/static/css/signup.css',
+  '/static/css/all_gifts.css',
+  '/static/css/reveal.css',
   '/gifts/send/',
 ];
 
@@ -34,6 +38,9 @@ self.addEventListener('activate', event => {
 
 // ⚙️ Fetch phase — define caching strategies
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') {
+    return
+  }
   const url = new URL(event.request.url);
 
   // 🧠 Never cache the highscore API
