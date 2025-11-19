@@ -28,7 +28,7 @@
     <p>Active gifts you haven't claimed.</p>
 </div>
 
-<!-- {% if gift_transactions|length > 0 %}
+{% if gift_transactions|length > 0 %}
 <div class="card-container">
     {% for gift_transaction in gift_transactions %}
     <div class="card">
@@ -93,7 +93,7 @@
             </div>
         </a>
 
-        <a href="{% url 'reveal_gift' gift_transaction.id %}">Claim</a>
+        <!-- <a href="{% url 'reveal_gift' gift_transaction.id %}">Claim</a> -->
     </div>
     {% endfor %}
 </div>
@@ -103,11 +103,7 @@
     <h1>Feels Empty Here.</h1>
     <a href="{% url 'all_gifts' %}">Refresh</a>
 </div>
-{% endif %} -->
-
-<div class="empty">
-    <h1>Loading...</h1>
-</div>
+{% endif %}
 
 {% endblock %}
 
@@ -119,34 +115,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    fetch("/all-gifts/")
-        .then(async res => {
-            if (res.redirected && res.url.includes('signin')) {
-                window.location.href = res.url;
-                return
-            }
-            return res.json()
-        })
-        .then(data => {
-            document.querySelector("#profileSection").innerHTML = data.menu_html;
-            document.querySelector("#main-content").innerHTML = data.main_html;
-            initTimers();
-        })
-        .catch(() => {
-            console.log("Offline or fetch failed");
-            document.querySelector("#main-content").innerHTML = `
-            <div class="heading">
-                <h1>New Gifts</h1>
-                <p>Active gifts you haven't claimed.</p>
-            </div>
-            <div class="empty">
-                <img src="{% static 'images/sad (1).png' %}" alt="Network error image">
-                <h1>Something went wrong.</h1>
-                <a href="{% url 'all_gifts' %}">Refresh</a>
-            </div>`
-        });
-
-</script>
 <script src="{% static 'scripts/timer.js' %}"></script>
 {% endblock %}

@@ -43,30 +43,3 @@
 </div>
 {% endif %}
 {% endblock %}
-
-{% block scripts %}
-<script>
-    fetch("/send-gift/")
-        .then(async res => {
-            if (res.redirected && res.url.includes('signin')) {
-                console.log(res.url)
-                const redirect_url = 'http://127.0.0.1:8000/signin/?next=/gifts/send/'
-                // window.location.href = res.url;
-                window.location.href = redirect_url;
-                return
-            }
-            return res.json()
-        })
-        .then(data => {
-            // console.log(data)
-            document.querySelector("#profileSection").innerHTML = data.menu_html;
-            // document.querySelector("#main-content").innerHTML = data.main_html;
-            // initTimers();
-        })
-        .catch(() => {
-            console.log("Offline or fetch failed");
-            
-        });
-
-</script>
-{% endblock %}

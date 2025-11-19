@@ -20,15 +20,12 @@ function startCountdown(elementId) {
     update();
 }
 
-function initTimers() {
+const timers = document.getElementsByClassName('timer');
+for (timer of timers) {
+    startCountdown(`${timer.id}`);
+}
 
-    const timers = document.getElementsByClassName('timer');
-    for (timer of timers) {
-        startCountdown(`${timer.id}`);
-    }
-
-    const bars = document.getElementsByClassName('bar');
-    for (bar of bars) {
-        bar.style.width = `${bar.id}%`;
-    }
+const bars = document.getElementsByClassName('bar');
+for (bar of bars) {
+    bar.style.width = `${bar.id}%`;
 }

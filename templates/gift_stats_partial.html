@@ -1,16 +1,7 @@
-{% extends 'base.html' %}
-
-{% load static %}
 {% load humanize %}
+{% load static %}
 {% load timefilters %}
 
-{% block title %}
-<title>Gift Stats - Bixy</title>
-<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
-{% endblock %}
-
-
-{% block body %}
 <div class="heading">
     <h1>Gift Stats</h1>
     <p>Information about this gift.</p>
@@ -246,10 +237,3 @@
         {% endif %}
     </div>
 </div>
-{% endblock %}
-
-
-{% block scripts %}
-<script src="{% static 'scripts/timer.js' %}"></script>
-{% endblock %}
-
