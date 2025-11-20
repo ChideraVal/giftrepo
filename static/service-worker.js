@@ -108,7 +108,7 @@ self.addEventListener('fetch', event => {
 
   // 🧠 Never cache the highscore API
   console.log("URL PATHNAME (not auth/static):", url.pathname)
-  if (!url.pathname.startsWith('/signin/') && !url.pathname.startsWith('/signup/')) {
+  if (!url.pathname.startsWith('/signin/') && !url.pathname.startsWith('/signup/') && !STATIC_ASSETS.includes(url.pathname)) {
     console.log('GET FRESH DATA.', url.pathname)
     event.respondWith(fetch(event.request).catch(() => {
       // return offline page for get requests that are not login/signup
