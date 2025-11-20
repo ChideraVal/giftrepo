@@ -195,8 +195,9 @@ body {
     /* Increased vertical padding */
     background: var(--background-color);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: sticky;
+    position: fixed;
     top: 0;
+    width: 100%;
     z-index: 100;
     /* margin-bottom: .5rem; */
     /* border: 1px solid green; */
@@ -332,6 +333,12 @@ body {
     .cta-btn {
         width: 100%;
     }
+}
+
+
+section > div:first-of-type:not(.container) {
+    /* border: 3px solid red; */
+    margin-top: 4.5em;
 }
 
 
@@ -526,6 +533,11 @@ div.coin-card {
 @media (max-width: 500px) {
     div.card-container {
         padding: 1rem var(--padding-value);
+    }
+
+    section > div:first-of-type:not(.container) {
+    /* border: 3px solid red; */
+        margin-top: 4em;
     }
 
     div.coin-card {
