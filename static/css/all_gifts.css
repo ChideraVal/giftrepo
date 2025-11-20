@@ -74,7 +74,7 @@ body.scroll {
     overflow: hidden;
     background: #ddd;
     font-family: Arial, sans-serif;
-    border: 3px solid purple;
+    /* border: 3px solid purple; */
 }
 
 .container {
