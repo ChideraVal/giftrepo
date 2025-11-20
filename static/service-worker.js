@@ -1,5 +1,5 @@
 // 🧱 Change this version whenever you update your game files
-const CACHE_NAME = 'bixy-cache-v1';
+const CACHE_NAME = 'bixy-cache-v2';
 
 const STATIC_ASSETS = [
   '/offline/',
