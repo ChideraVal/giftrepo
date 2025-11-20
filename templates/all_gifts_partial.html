@@ -1,226 +1,274 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% load static %}
-{% load humanize %}
-{% load timefilters %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block title %}
-<title>New Gifts - Bixy</title>
-<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
-{% endblock %}
+  {% load static %}
+  {% load humanize %}
+  {% load timefilters %}
 
+  {% block title %} {% endblock %}
 
-{% block body %}
-<!-- Banner -->
-<!-- <section class="bixy-banner">
-    <img src="smiling.png" alt="Referral Logo"
-        class="banner-logo">
-    <h1 class="banner-heading">Welcome to Bixy Season 1</h1>
-    <p class="banner-subtext">Join the fun! Send and claim gifts on Bixy.</p>
-    <form class="banner-form" action="{% url 'send_gift' %}" method="get">
-        <button type="submit">Join the Fun</button>
-    </form>
-    <p class="banner-disclaimer">Season ending in 6 days.</p>
-</section> -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+  <!-- <script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => alert(`Service Worker registered: ${reg}`))
+      .catch(err => alert(`Service Worker failed: ${err}`));
+  }
+    </script> -->
 
-<!-- <div class="heading">
-    <h1>New Gifts!</h1>
-    <p>Active gifts you haven't claimed.</p>
-</div> -->
+  <!-- <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+  
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/OneSignalSDKWorker.js')
+        .then(reg => {
+          alert(`OS Service Worker registered: ${reg}`);
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          OneSignalDeferred.push(async function(OneSignal) {
+          await OneSignal.init({
+          appId: "4fcc438a-3f0a-4dbc-b59d-4d185994a301",
+          safari_web_id: "web.onesignal.auto.5f176c09-6482-49c9-87ea-0c57aa3981a0",
+          notifyButton: {
+          enable: true,
+          },
+         });
+      });
+      })
+      .catch(err => alert(`OS Service Worker failed: ${err}`));
+    }
+    </script> -->
+</head>
 
-{% if gift_transactions|length > 0 %}
-<div class="container">
-  <div class="inner" id="scrollArea">
+<body>
+  <nav class="navbar">
+    <div class="logo-container" role="link" tabindex="0">
+      <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
+      <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+    </div>
 
-    {% for gift_transaction in gift_transactions %}
-    <div class="slide normal" style="background: {% cycle 'linear-gradient(135deg, #7f53d2, black)' 'linear-gradient(135deg, mediumspringgreen, black)' 'linear-gradient(135deg, #f1306d, black)' 'linear-gradient(135deg, midnightblue, black)' 'linear-gradient(135deg, mediumaquamarine, black)' %};">
-      {% if gift_transaction.is_visible %}
-      <img src="{{ gift_transaction.gift.image.url }}" alt="Gift image">
-      {% else %}
-      <img src="{% static 'images/search.png' %}" alt="Gift image">
-      {% endif %}
-
-      {% if gift_transaction.is_visible %}
-      <div class="title">{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</div>
-      {% else %}
-      <div class="title">Hidden Gift</div>
-      {% endif %}
-
-      {% if gift_transaction.drop_rate > 0 %}
-      {% if gift_transaction.is_due_for_drop %}
-      <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires"
-          data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
-      {% else %}
-      <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Drops"
-          data-seconds="{{ gift_transaction.seconds_until_drop }}">Drops in --:--:--:--</p>
-      {% endif %}
-      {% else %}
-      <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires"
-          data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
-      {% endif %}
-
-      <div class="tags">
-        {% if gift_transaction.is_fastest_finger %}
-        <p class="tag">Fastest Finger</p>
-        {% endif %}
-
-        {% if gift_transaction.early_claim_fee > 0 and not gift_transaction.is_due_for_drop %}
-        <p class="tag">Early Claim</p>
-        {% endif %}
-
-        {% if request.user in gift_transaction.paid_users.all %}
-        <p class="tag">Claimed Early</p>
-        {% endif %}
-      </div>
-
-      <a class="cta-btn" href="{% url 'reveal_gift' gift_transaction.id %}">
-        <div class="cost wh">
-            <p>{{ gift_transaction.claim_fee|intcomma }}</p>
-            <img src="{% static 'images/key.png' %}" alt="Gift image">
+    <div class="profile-section" id="profileSection">
+      {% if user.is_authenticated %}
+      <a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
+        <div class="cost">
+          <p>{{ user.coins|intcomma }}</p>
+          <img src="{% static 'images/dollar.png' %}" alt="Gift image">
         </div>
       </a>
-    </div>
-    {% endfor %}
+      <a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
+        <div class="cost">
+          <p>{{ user.keys|intcomma }}</p>
+          <img src="{% static 'images/key.png' %}" alt="Gift image">
+        </div>
+      </a>
 
+
+      <a href="{% url 'profile' %}">
+        <img src="{{ user.profile_pic.image.url }}" alt="Profile picture" class="profile-pic" />
+      </a>
+      {% else %}
+      <a href="{% url 'signin' %}" class="btn login">Login</a>
+      <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  {% if gift_transactions|length > 0 %}
+  <div class="container">
+    <div class="inner" id="scrollArea">
+
+      {% for gift_transaction in gift_transactions %}
+      <div class="slide normal"
+        style="background: {% cycle 'linear-gradient(135deg, #7f53d2, black)' 'linear-gradient(135deg, mediumspringgreen, black)' 'linear-gradient(135deg, #f1306d, black)' 'linear-gradient(135deg, midnightblue, black)' 'linear-gradient(135deg, mediumaquamarine, black)' %};">
+        {% if gift_transaction.is_visible %}
+        <img src="{{ gift_transaction.gift.image.url }}" alt="Gift image">
+        {% else %}
+        <img src="{% static 'images/search.png' %}" alt="Gift image">
+        {% endif %}
+
+        {% if gift_transaction.is_visible %}
+        <div class="title">{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</div>
+        {% else %}
+        <div class="title">Hidden Gift</div>
+        {% endif %}
+
+        {% if gift_transaction.drop_rate > 0 %}
+        {% if gift_transaction.is_due_for_drop %}
+        <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires"
+          data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+        {% else %}
+        <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Drops"
+          data-seconds="{{ gift_transaction.seconds_until_drop }}">Drops in --:--:--:--</p>
+        {% endif %}
+        {% else %}
+        <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires"
+          data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+        {% endif %}
+
+        <div class="tags">
+          {% if gift_transaction.is_fastest_finger %}
+          <p class="tag">Fastest Finger</p>
+          {% endif %}
+
+          {% if gift_transaction.early_claim_fee > 0 and not gift_transaction.is_due_for_drop %}
+          <p class="tag">Early Claim</p>
+          {% endif %}
+
+          {% if request.user in gift_transaction.paid_users.all %}
+          <p class="tag">Claimed Early</p>
+          {% endif %}
+        </div>
+
+        <a class="cta-btn" href="{% url 'reveal_gift' gift_transaction.id %}">
+          <div class="cost wh">
+            <p>{{ gift_transaction.claim_fee|intcomma }}</p>
+            <img src="{% static 'images/key.png' %}" alt="Gift image">
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+
+    </div>
   </div>
-</div>
-{% else %}
-<div class="empty">
+  {% else %}
+  <div class="empty">
     <img src="{% static 'images/empty-box.png' %}" alt="No content image">
     <h1>Feels Empty Here.</h1>
     <a href="{% url 'all_gifts' %}">Refresh</a>
-</div>
-{% endif %}
+  </div>
+  {% endif %}
 
-{% endblock %}
 
-{% block other %}
-<a href="{% url 'send_gift' %}" class="send">
+
+  <a href="{% url 'send_gift' %}" class="send">
     <img src="{% static 'images/giftbox (1).png' %}" alt="Send gift image">
     <p>Send Gift</p>
-</a>
-{% endblock %}
+  </a>
 
-{% block scripts %}
-<script src="{% static 'scripts/timer.js' %}"></script>
+  <script src="{% static 'scripts/timer.js' %}"></script>
 
-<script>
-  document.body.classList.add('scroll');
-  document.head.classList.add('scroll');
+  <script>
+    document.body.classList.add('scroll');
+    document.head.classList.add('scroll');
 
+    const scrollArea = document.getElementById("scrollArea");
+    const slides = document.querySelectorAll(".slide");
 
-  const scrollArea = document.getElementById("scrollArea");
-  const slides = document.querySelectorAll(".slide");
-  
-  let currentIndex = 0;
-  let adLock = false;
-  let isScrolling = false; // NEW FLAG: Prevents double skipping
+    let currentIndex = 0;
+    let adLock = false;
+    let isScrolling = false; // NEW FLAG: Prevents double skipping
 
-  function goToSlide(index) {
-    // Prevent going out of bounds
-    if (index < 0 || index >= slides.length) return;
-    
-    currentIndex = index;
-    
-    // 1. Set the cooldown flag immediately
-    isScrolling = true;
+    function goToSlide(index) {
+      // Prevent going out of bounds
+      if (index < 0 || index >= slides.length) return;
 
-    const slideHeight = window.innerHeight; // Calculate height dynamically (fix for resize issues)
-    
-    scrollArea.scrollTo({
-      top: index * slideHeight,
-      behavior: "smooth"
+      currentIndex = index;
+
+      // 1. Set the cooldown flag immediately
+      isScrolling = true;
+
+      const slideHeight = window.innerHeight; // Calculate height dynamically (fix for resize issues)
+
+      scrollArea.scrollTo({
+        top: index * slideHeight,
+        behavior: "smooth"
+      });
+
+      const slide = slides[index];
+
+      if (slide.dataset.ad === "true") {
+        lockAd(slide);
+      }
+
+      // 2. Remove the cooldown flag after the scroll animation finishes (approx 800ms)
+      setTimeout(() => {
+        isScrolling = false;
+      }, 100);
+    }
+
+    // WHEEL SCROLL
+    scrollArea.addEventListener("wheel", (e) => {
+      e.preventDefault();
+
+      // CHECK BOTH: If Ad is locked OR if we are currently animating a scroll
+      if (adLock || isScrolling) return;
+
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const next = currentIndex + dir;
+
+      goToSlide(next);
+    }, { passive: false });
+
+    // TOUCH
+    let startY = 0;
+    scrollArea.addEventListener("touchstart", e => startY = e.touches[0].clientY);
+
+    scrollArea.addEventListener("touchend", e => {
+      // CHECK BOTH HERE TOO
+      if (adLock || isScrolling) return;
+
+      const diff = e.changedTouches[0].clientY - startY;
+      if (Math.abs(diff) < 50) return; // Sensitivity threshold
+
+      const dir = diff < 0 ? 1 : -1; // Up swipe = next slide
+      const next = currentIndex + dir;
+
+      goToSlide(next);
     });
 
-    const slide = slides[index];
+    // 3. Keyboard (Arrow Keys & Space)
+    window.addEventListener("keydown", (e) => {
+      // If locked or scrolling, ignore keys
+      if (adLock || isScrolling) return;
 
-    if (slide.dataset.ad === "true") {
-      lockAd(slide);
-    }
-
-    // 2. Remove the cooldown flag after the scroll animation finishes (approx 800ms)
-    setTimeout(() => {
-      isScrolling = false;
-    }, 100);
-  }
-
-  // WHEEL SCROLL
-  scrollArea.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    
-    // CHECK BOTH: If Ad is locked OR if we are currently animating a scroll
-    if (adLock || isScrolling) return;
-
-    const dir = e.deltaY > 0 ? 1 : -1;
-    const next = currentIndex + dir;
-    
-    goToSlide(next);
-  }, { passive: false });
-
-  // TOUCH
-  let startY = 0;
-  scrollArea.addEventListener("touchstart", e => startY = e.touches[0].clientY);
-  
-  scrollArea.addEventListener("touchend", e => {
-    // CHECK BOTH HERE TOO
-    if (adLock || isScrolling) return;
-
-    const diff = e.changedTouches[0].clientY - startY;
-    if (Math.abs(diff) < 50) return; // Sensitivity threshold
-
-    const dir = diff < 0 ? 1 : -1; // Up swipe = next slide
-    const next = currentIndex + dir;
-    
-    goToSlide(next);
-  });
-
-  // 3. Keyboard (Arrow Keys & Space)
-  window.addEventListener("keydown", (e) => {
-    // If locked or scrolling, ignore keys
-    if (adLock || isScrolling) return;
-
-    if (e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === " ") {
-      e.preventDefault(); // Stop default page scroll
-      goToSlide(currentIndex + 1);
-    } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-      e.preventDefault();
-      goToSlide(currentIndex - 1);
-    }
-  });
-
-  function lockAd(slide) {
-    adLock = true;
-    scrollArea.classList.add("locked");
-
-    const barContainer = slide.querySelector(".progress-container");
-    const bar = slide.querySelector(".progress-bar");
-
-    barContainer.style.opacity = 1;
-    bar.style.width = "0%";
-
-    let progress = 0;
-    const duration = 5;
-    const interval = 100;
-    const step = 100 / (duration * 1000 / interval);
-
-    const timer = setInterval(() => {
-      progress += step;
-      bar.style.width = progress + "%";
-
-      if (progress >= 100) {
-        clearInterval(timer);
-        barContainer.style.opacity = 0;
-        scrollArea.classList.remove("locked");
-        adLock = false;
+      if (e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === " ") {
+        e.preventDefault(); // Stop default page scroll
+        goToSlide(currentIndex + 1);
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        goToSlide(currentIndex - 1);
       }
-    }, interval);
-  }
+    });
 
-  // Reset scroll on reload
-  if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-  }
-  window.scrollTo(0, 0);
-  scrollArea.scrollTo(0, 0);
-</script>
-{% endblock %}
+    function lockAd(slide) {
+      adLock = true;
+      scrollArea.classList.add("locked");
+
+      const barContainer = slide.querySelector(".progress-container");
+      const bar = slide.querySelector(".progress-bar");
+
+      barContainer.style.opacity = 1;
+      bar.style.width = "0%";
+
+      let progress = 0;
+      const duration = 5;
+      const interval = 100;
+      const step = 100 / (duration * 1000 / interval);
+
+      const timer = setInterval(() => {
+        progress += step;
+        bar.style.width = progress + "%";
+
+        if (progress >= 100) {
+          clearInterval(timer);
+          barContainer.style.opacity = 0;
+          scrollArea.classList.remove("locked");
+          adLock = false;
+        }
+      }, interval);
+    }
+
+    // Reset scroll on reload
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+    scrollArea.scrollTo(0, 0);
+  </script>
+</body>
+
+</html>
