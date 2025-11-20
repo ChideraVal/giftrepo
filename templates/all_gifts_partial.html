@@ -1,186 +1,132 @@
+{% extends 'base.html' %}
+
+{% load static %}
 {% load humanize %}
 {% load timefilters %}
-{% load static %}
 
-<div class="heading">
-    <h1>New Gifts</h1>
+{% block title %}
+<title>New Gifts - Bixy</title>
+<link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+{% endblock %}
+
+
+{% block body %}
+<!-- Banner -->
+<!-- <section class="bixy-banner">
+    <img src="smiling.png" alt="Referral Logo"
+        class="banner-logo">
+    <h1 class="banner-heading">Welcome to Bixy Season 1</h1>
+    <p class="banner-subtext">Join the fun! Send and claim gifts on Bixy.</p>
+    <form class="banner-form" action="{% url 'send_gift' %}" method="get">
+        <button type="submit">Join the Fun</button>
+    </form>
+    <p class="banner-disclaimer">Season ending in 6 days.</p>
+</section> -->
+
+<!-- <div class="heading">
+    <h1>New Gifts!</h1>
     <p>Active gifts you haven't claimed.</p>
-</div>
+</div> -->
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>30 Randomized Slides</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      background: #000;
-      font-family: Arial, sans-serif;
-    }
-
-    .container {
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .inner {
-      height: 100%;
-      overflow: hidden; /* No scrollbar, JS handles movement */
-    }
-
-    .inner.locked {
-      overflow-y: hidden !important;
-      pointer-events: none !important;
-    }
-
-    .slide {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      text-align: center;
-      padding: 20px;
-      position: relative;
-      border-bottom: 1px solid #333; /* Subtle separator */
-    }
-
-    /* CSS Alternating colors */
-    .slide.normal:nth-of-type(odd) { background: #111; }
-    .slide.normal:nth-of-type(even) { background: #1a1a1a; }
-
-    .slide.ad { background: #550000; }
-
-    .ad-label {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #ff0050;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 12px;
-      letter-spacing: 1px;
-    }
-
-    .slide-number {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        color: #555;
-        font-size: 14px;
-    }
-
-    .progress-container {
-      position: absolute;
-      bottom: 30px;
-      left: 5%;
-      width: 90%;
-      height: 6px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 10px;
-      overflow: hidden;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #ff0050;
-      transition: width 0.1s linear;
-    }
-
-    .title { font-size: 32px; margin-bottom: 16px; font-weight: bold; }
-    .description { font-size: 18px; opacity: 0.9; margin-bottom: 25px; max-width: 90%; }
-    .cta-btn { padding: 14px 28px; background: #ff0050; border: none; border-radius: 8px; color: #fff; font-size: 18px; cursor: pointer; }
-    .cta-btn:hover { background: #d90043; }
-  </style>
-</head>
-
-<!-- <body> -->
-
+{% if gift_transactions|length > 0 %}
 <div class="container">
   <div class="inner" id="scrollArea">
+
+    {% for gift_transaction in gift_transactions %}
+    <div class="slide normal">
+      {% if gift_transaction.is_visible %}
+      <img src="{{ gift_transaction.gift.image.url }}" alt="Gift image">
+      {% else %}
+      <img src="{% static 'images/search.png' %}" alt="Gift image">
+      {% endif %}
+
+      {% if gift_transaction.is_visible %}
+      <div class="title">{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</div>
+      {% else %}
+      <div class="title">Hidden Gift</div>
+      {% endif %}
+
+      {% if gift_transaction.drop_rate > 0 %}
+      {% if gift_transaction.is_due_for_drop %}
+      <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires"
+          data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+      {% else %}
+      <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Drops"
+          data-seconds="{{ gift_transaction.seconds_until_drop }}">Drops in --:--:--:--</p>
+      {% endif %}
+      {% else %}
+      <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires"
+          data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+      {% endif %}
+
+      <div class="tags">
+        {% if gift_transaction.is_fastest_finger %}
+        <p class="tag">Fastest Finger</p>
+        {% endif %}
+
+        {% if gift_transaction.early_claim_fee > 0 and not gift_transaction.is_due_for_drop %}
+        <p class="tag">Early Claim</p>
+        {% endif %}
+
+        {% if request.user in gift_transaction.paid_users.all %}
+        <p class="tag">Claimed Early</p>
+        {% endif %}
+      </div>
+
+      <a class="cta-btn" href="{% url 'reveal_gift' gift_transaction.id %}">
+        <div class="cost wh">
+            <p>{{ gift_transaction.claim_fee|intcomma }}</p>
+            <img src="{% static 'images/key.png' %}" alt="Gift image">
+        </div>
+      </a>
     </div>
+    {% endfor %}
+
+  </div>
 </div>
+{% else %}
+<div class="empty">
+    <img src="{% static 'images/empty-box.png' %}" alt="No content image">
+    <h1>Feels Empty Here.</h1>
+    <a href="{% url 'all_gifts' %}">Refresh</a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block other %}
+<a href="{% url 'send_gift' %}" class="send">
+    <img src="{% static 'images/giftbox (1).png' %}" alt="Send gift image">
+    <p>Send Gift</p>
+</a>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'scripts/timer.js' %}"></script>
 
 <script>
+  document.body.classList.add('scroll');
+  document.head.classList.add('scroll');
+
+
   const scrollArea = document.getElementById("scrollArea");
-  const TOTAL_SLIDES = 100;
-  
-  // --- 1. GENERATE SLIDES ---
-  function generateSlides() {
-    let html = '';
-
-    for (let i = 0; i < TOTAL_SLIDES; i++) {
-      // Logic: 
-      // Index 0 is always Welcome.
-      // Last Index is always Finish.
-      // Otherwise: 25% chance of Ad, 75% chance of Normal.
-      
-      const isFirst = i === 0;
-      const isLast = i === TOTAL_SLIDES - 1;
-      const isAd = !isFirst && !isLast && Math.random() < 0.1; 
-
-      if (isAd) {
-        // AD SLIDE TEMPLATE
-        html += `
-          <div class="slide ad" data-ad="true">
-            <div class="slide-number">#${i + 1}</div>
-            <div class="ad-label">AD</div>
-            <div class="title">Ad Break</div>
-            <div class="description">Please wait 5 seconds to continue...</div>
-            <div class="progress-container">
-              <div class="progress-bar"></div>
-            </div>
-          </div>
-        `;
-      } else {
-        // NORMAL SLIDE TEMPLATE
-        let title = isFirst ? "Welcome" : isLast ? "Finished!" : `Content Slide ${i}`;
-        let desc = isFirst ? "Scroll to begin" : isLast ? "You reached the end." : "Keep scrolling to read more content.";
-        let btnText = isFirst ? "Start" : isLast ? "Restart" : "Learn More";
-        
-        html += `
-          <div class="slide normal">
-            <div class="slide-number">#${i + 1}</div>
-            <div class="title">${title}</div>
-            <div class="description">${desc}</div>
-            <button class="cta-btn" onclick="console.log('Clicked ${i}')">${btnText}</button>
-          </div>
-        `;
-      }
-    }
-    scrollArea.innerHTML = html;
-  }
-
-  // Run generation immediately
-  generateSlides();
-
-  // --- 2. SETUP SCROLL LOGIC ---
-  // We select slides AFTER generation
   const slides = document.querySelectorAll(".slide");
   
   let currentIndex = 0;
   let adLock = false;
-  let isScrolling = false;
+  let isScrolling = false; // NEW FLAG: Prevents double skipping
 
   function goToSlide(index) {
+    // Prevent going out of bounds
     if (index < 0 || index >= slides.length) return;
-
+    
     currentIndex = index;
+    
+    // 1. Set the cooldown flag immediately
     isScrolling = true;
 
-    // Calculate height dynamically in case of window resize
-    const slideHeight = window.innerHeight;
-
+    const slideHeight = window.innerHeight; // Calculate height dynamically (fix for resize issues)
+    
     scrollArea.scrollTo({
       top: index * slideHeight,
       behavior: "smooth"
@@ -188,36 +134,44 @@
 
     const slide = slides[index];
 
-    // Check for Ad Lock
     if (slide.dataset.ad === "true") {
       lockAd(slide);
     }
 
-    // Reset scroll flag after animation (800ms)
+    // 2. Remove the cooldown flag after the scroll animation finishes (approx 800ms)
     setTimeout(() => {
       isScrolling = false;
     }, 200);
   }
 
-  // --- EVENT LISTENERS ---
-
-  // Wheel
+  // WHEEL SCROLL
   scrollArea.addEventListener("wheel", (e) => {
     e.preventDefault();
+    
+    // CHECK BOTH: If Ad is locked OR if we are currently animating a scroll
     if (adLock || isScrolling) return;
+
     const dir = e.deltaY > 0 ? 1 : -1;
-    goToSlide(currentIndex + dir);
+    const next = currentIndex + dir;
+    
+    goToSlide(next);
   }, { passive: false });
 
-  // Touch
+  // TOUCH
   let startY = 0;
   scrollArea.addEventListener("touchstart", e => startY = e.touches[0].clientY);
+  
   scrollArea.addEventListener("touchend", e => {
+    // CHECK BOTH HERE TOO
     if (adLock || isScrolling) return;
+
     const diff = e.changedTouches[0].clientY - startY;
-    if (Math.abs(diff) < 50) return;
-    const dir = diff < 0 ? 1 : -1;
-    goToSlide(currentIndex + dir);
+    if (Math.abs(diff) < 50) return; // Sensitivity threshold
+
+    const dir = diff < 0 ? 1 : -1; // Up swipe = next slide
+    const next = currentIndex + dir;
+    
+    goToSlide(next);
   });
 
   // 3. Keyboard (Arrow Keys & Space)
@@ -234,7 +188,6 @@
     }
   });
 
-  // --- AD LOCK LOGIC ---
   function lockAd(slide) {
     adLock = true;
     scrollArea.classList.add("locked");
@@ -246,8 +199,8 @@
     bar.style.width = "0%";
 
     let progress = 0;
-    const duration = 5; // 5 seconds
-    const interval = 100; // Update every 100ms
+    const duration = 5;
+    const interval = 100;
     const step = 100 / (duration * 1000 / interval);
 
     const timer = setInterval(() => {
@@ -263,21 +216,11 @@
     }, interval);
   }
 
-  // Handle Resize
-  window.addEventListener('resize', () => {
-    // Re-align current slide on resize so it doesn't get cut off
-    scrollArea.scrollTo({
-      top: currentIndex * window.innerHeight,
-      behavior: "auto"
-    });
-  });
-
-  // Init
-  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  // Reset scroll on reload
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
   window.scrollTo(0, 0);
   scrollArea.scrollTo(0, 0);
-
 </script>
-
-</body>
-</html>
+{% endblock %}

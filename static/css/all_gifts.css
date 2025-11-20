@@ -55,6 +55,132 @@ html {
     --tag-text: white;
 } */
 
+
+/* SCROLL CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html.scroll,
+body.scroll {
+    height: 100%;
+    overflow: hidden;
+    /* background: #000; */
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.inner {
+    height: 100%;
+    /* REMOVED scroll-snap-type because we are using JS to control positions */
+    overflow: hidden;
+}
+
+/* Added a class to allow manual scrolling only when needed, 
+       though your logic mostly handles this via JS events */
+.inner.locked {
+    overflow-y: hidden !important;
+    pointer-events: none !important;
+}
+
+.slide {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    /* border: 3px solid red; */
+    top: -30px;
+}
+
+div.slide.normal img {
+    width: 200px;
+    height: 200px;
+}
+
+.slide.normal:nth-child(odd) {
+    background: linear-gradient(135deg, var(--button-hover-color), black);
+}
+
+.slide.normal:nth-child(even) {
+    background: linear-gradient(135deg, red, black);
+}
+
+.slide.ad {
+    background: #550000;
+}
+
+.ad-label {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #ff0050;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.progress-container {
+    position: absolute;
+    bottom: 30px;
+    left: 5%;
+    width: 90%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #ff0050;
+    transition: width 0.1s linear;
+}
+
+.title {
+    font-size: 32px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.timer {
+    font-size: 18px;
+    opacity: 0.9;
+    /* margin-bottom: 15px; */
+    max-width: 90%;
+}
+
+.cta-btn {
+    padding: 10px 20px;
+    background: #ff0050;
+    background-color: var(--button-color);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    /* margin-top: 15px; */
+}
+
+/* END OF SCROLL CSS */
+
+
+
+
 body {
     background-color: var(--background-color);
     /* padding: 1rem; */
@@ -187,6 +313,24 @@ body {
         width: 40px;
         height: 40px;
         margin-right: 8px;
+    }
+
+    
+    div.slide.normal img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .title, .timer, .cta-btn {
+        font-size: 1.5rem;
+    }
+
+    .timer, .cta-btn {
+        font-size: .9rem;
+    }
+
+    .cta-btn {
+        width: 100%;
     }
 }
 
@@ -451,9 +595,12 @@ div.bar {
 div.tags {
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: .5em;
+    /* margin-top: .5em; */
+    margin: .5em 0;
+    /* border: 2px solid red; */
 }
 
 p.tag {
@@ -665,7 +812,8 @@ select,
     color: var(--input-text-color);
 }
 
-.login-form input:focus, select:focus {
+.login-form input:focus,
+select:focus {
     border-color: var(--button-color);
     outline: none;
 }
@@ -848,7 +996,8 @@ div.success {
     text-align: center;
 }
 
-.signup-form a, .signup-form button {
+.signup-form a,
+.signup-form button {
     display: block;
     width: 100%;
     padding: 0.75rem;
@@ -911,7 +1060,7 @@ div.profile-container {
     /* width: 120px;
     height: 120px; */
     width: 250px;
-    height: 250px ;
+    height: 250px;
     border-radius: 50%;
     object-fit: cover;
 }
