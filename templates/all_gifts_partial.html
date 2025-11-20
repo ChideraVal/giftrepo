@@ -250,7 +250,7 @@
       touchStartScrollTop = scrollArea.scrollTop; // Remember where we started
     }, { passive: false });
 
-    scrollArea.addEventListener("touchmove", (e) => {
+    /* scrollArea.addEventListener("touchmove", (e) => {
       if (!isDragging || adLock) return;
       e.preventDefault(); // Stop browser native scroll
 
@@ -262,7 +262,38 @@
         top: touchStartScrollTop + diff,
         behavior: "auto" 
       });
-    }, { passive: false });
+    }, { passive: false }); */
+
+    scrollArea.addEventListener("touchmove", (e) => {
+    if (!isDragging || adLock) return;
+    e.preventDefault(); 
+
+    const currentY = e.touches[0].clientY;
+    const diff = touchStartY - currentY; // How far finger moved
+    
+    const h = scrollArea.clientHeight; // Height of one slide
+    
+    // 1. Calculate the raw new position
+    let newPos = touchStartScrollTop + diff;
+
+    // 2. CLAMPING LOGIC:
+    // The top boundary is the Start of the Previous Slide
+    const minScroll = (currentIndex - 1) * h; 
+    // The bottom boundary is the Start of the Next Slide
+    const maxScroll = (currentIndex + 1) * h;
+
+    // 3. Apply the clamp (Restricts movement to exactly +/- 1 slide)
+    // If newPos is higher than the next slide, stop at the next slide.
+    // If newPos is lower than the prev slide, stop at the prev slide.
+    if (newPos > maxScroll) newPos = maxScroll;
+    if (newPos < minScroll) newPos = minScroll;
+
+    // 4. Move screen
+    scrollArea.scrollTo({
+      top: newPos,
+      behavior: "auto" 
+    });
+  }, { passive: false });
 
     scrollArea.addEventListener("touchend", (e) => {
       if (!isDragging) return;
