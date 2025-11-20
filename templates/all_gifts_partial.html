@@ -171,7 +171,7 @@
       // 1. Set the cooldown flag immediately
       isScrolling = true;
 
-      const slideHeight = window.innerHeight; // Calculate height dynamically (fix for resize issues)
+      const slideHeight = scrollArea.clientHeight; // Calculate height dynamically (fix for resize issues)
 
       scrollArea.scrollTo({
         top: index * slideHeight,
@@ -262,6 +262,12 @@
       }, interval);
     }
 
+    // Resize & Init
+    window.addEventListener('resize', () => {
+      const slideHeight = scrollArea.clientHeight;
+      scrollArea.scrollTo({ top: currentIndex * slideHeight, behavior: "auto" });
+    });
+  
     // Reset scroll on reload
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
