@@ -12,6 +12,7 @@
       overflow: hidden;
       background: #000;
       font-family: Arial, sans-serif;
+      border: 3px solid blue;
     }
 
     /* --- NAV BAR STYLES --- */
@@ -63,12 +64,12 @@
     }
 
     /* --- EXISTING SLIDE STYLES --- */
-    .container { height: 100vh; overflow: hidden; }
+    .container { height: 100%; overflow: hidden; }
     .inner { height: 100%; overflow: hidden; }
     .inner.locked { overflow-y: hidden !important; pointer-events: none !important; }
 
     .slide {
-      height: 100vh;
+      height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -170,7 +171,7 @@
     }
     scrollArea.innerHTML = html;
   }
-  generateSlides();
+  // generateSlides();
 
   // --- 2. SCROLL LOGIC ---
   const slides = document.querySelectorAll(".slide");
@@ -197,7 +198,7 @@
     isScrolling = true;
     updateCounter(); // Update the nav bar number
 
-    const slideHeight = window.innerHeight;
+    const slideHeight = scrollArea.clientHeight;
     scrollArea.scrollTo({ top: index * slideHeight, behavior: "smooth" });
 
     const slide = slides[index];
@@ -272,7 +273,8 @@
 
   // Resize & Init
   window.addEventListener('resize', () => {
-    scrollArea.scrollTo({ top: currentIndex * window.innerHeight, behavior: "auto" });
+    const slideHeight = scrollArea.clientHeight;
+    scrollArea.scrollTo({ top: currentIndex * slideHeight, behavior: "auto" });
   });
   
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';

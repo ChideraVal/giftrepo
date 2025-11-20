@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll">
 
 <head>
   <meta charset="UTF-8">
@@ -44,7 +44,7 @@
     </script> -->
 </head>
 
-<body>
+<body class="scroll">
   <nav class="navbar">
     <div class="logo-container" role="link" tabindex="0">
       <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
@@ -152,8 +152,8 @@
   <script src="{% static 'scripts/timer.js' %}"></script>
 
   <script>
-    document.body.classList.add('scroll');
-    document.head.classList.add('scroll');
+    // document.body.classList.add('scroll');
+    // document.head.classList.add('scroll');
 
     const scrollArea = document.getElementById("scrollArea");
     const slides = document.querySelectorAll(".slide");

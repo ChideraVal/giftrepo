@@ -63,17 +63,25 @@ html {
     box-sizing: border-box;
 }
 
+body {
+    background-color: var(--background-color);
+    /* padding: 1rem; */
+}
+
 html.scroll,
 body.scroll {
     height: 100%;
     overflow: hidden;
-    /* background: #000; */
+    background: #ddd;
     font-family: Arial, sans-serif;
+    border: 3px solid purple;
 }
 
 .container {
     height: 100%;
     overflow: hidden;
+    /* border: 2px solid red; */
+
 }
 
 .inner {
@@ -100,7 +108,7 @@ body.scroll {
     padding: 20px;
     position: relative;
     /* border: 3px solid red; */
-    top: 0px;
+    /* top: 0px; */
 }
 
 div.slide.normal img {
@@ -181,11 +189,6 @@ div.slide.normal img {
 
 
 
-body {
-    background-color: var(--background-color);
-    /* padding: 1rem; */
-}
-
 /* Navbar container */
 .navbar {
     display: flex;
@@ -198,7 +201,7 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 100;
     /* margin-bottom: .5rem; */
     /* border: 1px solid green; */
 }
