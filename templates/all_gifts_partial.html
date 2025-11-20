@@ -158,9 +158,15 @@
     const scrollArea = document.getElementById("scrollArea");
     const slides = document.querySelectorAll(".slide");
 
+    // --- 2. STATE VARIABLES ---
     let currentIndex = 0;
     let adLock = false;
     let isScrolling = false; // NEW FLAG: Prevents double skipping
+
+    // Variables for Touch Dragging
+    let touchStartY = 0;
+    let touchStartScrollTop = 0;
+    let isDragging = false;
 
     function goToSlide(index) {
       // Prevent going out of bounds
@@ -231,6 +237,50 @@
       } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
         e.preventDefault();
         goToSlide(currentIndex - 1);
+      }
+    });
+
+    // --- 4. NEW TOUCH LOGIC (Follow Finger) ---
+    
+    scrollArea.addEventListener("touchstart", (e) => {
+      if (adLock || isScrolling) return;
+      
+      isDragging = true;
+      touchStartY = e.touches[0].clientY;
+      touchStartScrollTop = scrollArea.scrollTop; // Remember where we started
+    }, { passive: false });
+
+    scrollArea.addEventListener("touchmove", (e) => {
+      if (!isDragging || adLock) return;
+      e.preventDefault(); // Stop browser native scroll
+
+      const currentY = e.touches[0].clientY;
+      const diff = touchStartY - currentY; // How far finger moved
+
+      // Move screen INSTANTLY with finger
+      scrollArea.scrollTo({
+        top: touchStartScrollTop + diff,
+        behavior: "auto" 
+      });
+    }, { passive: false });
+
+    scrollArea.addEventListener("touchend", (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      const currentY = e.changedTouches[0].clientY;
+      const diff = touchStartY - currentY;
+      const threshold = window.innerHeight * 0.15; // Drag 15% to change slide
+
+      if (diff > threshold) {
+        // Dragged Up -> Next
+        goToSlide(currentIndex + 1);
+      } else if (diff < -threshold) {
+        // Dragged Down -> Prev
+        goToSlide(currentIndex - 1);
+      } else {
+        // Not enough -> Snap back
+        goToSlide(currentIndex);
       }
     });
 
