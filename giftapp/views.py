@@ -750,6 +750,6 @@ def all_gifts(request):
         
         ).order_by('seconds_before_drop', 'seconds_before_expire')
 
-    return render(request, "all_gifts_partial.html", {"gift_transactions": gift_transactions})
-    # return render(request, "all_gifts.html")
+    # return render(request, "all_gifts_partial.html", {"gift_transactions": gift_transactions})
+    return render(request, "scroll.html")
 

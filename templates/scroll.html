@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slides with Fixed Nav</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    /* --- NAV BAR STYLES --- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+      backdrop-filter: blur(5px);      /* Blur effect behind nav */
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      z-index: 1000; /* Sits on top of slides */
+      color: #fff;
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      letter-spacing: 1px;
+      color: #ff0050;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-item {
+      cursor: pointer;
+      font-size: 14px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      user-select: none;
+    }
+
+    .nav-item:hover { opacity: 1; }
+    
+    .nav-counter {
+      font-family: monospace;
+      background: #222;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #444;
+    }
+
+    /* --- EXISTING SLIDE STYLES --- */
+    .container { height: 100vh; overflow: hidden; }
+    .inner { height: 100%; overflow: hidden; }
+    .inner.locked { overflow-y: hidden !important; pointer-events: none !important; }
+
+    .slide {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+      border-bottom: 1px solid #333;
+    }
+
+    .slide.normal:nth-of-type(odd) { background: #111; }
+    .slide.normal:nth-of-type(even) { background: #1a1a1a; }
+    .slide.ad { background: #550000; }
+
+    .ad-label {
+      position: absolute;
+      top: 80px; /* Moved down slightly so Nav bar doesn't cover it */
+      right: 20px;
+      background: #ff0050;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .progress-container {
+      position: absolute;
+      bottom: 30px;
+      left: 5%;
+      width: 90%;
+      height: 6px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #ff0050;
+      transition: width 0.1s linear;
+    }
+
+    .title { font-size: 32px; margin-bottom: 16px; font-weight: bold; }
+    .description { font-size: 18px; opacity: 0.9; margin-bottom: 25px; max-width: 90%; }
+    .cta-btn { padding: 14px 28px; background: #ff0050; border: none; border-radius: 8px; color: #fff; font-size: 18px; cursor: pointer; }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="logo">SLIDEDECK</div>
+  <div class="nav-links">
+    <div class="nav-item" onclick="navTo(0)">Home</div>
+    <div class="nav-item nav-counter" id="navCounter">1 / 30</div>
+    <div class="nav-item" onclick="navTo(TOTAL_SLIDES - 1)">End</div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="inner" id="scrollArea">
+    </div>
+</div>
+
+<script>
+  const scrollArea = document.getElementById("scrollArea");
+  const navCounter = document.getElementById("navCounter");
+  const TOTAL_SLIDES = 30;
+
+  // --- 1. GENERATE SLIDES ---
+  function generateSlides() {
+    let html = '';
+    for (let i = 0; i < TOTAL_SLIDES; i++) {
+      const isFirst = i === 0;
+      const isLast = i === TOTAL_SLIDES - 1;
+      const isAd = !isFirst && !isLast && Math.random() < 0.1; 
+
+      if (isAd) {
+        html += `
+          <div class="slide ad" data-ad="true">
+            <div class="ad-label">SPONSORED</div>
+            <div class="title">Ad Break</div>
+            <div class="description">Please wait 5 seconds...</div>
+            <div class="progress-container"><div class="progress-bar"></div></div>
+          </div>`;
+      } else {
+        let title = isFirst ? "Welcome" : isLast ? "Finished!" : `Slide ${i + 1}`;
+        html += `
+          <div class="slide normal">
+            <div class="title">${title}</div>
+            <div class="description">Scroll to continue</div>
+            <button class="cta-btn">Action</button>
+          </div>`;
+      }
+    }
+    scrollArea.innerHTML = html;
+  }
+  generateSlides();
+
+  // --- 2. SCROLL LOGIC ---
+  const slides = document.querySelectorAll(".slide");
+  let currentIndex = 0;
+  let adLock = false;
+  let isScrolling = false;
+
+  // Helper to update the nav bar counter
+  function updateCounter() {
+    navCounter.innerText = `${currentIndex + 1} / ${TOTAL_SLIDES}`;
+  }
+
+  // Function for Nav Bar Buttons
+  function navTo(index) {
+    // Don't allow jumping if ad is locked or currently animating
+    if (adLock || isScrolling) return;
+    goToSlide(index);
+  }
+
+  function goToSlide(index) {
+    if (index < 0 || index >= slides.length) return;
+
+    currentIndex = index;
+    isScrolling = true;
+    updateCounter(); // Update the nav bar number
+
+    const slideHeight = window.innerHeight;
+    scrollArea.scrollTo({ top: index * slideHeight, behavior: "smooth" });
+
+    const slide = slides[index];
+    if (slide.dataset.ad === "true") lockAd(slide);
+
+    setTimeout(() => { isScrolling = false; }, 100);
+  }
+
+  // --- EVENT LISTENERS ---
+  scrollArea.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    if (adLock || isScrolling) return;
+    const dir = e.deltaY > 0 ? 1 : -1;
+    goToSlide(currentIndex + dir);
+  }, { passive: false });
+
+  let startY = 0;
+  scrollArea.addEventListener("touchstart", e => startY = e.touches[0].clientY);
+  scrollArea.addEventListener("touchend", e => {
+    if (adLock || isScrolling) return;
+    const diff = e.changedTouches[0].clientY - startY;
+    if (Math.abs(diff) < 50) return;
+    const dir = diff < 0 ? 1 : -1;
+    goToSlide(currentIndex + dir);
+  });
+
+  // --- AD LOCK ---
+  function lockAd(slide) {
+    adLock = true;
+    scrollArea.classList.add("locked");
+    
+    // Dim the Nav bar slightly to indicate locked state
+    document.querySelector('.navbar').style.opacity = "0.5";
+    document.querySelector('.navbar').style.pointerEvents = "none";
+
+    const barContainer = slide.querySelector(".progress-container");
+    const bar = slide.querySelector(".progress-bar");
+    barContainer.style.opacity = 1;
+    bar.style.width = "0%";
+
+    let progress = 0;
+    const timer = setInterval(() => {
+      progress += (100 / (5000 / 100)); // 5 seconds
+      bar.style.width = progress + "%";
+      if (progress >= 100) {
+        clearInterval(timer);
+        barContainer.style.opacity = 0;
+        scrollArea.classList.remove("locked");
+        
+        // Restore Nav bar
+        document.querySelector('.navbar').style.opacity = "1";
+        document.querySelector('.navbar').style.pointerEvents = "all";
+        
+        adLock = false;
+      }
+    }, 100);
+  }
+
+  // 3. Keyboard (Arrow Keys & Space)
+  window.addEventListener("keydown", (e) => {
+    // If locked or scrolling, ignore keys
+    if (adLock || isScrolling) return;
+
+    if (e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === " ") {
+      e.preventDefault(); // Stop default page scroll
+      goToSlide(currentIndex + 1);
+    } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      goToSlide(currentIndex - 1);
+    }
+  });
+
+  // Resize & Init
+  window.addEventListener('resize', () => {
+    scrollArea.scrollTo({ top: currentIndex * window.innerHeight, behavior: "auto" });
+  });
+  
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  scrollArea.scrollTo(0, 0);
+</script>
+
+</body>
+</html>
