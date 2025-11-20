@@ -100,7 +100,7 @@ body.scroll {
     padding: 20px;
     position: relative;
     /* border: 3px solid red; */
-    top: -30px;
+    top: 0px;
 }
 
 div.slide.normal img {
@@ -108,13 +108,13 @@ div.slide.normal img {
     height: 200px;
 }
 
-.slide.normal:nth-child(odd) {
+/* .slide.normal:nth-child(odd) {
     background: linear-gradient(135deg, var(--button-hover-color), black);
 }
 
 .slide.normal:nth-child(even) {
     background: linear-gradient(135deg, red, black);
-}
+} */
 
 .slide.ad {
     background: #550000;

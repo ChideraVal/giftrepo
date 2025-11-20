@@ -33,7 +33,7 @@
   <div class="inner" id="scrollArea">
 
     {% for gift_transaction in gift_transactions %}
-    <div class="slide normal">
+    <div class="slide normal" style="background: {% cycle 'linear-gradient(135deg, #7f53d2, black)' 'linear-gradient(135deg, mediumspringgreen, black)' 'linear-gradient(135deg, #f1306d, black)' 'linear-gradient(135deg, midnightblue, black)' 'linear-gradient(135deg, mediumaquamarine, black)' %};">
       {% if gift_transaction.is_visible %}
       <img src="{{ gift_transaction.gift.image.url }}" alt="Gift image">
       {% else %}
@@ -141,7 +141,7 @@
     // 2. Remove the cooldown flag after the scroll animation finishes (approx 800ms)
     setTimeout(() => {
       isScrolling = false;
-    }, 200);
+    }, 100);
   }
 
   // WHEEL SCROLL
