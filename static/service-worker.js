@@ -5,6 +5,7 @@ const STATIC_ASSETS = [
   '/offline/',
   '/signin/',
   '/signup/',
+  '/buycoins/',
   '/static/css/signin.css',
   '/static/css/signup.css',
   '/static/css/all_gifts.css',
@@ -73,7 +74,9 @@ const STATIC_ASSETS = [
 self.addEventListener('install', event => {
   console.log('[Service Worker] Installing new version:', CACHE_NAME);
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then(cache => {
+      cache.addAll(STATIC_ASSETS)
+    })
   );
   self.skipWaiting(); // Activate immediately after install
 });
@@ -95,6 +98,16 @@ self.addEventListener('activate', event => {
 
 // ⚙️ Fetch phase — define caching strategies
 self.addEventListener('fetch', event => {
+  console.log("Cached static assets:")
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      cache.keys().then(keys => {
+        console.log(keys)
+      })
+    })
+  )
+
+
   const url = new URL(event.request.url);
 
   if (event.request.method !== 'GET') {
@@ -132,10 +145,15 @@ self.addEventListener('fetch', event => {
   // }
 
   // 🧠 Cache-first for other static assets
-  
+
+  // console.log("Cached static assets:", caches.keys().then(cached => {
+  //   console.log(cached)
+  // }))
+
+
   console.log("URL PATHNAME (auth/static):", url.pathname)
   event.respondWith(
-    caches.match(url.pathname, {ignoreSearch: true}).then(cached => {
+    caches.match(url.pathname, { ignoreSearch: true }).then(cached => {
       console.log('GETTING FROM CACHE (auth/static).', url.pathname)
       return (
         cached ||

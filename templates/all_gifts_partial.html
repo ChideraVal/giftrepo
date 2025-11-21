@@ -193,7 +193,7 @@
       // 2. Remove the cooldown flag after the scroll animation finishes (approx 800ms)
       setTimeout(() => {
         isScrolling = false;
-      }, 100);
+      }, 800);
     }
 
     // WHEEL SCROLL
@@ -210,21 +210,21 @@
     }, { passive: false });
 
     // TOUCH
-    let startY = 0;
-    scrollArea.addEventListener("touchstart", e => startY = e.touches[0].clientY);
+    // let startY = 0;
+    // scrollArea.addEventListener("touchstart", e => startY = e.touches[0].clientY);
 
-    scrollArea.addEventListener("touchend", e => {
-      // CHECK BOTH HERE TOO
-      if (adLock || isScrolling) return;
+    // scrollArea.addEventListener("touchend", e => {
+    //   // CHECK BOTH HERE TOO
+    //   if (adLock || isScrolling) return;
 
-      const diff = e.changedTouches[0].clientY - startY;
-      if (Math.abs(diff) < 50) return; // Sensitivity threshold
+    //   const diff = e.changedTouches[0].clientY - startY;
+    //   if (Math.abs(diff) < 50) return; // Sensitivity threshold
 
-      const dir = diff < 0 ? 1 : -1; // Up swipe = next slide
-      const next = currentIndex + dir;
+    //   const dir = diff < 0 ? 1 : -1; // Up swipe = next slide
+    //   const next = currentIndex + dir;
 
-      goToSlide(next);
-    });
+    //   goToSlide(next);
+    // });
 
     // 3. Keyboard (Arrow Keys & Space)
     window.addEventListener("keydown", (e) => {
@@ -270,7 +270,7 @@
 
       const currentY = e.changedTouches[0].clientY;
       const diff = touchStartY - currentY;
-      const threshold = window.innerHeight * 0.15; // Drag 15% to change slide
+      const threshold = window.innerHeight * 0.25; // Drag 15% to change slide
 
       if (diff > threshold) {
         // Dragged Up -> Next
