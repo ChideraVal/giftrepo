@@ -255,7 +255,7 @@
 
       const currentY = e.changedTouches[0].clientY;
       const diff = touchStartY - currentY;
-      const threshold = window.innerHeight * 0.3; // Drag 15% to change slide
+      const threshold = window.innerHeight * 0.15; // Drag 15% to change slide
 
       if (diff > threshold) {
         // Dragged Up -> Next
