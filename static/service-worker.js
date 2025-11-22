@@ -75,7 +75,13 @@ self.addEventListener('install', event => {
   console.log('[Service Worker] Installing new version:', CACHE_NAME);
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      cache.addAll(STATIC_ASSETS)
+      cache.addAll(STATIC_ASSETS).then(() => {
+      console.log("Service worker: All static assets cached successfully!");
+        clients.matchAll().then(clients => {
+  clients.forEach(client => {
+    client.postMessage({ status: "cached-complete" });
+  });
+});
     })
   );
   self.skipWaiting(); // Activate immediately after install
