@@ -16,6 +16,14 @@
     }
 </script>
 
+<script>
+    navigator.serviceWorker.addEventListener("message", (event) => {
+  if (event.data.status === "cached-complete") {
+    alert("Caching complete!");
+  }
+});
+</script>
+
 {% endblock %}
 
 
