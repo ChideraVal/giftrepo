@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
+    <title>Something went wrong - Bixy</title>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo-container" role="link" tabindex="0">
+            <!-- <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png" alt="Logo" class="logo-image" /> -->
+            <a href="{% url 'all_gifts' %}" class="logo-text">Bixy</a>
+        </div>
+
+        <div class="profile-section" id="profileSection">
+            <a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
+                <div class="cost">
+                    <p>-</p>
+                    <img src="{% static 'images/dollar.png' %}" alt="Gift image">
+                </div>
+            </a>
+            <a href="{% url 'buy_coins' %}" style="text-decoration: none; color: black;">
+                <div class="cost">
+                    <p>-</p>
+                    <img src="{% static 'images/key.png' %}" alt="Gift image">
+                </div>
+            </a>
+            <a href="{% url 'profile' %}">
+                <img src="{% static 'images/user.png' %}" alt="Profile picture" class="profile-pic" />
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <section>
+            <div class="empty">
+                <h1 class="state">Loading...</h1>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        fetch(window.location.pathname)
+        .then(res => res.text())
+        .then(html => {
+            document.html.innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementsByClassName('state').innerHTML = "You're offline";
+        })
+    </script>
+</body>
+
+</html>

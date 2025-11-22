@@ -3,9 +3,9 @@ const CACHE_NAME = 'bixy-cache-v2';
 
 const STATIC_ASSETS = [
   '/offline/',
+  '/loading/',
   '/signin/',
   '/signup/',
-  '/buycoins/',
   '/static/css/signin.css',
   '/static/css/signup.css',
   '/static/css/all_gifts.css',
@@ -66,8 +66,8 @@ const STATIC_ASSETS = [
   '/static/images/user.png',
   '/static/images/wallet.png',
   '/static/images/x-button.png',
-  'https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap',
-  'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap'
+  // 'https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap',
+  // 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap'
 ];
 
 // 🧩 Install phase — pre-cache static assets
@@ -75,7 +75,11 @@ self.addEventListener('install', event => {
   console.log('[Service Worker] Installing new version:', CACHE_NAME);
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      cache.addAll(STATIC_ASSETS)
+      cache.addAll(STATIC_ASSETS).then(() => {
+        console.log('CACHED STATIC ASSETS SUCCESSFULLY:', cache.keys().then(keys => {
+          console.log(keys)
+        }))
+      })
     })
   );
   self.skipWaiting(); // Activate immediately after install
@@ -98,14 +102,14 @@ self.addEventListener('activate', event => {
 
 // ⚙️ Fetch phase — define caching strategies
 self.addEventListener('fetch', event => {
-  console.log("Cached static assets:")
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      cache.keys().then(keys => {
-        console.log(keys)
-      })
-    })
-  )
+  // console.log("Cached static assets:")
+  // event.waitUntil(
+  //   caches.open(CACHE_NAME).then(cache => {
+  //     cache.keys().then(keys => {
+  //       console.log(keys)
+  //     })
+  //   })
+  // )
 
 
   const url = new URL(event.request.url);
@@ -114,7 +118,7 @@ self.addEventListener('fetch', event => {
     console.log('MAKING POST REQUEST.', event.request.url)
     event.respondWith(fetch(event.request).catch(() => {
       // return offline page for post requests
-      return caches.match('/static/css/reveal.css')
+      return caches.match('/offline/')
     }));
     return
   }
@@ -127,8 +131,15 @@ self.addEventListener('fetch', event => {
       // return offline page for get requests that are not login/signup
       return caches.match('/offline/')
     }));
+    // event.respondWith(
+    //   caches.match('/loading/').then(shell => {
+    //     console.log('GETTING OFFLINE')
+    //     return shell
+    //   })
+    // );
     return;
   }
+
 
   // 🧠 Network-first for main page
   // if (url.pathname === '/game1/index.html' || url.pathname === '/game1/') {

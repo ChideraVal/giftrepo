@@ -135,9 +135,47 @@ def tap(request):
 #         'main_html': main_html
 #     })
 
+def get_ads(request):
+    ads = Gift.objects.all()[0:6]
+    print(ads)
+
+    data = []
+    for ad in ads:
+        data.append({
+            "id": ad.id,
+            "title": ad.name,
+            "description": ad.cost,
+            "image": ad.image.url,
+            "cta_text": 'Buy Now',
+            "cta_url": '/'
+        })
+    if not request.user.is_authenticated:
+        return JsonResponse({"ads": []})
+    return JsonResponse({"ads": data})
+
+@login_required
+@csrf_exempt
+def report_ad_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        ad_id = data.get("ad_id")
+        print("AD DATA:", data, "USER:", request.user)
+
+        # mark ad as viewed / update billing records
+        # ViewedAd.objects.create(ad_id=ad_id, user=request.user if request.user.is_authenticated else None)
+
+        return JsonResponse({"success": True})
+
 def offline(request):
     return render(request, 'offline.html')
-    
+
+def loading(request):
+    return render(request, 'loading.html')
+
+@login_required
+def view_ads(request):
+    return render(request, 'ads.html')
+
 def not_found(request, exception):
     return render(request, '404.html')
 

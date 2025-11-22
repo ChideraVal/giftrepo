@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rewarded Ad Viewer</title>
+<style>
+    body {
+        margin: 0;
+        background: #f5f5f5;
+        font-family: Arial, sans-serif;
+        color: #222;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    #progress {
+        height: 5px;
+        width: 0%;
+        background: #4ba3ff;
+        transition: width linear;
+    }
+
+    .ad-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        animation: fade 0.5s;
+    }
+
+    .ad-image {
+        width: 100%;
+        max-width: 460px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .controls {
+        padding: 20px;
+        text-align: center;
+    }
+
+    #timer {
+        font-size: 15px;
+        opacity: 0.8;
+        margin-bottom: 12px;
+    }
+
+    #nextBtn {
+        background: #4ba3ff;
+        border: none;
+        color: #fff;
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 350px;
+        opacity: 0.4;
+        pointer-events: none;
+        transition: 0.3s;
+    }
+
+    #nextBtn.enabled {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    @keyframes fade {
+        from { opacity: 0; transform: scale(0.97); }
+        to { opacity: 1; transform: scale(1); }
+    }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="ad-container">
+    <img id="adImage" class="ad-image" src="" />
+</div>
+
+<div class="controls">
+    <div id="timer"></div>
+    <button id="nextBtn">Next Ad</button>
+</div>
+
+<script>
+const numberOfAds = 4;
+const duration = 10; // seconds per ad
+let currentIndex = 0;
+let viewedAds = [];
+
+// Generate random Picsum images
+const ads = Array.from({length: numberOfAds}, () => `https://picsum.photos/420/260?random=${Math.floor(Math.random()*50000)}`);
+
+const adImage = document.getElementById("adImage");
+const progress = document.getElementById("progress");
+const timerEl = document.getElementById("timer");
+const nextBtn = document.getElementById("nextBtn");
+
+// ----------- PRELOAD ADS FUNCTION -----------
+function preloadAds(adUrls) {
+    const promises = adUrls.map(url => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => resolve(url);
+        img.onerror = () => reject(url);
+    }));
+    return Promise.all(promises);
+}
+
+// --- Send a single ad immediately when fully viewed ---
+function sendSingleViewedAd(adUrl) {
+    fetch('/ads/viewed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ad: adUrl, userId: 'USER_ID' })
+    }).catch(() => alert('Failed to send viewed ad: ' + adUrl));
+}
+
+// --- Fallback for page close / reload ---
+window.addEventListener('beforeunload', () => {
+    viewedAds.forEach(ad => {
+        navigator.sendBeacon('/ads/viewed', JSON.stringify({ ad, userId: 'USER_ID' }));
+    });
+});
+
+// --- Load ad with timer ---
+function loadAd(index) {
+    adImage.src = ads[index];
+    nextBtn.classList.remove("enabled");
+    timerEl.innerText = `Loading ad...`;
+
+    progress.style.transition = "none";
+    progress.style.width = "0%";
+    progress.offsetWidth;
+
+    setTimeout(() => {
+        progress.style.transition = "width " + duration + "s linear";
+        progress.style.width = "100%";
+    }, 100);
+
+    let timeLeft = duration;
+    timerEl.innerText = `Viewing ad ${index + 1} of ${ads.length}... ${timeLeft}s`;
+
+    const countdown = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+            timerEl.innerText = `Viewing ad ${index + 1} of ${ads.length}... ${timeLeft}s`;
+        } else {
+            clearInterval(countdown);
+            timerEl.innerText = `Viewed ad ${index + 1} of ${ads.length}`;
+            nextBtn.classList.add("enabled");
+
+            if (!viewedAds.includes(ads[index])) {
+                viewedAds.push(ads[index]);
+                sendSingleViewedAd(ads[index]); // send immediately
+            }
+        }
+    }, 1000);
+}
+
+// --- Handle next button ---
+nextBtn.onclick = () => {
+    if (!nextBtn.classList.contains("enabled")) return;
+
+    if (currentIndex < ads.length - 1) {
+        currentIndex++;
+        loadAd(currentIndex);
+    } else {
+        timerEl.innerText = "All ads viewed!";
+        progress.style.width = "100%";
+        nextBtn.innerText = "Claim Reward";
+        nextBtn.classList.remove("enabled");
+
+        // Reward player
+        alert(`Congratulations! You viewed ${viewedAds.length} ads and earned your reward.`);
+    }
+};
+
+// ----------- START AFTER PRELOADING ADS -----------
+preloadAds(ads)
+    .then(() => loadAd(currentIndex))
+    .catch(failed => {
+        alert("Some ads failed to load: " + failed.join(', '));
+        loadAd(currentIndex);
+    });
+
+</script>
+
+</body>
+</html>
