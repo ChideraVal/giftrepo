@@ -9,6 +9,7 @@ const STATIC_ASSETS = [
   '/static/css/signin.css',
   '/static/css/signup.css',
   '/static/css/all_gifts.css',
+  '/static/css/main.css',
   '/static/css/reveal.css',
   '/static/css/verify.css',
   '/static/scripts/buygift.js',
@@ -66,6 +67,7 @@ const STATIC_ASSETS = [
   '/static/images/user.png',
   '/static/images/wallet.png',
   '/static/images/x-button.png',
+  // '/static/manifest.json',
   // 'https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap',
   // 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap'
 ];
@@ -75,7 +77,11 @@ self.addEventListener('install', event => {
   console.log('[Service Worker] Installing new version:', CACHE_NAME);
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      cache.addAll(STATIC_ASSETS)
+      cache.addAll(STATIC_ASSETS).then(
+        cache.keys().then(keys => {
+          console.log("SW CACHED SUCCESSULLY:", keys)
+        })
+      )
     })
   );
   self.skipWaiting(); // Activate immediately after install
@@ -110,6 +116,11 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
 
+
+  if (url.pathname === '/loading/') {
+    return;
+  }
+
   if (event.request.method !== 'GET') {
     console.log('MAKING POST REQUEST.', event.request.url)
     event.respondWith(fetch(event.request).catch(() => {
@@ -119,22 +130,31 @@ self.addEventListener('fetch', event => {
     return
   }
 
-  // 🧠 Never cache the highscore API
-  console.log("URL PATHNAME (not auth/static):", url.pathname)
-  if (!url.pathname.startsWith('/signin/') && !url.pathname.startsWith('/signup/') && !STATIC_ASSETS.includes(url.pathname)) {
-    console.log('GET FRESH DATA.', url.pathname)
-    event.respondWith(fetch(event.request).catch(() => {
-      // return offline page for get requests that are not login/signup
-      return caches.match('/offline/')
-    }));
-    // event.respondWith(
-    //   caches.match('/loading/').then(shell => {
-    //     console.log('GETTING OFFLINE')
-    //     return shell
-    //   })
-    // );
+  if (event.request.mode === "navigate" && !url.pathname.startsWith('/admin/')) {
+    console.log("LOADING NAVIGATE...", url.pathname)
+    event.respondWith(caches.match('/loading/'));
     return;
   }
+
+  // 🧠 Never cache the highscore API
+  // console.log("URL PATHNAME (not auth/static):", url.pathname)
+  console.log('PRESENCE OF :', url.pathname, ':', STATIC_ASSETS.includes(url.pathname))
+  if (!url.pathname.startsWith('/signin/') && !url.pathname.startsWith('/signup/') && !STATIC_ASSETS.includes(url.pathname)) {
+    // console.log('GET FRESH DATA.', url.pathname)
+    event.respondWith(fetch(event.request)
+    .then((res) => {
+      console.log(res)
+      console.log('DYNAMIC SUCCESS', event.request)
+      return res;
+    })
+    .catch(err => {
+      console.log(err, event.request)
+    })
+  );
+    return;
+  }
+
+
 
 
   // 🧠 Network-first for main page
@@ -158,16 +178,18 @@ self.addEventListener('fetch', event => {
   // }))
 
 
-  console.log("URL PATHNAME (auth/static):", url.pathname)
+
+
+  // console.log("URL PATHNAME (auth/static):", url.pathname)
   event.respondWith(
     caches.match(url.pathname, { ignoreSearch: true }).then(cached => {
-      console.log('GETTING FROM CACHE (auth/static).', url.pathname)
+      // console.log('GETTING FROM CACHE (auth/static).', url.pathname)
       return (
         cached ||
         fetch(event.request).then(response => {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          console.log('SAVED FRESH CONTENT TO CACHE (auth/static).', url.pathname)
+          // console.log('SAVED FRESH CONTENT TO CACHE (auth/static).', url.pathname)
           return response;
         })
       );

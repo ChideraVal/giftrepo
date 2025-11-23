@@ -68,8 +68,8 @@ body {
     /* padding: 1rem; */
 }
 
-html.scroll,
-body.scroll {
+html,
+body {
     height: 100%;
     overflow: hidden;
     background: #ddd;
@@ -460,7 +460,6 @@ div.empty {
     align-items: center;
     text-align: center;
     padding: 2rem 1rem;
-    gap: .5em;
     /* border: 1px solid red; */
 }
 

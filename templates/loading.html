@@ -7,7 +7,7 @@
     {% load static %}
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
-    <title>Something went wrong - Bixy</title>
+    <title>Loading... - Bixy</title>
 </head>
 
 <body>
@@ -38,21 +38,62 @@
 
     <main>
         <section>
-            <div class="empty">
-                <h1 class="state">Loading...</h1>
+            <div class="empty" style="margin-top: 200px;">
+                <h1 class="state"">Loading...</h1>
             </div>
         </section>
     </main>
 
     <script>
-        fetch(window.location.pathname)
-        .then(res => res.text())
-        .then(html => {
-            document.html.innerHTML = html;
+        document.addEventListener('DOMContentLoaded', () => {
+            function reexecuteScripts(container) {
+                const scripts = container.querySelectorAll("script");
+                console.log(scripts)
+
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement("script");
+
+                    // copy attributes
+                    [...oldScript.attributes].forEach(attr => {
+                        newScript.setAttribute(attr.name, attr.value);
+                    });
+
+                    // inline scripts
+                    if (oldScript.textContent) {
+                        newScript.textContent = oldScript.textContent;
+                    }
+
+                    oldScript.replaceWith(newScript);
+                    console.log(newScript)
+                });
+            }
+
+            console.log('FETCHING', window.location.pathname)
+            let url = window.location.pathname;
+            if (url !== '/loading/') {
+                fetch(url)
+                    .then(res => res.text())
+                    .then(html => {
+                        // console.log(html)
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newHead = doc.head.innerHTML;
+                        const newBody = doc.body.innerHTML;
+                        // console.log(newBody)
+                        
+                        document.head.innerHTML = newHead;
+                        document.body.innerHTML = newBody;
+                        reexecuteScripts(document.body);
+                    })
+                    .catch((err) => {
+                        document.querySelector('.empty').innerHTML = `
+                        <h1>Something went wrong</h1>
+                        <a href="">Refresh</a>
+                        `;
+                    })
+            }
         })
-        .catch(() => {
-            document.getElementsByClassName('state').innerHTML = "You're offline";
-        })
+
     </script>
 </body>
 
