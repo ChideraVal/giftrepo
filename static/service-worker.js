@@ -130,7 +130,7 @@ self.addEventListener('fetch', event => {
     return
   }
 
-  if (event.request.mode === "navigate" && !url.pathname.startsWith('/admin/')) {
+  if (event.request.mode === "navigate" && !url.pathname.startsWith('/admin/') && !url.pathname.startsWith('/logout/') && !url.pathname.startsWith('/signin/') && !url.pathname.startsWith('/signup/')) {
     console.log("LOADING NAVIGATE...", url.pathname)
     event.respondWith(caches.match('/loading/'));
     return;
@@ -142,15 +142,11 @@ self.addEventListener('fetch', event => {
   if (!url.pathname.startsWith('/signin/') && !url.pathname.startsWith('/signup/') && !STATIC_ASSETS.includes(url.pathname)) {
     // console.log('GET FRESH DATA.', url.pathname)
     event.respondWith(fetch(event.request)
-    .then((res) => {
-      console.log(res)
-      console.log('DYNAMIC SUCCESS', event.request)
-      return res;
-    })
-    .catch(err => {
-      console.log(err, event.request)
-    })
-  );
+      .catch(() => {
+        // return offline page for post requests
+        return caches.match('/offline/')
+      })
+    );
     return;
   }
 
