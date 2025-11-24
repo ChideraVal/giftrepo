@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
   // '/static/css/signin.css',
   // '/static/css/signup.css',
   '/static/css/all_gifts.css',
-  // '/static/css/main.css',
+  '/static/css/main.css',
   // '/static/css/reveal.css',
   // '/static/css/verify.css',
   // '/static/scripts/buygift.js',
