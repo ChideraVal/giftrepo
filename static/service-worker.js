@@ -4,10 +4,10 @@ const CACHE_NAME = 'bixy-cache-v2';
 const STATIC_ASSETS = [
   '/offline/',
   '/loading/',
-  '/signin/',
-  '/signup/',
-  '/static/css/signin.css',
-  '/static/css/signup.css',
+  // '/signin/',
+  // '/signup/',
+  // '/static/css/signin.css',
+  // '/static/css/signup.css',
   '/static/css/all_gifts.css',
   // '/static/css/main.css',
   // '/static/css/reveal.css',
@@ -139,7 +139,8 @@ self.addEventListener('fetch', event => {
   // 🧠 Never cache the highscore API
   // console.log("URL PATHNAME (not auth/static):", url.pathname)
   console.log('PRESENCE OF :', url.pathname, ':', STATIC_ASSETS.includes(url.pathname))
-  if (!url.pathname.startsWith('/signin/') && !url.pathname.startsWith('/signup/') && !STATIC_ASSETS.includes(url.pathname)) {
+  if (!STATIC_ASSETS.includes(url.pathname)) {
+  // if (!url.pathname.startsWith('/signin/') && !url.pathname.startsWith('/signup/') && !STATIC_ASSETS.includes(url.pathname)) {
     // console.log('GET FRESH DATA.', url.pathname)
     event.respondWith(fetch(event.request)
       .catch(() => {
@@ -185,7 +186,7 @@ self.addEventListener('fetch', event => {
         fetch(event.request).then(response => {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          // console.log('SAVED FRESH CONTENT TO CACHE (auth/static).', url.pathname)
+          console.log('SAVED FRESH CONTENT TO CACHE (auth/static).', url.pathname)
           return response;
         })
       );

@@ -365,3 +365,86 @@ div.coin-card button {
     height: 100%;
     pointer-events: none;
 }
+
+
+/* Success Page CSS */
+div.success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+.signup-container {
+    background: var(--background-color);
+    padding: 2rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 450px;
+    margin: 2em 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.signup-container img {
+    width: 100px;
+    height: 100px;
+}
+
+.signup-form h2 {
+    margin: 0.5rem 0;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.signup-form p {
+    margin-bottom: 1rem;
+    color: var(--sub-text-color);
+    text-align: center;
+}
+
+.signup-form a,
+.signup-form button {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    /* background: var(--button-color); */
+    background-color: var(--button-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.3s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.links {
+    /* margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem; */
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.links a {
+    color: var(--button-color);
+    text-decoration: none;
+    transition: color 0.2s;
+    text-align: center;
+}
+
+@media (max-width: 500px) {
+    .signup-container {
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 1rem;
+    }
+}
