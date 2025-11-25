@@ -7,7 +7,7 @@
 {% block title %}
 <title>Buy Coins - Bixy</title>
 <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}">
-<script src="https://checkout.flutterwave.com/v3.js"></script>
+<!-- <script src="https://checkout.flutterwave.com/v3.js"></script> -->
 <script>
     if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
@@ -63,6 +63,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://checkout.flutterwave.com/v3.js"></script>
 <script>
     const nameValue = "{{ request.user.username }}";
     const emailValue = "{{ request.user.email }}";

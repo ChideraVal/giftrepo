@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "DM Sans", sans-serif;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background: #f5f5f5;
+    font-family: Arial, sans-serif;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    /* border: 2px solid yellow; */
+}
+
+#progress {
+    height: 5px;
+    width: 0%;
+    background: #667eea;
+    transition: width linear;
+}
+
+.ad-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fade 0.5s;
+    /* border: 2px solid red; */
+    /* overflow-y: scroll; */
+}
+
+.ad-image {
+    width: 200px;
+    height: 200px;
+    max-width: 460px;
+    border-radius: 12px;
+    /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); */
+}
+
+.controls {
+    padding: 20px;
+    text-align: center;
+    /* border: 2px solid blue; */
+    /* flex: 1; */
+}
+
+#timer {
+    font-size: 15px;
+    opacity: 0.8;
+    margin-bottom: 12px;
+}
+
+#nextBtn {
+    background: #667eea;
+    border: none;
+    color: #fff;
+    padding: 12px 20px;
+    font-size: 1.15rem;
+    letter-spacing: .1em;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 350px;
+    opacity: 0.4;
+    pointer-events: none;
+    transition: 0.3s;
+    cursor: pointer;
+    font-family: "Passion One", sans-serif;
+}
+
+#nextBtn.enabled {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* --- The Neon Spinner --- */
+.neon-spinner {
+    /* Dimensions set to 50px as requested */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative;
+    
+    /* The Gradient: 
+        Starts transparent and fades into the bright Neon Pink (#ff0055).
+        This creates the "comet tail" effect.
+    */
+    background: conic-gradient(from 0deg, transparent 0%, var(--button-color) 100%);
+    
+    /* The Spin Animation */
+    animation: spin 0.8s linear infinite;
+
+    /* Optional: A soft glow shadow to make it pop on light mode */
+    box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
+}
+
+/* The Inner Mask (Creates the ring shape) */
+.neon-spinner::after {
+    content: '';
+    position: absolute;
+    
+    /* Padding/Thickness Control:
+        6px from the edge makes the ring thinner. 
+        Decrease this number for a thicker ring.
+    */
+    top: 6px; 
+    left: 6px; 
+    right: 6px; 
+    bottom: 6px;
+    
+    border-radius: 50%;
+    background: #f0f4f8; /* MUST match the body background color */
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+/* End */

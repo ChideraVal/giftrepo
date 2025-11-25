@@ -7,6 +7,7 @@
     {% load static %}
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="{% static 'css/reveal.css' %}" data-css="reveal">
+    <link rel="stylesheet" href="{% static 'css/ads.css' %}" data-css="ads">
     <link rel="stylesheet" href="{% static 'css/main.css' %}" data-css="main">
     <link rel="stylesheet" href="{% static 'css/all_gifts.css' %}" data-css="all_gifts">
 
@@ -41,8 +42,9 @@
 
     <main>
         <section>
-            <div class="empty" style="margin-top: 200px;">
-                <h1 class="state"">Loading...</h1>
+            <div class="empty" style="margin-top: 100px;">
+                <div class="neon-spinner"></div>
+                <p class="state"">Loading...</p>
             </div>
         </section>
     </main>
@@ -51,7 +53,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             function reexecuteScripts(container) {
                 const scripts = container.querySelectorAll("script");
-                console.log(scripts);
+                console.log("OLD SCRIPTS:", scripts);
                 scripts.forEach(oldScript => {
                     const newScript = document.createElement("script");
 
@@ -69,84 +71,6 @@
                     console.log(newScript)
                 });
             }
-
-            // async function updatePageContent(urlOfPageB) {
-            // try {
-            // // 1. Fetch Page B's HTML
-            // const response = await fetch(urlOfPageB);
-            // const htmlText = await response.text();
-
-            // // 2. Parse the fetched HTML
-            // const parser = new DOMParser();
-            // const docB = parser.parseFromString(htmlText, 'text/html');
-
-            // const headB = docB.head;
-            // const bodyB = docB.body;
-            // const headA = document.head;
-
-            // // 3. Identify and Collect New Stylesheets
-            // const styleLinksB = headB.querySelectorAll('link[rel="stylesheet"]');
-            // const loadPromises = [];
-
-            // // 4. Update Page A's Head and Prepare Load Promises
-            // styleLinksB.forEach(linkB => {
-            // // Check if the stylesheet is already in Page A's head
-            // const isAlreadyLoaded = headA.querySelector(`link[href="${linkB.href}"]`);
-
-            // if (!isAlreadyLoaded) {
-            // // Create a clone to move it from the parsed document (docB) to the current document
-            (document.head)
-            // const newLink = linkB.cloneNode();
-
-            // // Append the new link to the current document's head
-            // headA.appendChild(newLink);
-
-            // // Create a promise that resolves when the stylesheet loads or errors
-            // const loadPromise = new Promise((resolve, reject) => {
-            // // Set a timeout as a safety net, in case load/error never fires (less common now)
-            // const timeout = setTimeout(() => {
-            // console.warn(`Stylesheet ${newLink.href} timed out.`);
-            // resolve(newLink.href); // Resolve even on timeout to not block the whole page
-            // }, 5000); // 5 seconds timeout
-
-            // // Resolve on success
-            // newLink.onload = () => {
-            // clearTimeout(timeout);
-            // console.log(`Stylesheet ${newLink.href} loaded.`);
-            // resolve(newLink.href);
-            // };
-
-            // // Resolve on error (to allow the body update to proceed)
-            // newLink.onerror = () => {
-            // clearTimeout(timeout);
-            // console.error(`Error loading stylesheet: ${newLink.href}`);
-            // resolve(newLink.href); // Resolve here to not block the body update
-            // };
-            // });
-
-            // loadPromises.push(loadPromise);
-            // }
-            // });
-
-            // // 5. WAIT for all new styles to load
-            // console.log(`Waiting for ${loadPromises.length} new stylesheets to load...`);
-            // await Promise.all(loadPromises);
-
-            // // 6. NOW update the body content
-            // document.body.innerHTML = bodyB.innerHTML;
-            // console.log("Body content updated successfully with loaded styles.");
-
-            // } catch (error) {
-            // console.error('Failed to update page content:', error);
-            // }
-            // }
-
-            // // Example usage:
-            // // updatePageContent('page_b.html');
-
-            // let url = window.location.pathname;
-            // updatePageContent(url);
-
 
             console.log('FETCHING', window.location.pathname)
             let url = window.location.pathname;
@@ -168,7 +92,9 @@
                         const doc = parser.parseFromString(html, 'text/html');
                         const newHead = doc.head.innerHTML;
                         const newBody = doc.body.innerHTML;
-                        // console.log(newBody)
+                        // const newTitle = doc.title;
+                        // console.log("TITLE:", title)
+                        console.log(newBody)
 
                         // Remove unwanted CSS
                         console.log("URL PATHNAME:", url);
@@ -176,9 +102,13 @@
 
                         if (url === '/') {
                             neededCss = 'main';
+                        } else if (url === '/viewads/') {
+                            neededCss = 'ads';
                         } else if (/^\/gifts\/\d+\/reveal\/?$/.test(url)) {
                             neededCss = 'reveal'
                         }
+
+                        console.log('NEEDED CSS:', neededCss);
 
                         document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
                             if (link.dataset.css !== neededCss) {
@@ -188,6 +118,8 @@
 
                         // document.head.innerHTML = newHead;
                         document.body.innerHTML = newBody;
+                        document.title = doc.title;
+                        console.log("TITLE:", doc.title);
                         reexecuteScripts(document.body);
                     })
                     .catch((err) => {
