@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash App Prototype</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-white: #ffffff;
+            --text-grey: #8c8c8c;
+            --dark-grey-field: #1a1a1a;
+            --green-active: #00D632;
+            --btn-grey: #333333;
+            --light-grey-btn: #4a4a4a;
+            --icon-purple: #8B5CF6; /* Taxes */
+            --icon-blue: #00D5EA;   /* Bitcoin */
+            --icon-green: #00D632;  /* Savings */
+            --icon-dark-purple: #9333EA; /* Stocks */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #111;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            background-color: var(--bg-color);
+            width: 100%;
+            max-width: 400px;
+            color: var(--text-white);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            min-height: 100vh;
+            /* Ensure screens are hidden by default */
+        }
+
+        .screen {
+            width: 100%;
+            min-height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            /* Hide all screens initially */
+            flex-direction: column;
+            background-color: var(--bg-color);
+            padding-bottom: 80px;
+            /* Space for calculator footer */
+        }
+
+        .screen.active {
+            display: flex;
+            /* Show active screen */
+        }
+
+         /* --------------------------------- */
+        /* --- Home Screen Styles --- */
+        /* --------------------------------- */
+
+         /* --- Header --- */
+
+
+        .header-home {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            /* padding-top: 10px; */
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .profile-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        /* --- Main Balance Card --- */
+        .balance-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+        }
+
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .routing-link {
+            color: var(--text-grey);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .amount {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background-color: var(--btn-grey);
+            color: white;
+            border: none;
+            padding: 15px 0;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* --- Grid Layout --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .small-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .chevron {
+            color: var(--text-grey);
+            font-size: 18px;
+        }
+
+        .icon-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: var(--text-grey);
+            font-weight: 500;
+        }
+
+        /* Specific Icon Colors */
+        .bg-purple { background-color: #6200EA; }
+        .bg-blue { background-color: var(--icon-blue); }
+        .bg-green { background-color: var(--icon-green); }
+        .bg-stock-purple { background-color: #A855F7; }
+
+        /* SVG Sizing */
+        svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        
+        .icon-circle svg {
+            fill: white;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .profile-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+
+        /* --------------------------------- */
+        /* --- Calculator Screen Styles --- */
+        /* --------------------------------- */
+        .calculator-screen {
+            padding: 20px;
+        }
+
+        /* Calculator Header */
+        .header-calculator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-top: 10px;
+        }
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-white);
+        }
+
+        .header-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .profile-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .profile-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Amount Display */
+        .amount-display {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .current-amount {
+            font-size: 62px;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .currency-selector {
+            background-color: var(--btn-grey);
+            color: var(--text-white);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 14px;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 30px;
+
+        }
+
+        /* Number Pad */
+        .number-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 0px;
+            padding: 0 15px;
+        }
+
+        .num-btn {
+            background-color: transparent;
+            color: var(--text-white);
+            border: none;
+            border-radius: 10px;
+            padding: 20px 0;
+            font-size: 28px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.1s ease;
+        }
+
+        .num-btn:active {
+            background-color: #1a1a1a;
+        }
+
+        .num-btn.backspace svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--text-white);
+        }
+
+        /* Action Buttons (Request/Pay) */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+            padding: 0 15px;
+            margin-bottom: 65px;
+        }
+
+        .action-buttons button {
+            flex: 1;
+            background-color: var(--btn-grey);
+            color: var(--text-white);
+            border: 2px solid var(--btn-grey);
+            border-radius: 30px;
+            padding: 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px 10px;
+            border-top: 1px solid #1A1A1A;
+            z-index: 100;
+        }
+
+        .nav-item {
+            color: var(--text-grey);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: var(--text-white);
+        }
+
+        .nav-item:first-child .nav-balance {
+            color: var(--text-grey);
+        }
+
+        .nav-balance {
+            font-weight: 700;
+            font-size: 16px;
+            background: transparent;
+            padding: 5px 10px;
+            border-radius: 12px;
+        }
+
+        /* SVG Sizing for footer icons */
+        .footer-nav svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* --------------------------------- */
+        /* --- Send Screen Styles --- */
+        /* --------------------------------- */
+        .send-screen {
+            padding-bottom: 0;
+            /* Remove extra padding */
+        }
+
+        .send-screen .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px 0 20px;
+            height: 60px;
+        }
+
+        .send-screen .header-top .close-btn {
+            color: var(--text-white);
+            font-size: 24px;
+            font-weight: 300;
+            cursor: pointer;
+        }
+
+        .send-screen .header-top .balance-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-grey);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .send-screen .header-top .balance-info .amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-white);
+            line-height: 1.1;
+        }
+
+        .send-screen .header-top .balance-info .label-row {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .send-screen .header-top .pay-btn {
+            background-color: var(--green-active);
+            color: var(--bg-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .send-screen .input-section {
+            padding: 15px 20px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--dark-grey-field);
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            color: var(--text-grey);
+            font-size: 18px;
+            font-weight: bold;
+            padding-right: 10px;
+            flex-shrink: 0;
+            line-height: 1.1;
+        }
+
+        .input-field {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-white);
+            font-size: 16px;
+            padding: 10px 0;
+            outline: none;
+        }
+
+        .input-field::placeholder {
+            color: var(--text-grey);
+        }
+
+        /* Send As Selector */
+        .send-as-container {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .send-as-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .send-as-text {
+            color: var(--text-grey);
+            font-size: 14px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .send-as-row {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .send-as-btn {
+            background-color: var(--btn-grey);
+            color: var(--text-white);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .send-as-btn.active {
+            background-color: var(--green-active);
+            color: var(--bg-color);
+        }
+
+        /* Suggested List */
+        .suggested-list-header {
+            color: var(--text-grey);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 0 20px 10px 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+
+        .contact-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-grey);
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--btn-grey);
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-white);
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .contact-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .contact-name {
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .contact-cashtag {
+            font-size: 14px;
+            color: var(--text-grey);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .contact-icon {
+            color: var(--text-grey);
+            flex-shrink: 0;
+        }
+
+        .contact-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* --------------------------------- */
+        /* --- Confirmation Screen Styles --- */
+        /* --------------------------------- */
+        .confirmation-screen {
+            padding: 50px 20px 30px 20px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Confirmation Content (Center) */
+        .confirmation-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .confirmation-icon-circle {
+            width: 80px;
+            height: 80px;
+            border: 4px solid var(--green-active);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .confirmation-icon-circle svg {
+            width: 40px;
+            height: 40px;
+            fill: var(--green-active);
+        }
+
+        .confirmation-message {
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* Bottom Section (Promo and Buttons) */
+        .bottom-section {
+            width: 100%;
+            text-align: center;
+        }
+
+        .promo-text {
+            color: var(--text-white);
+            font-size: 15px;
+            line-height: 1.4;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .confirmation-action-buttons {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        .confirmation-action-buttons button {
+            flex: 1;
+            border: none;
+            padding: 15px 0;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .invite-btn {
+            background-color: var(--btn-grey);
+            color: var(--text-white);
+        }
+
+        .done-btn {
+            background-color: var(--green-active);
+            color: var(--bg-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <div id="home-screen" class="screen active home-screen">
+            <header class="header-home">
+                <h1>Money</h1>
+                <div class="profile-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                </div>
+            </header>
+
+            <div class="balance-card">
+                <div class="balance-header">
+                    <span>Cash balance</span>
+                    <a href="#" class="routing-link">Account & Routing &rsaquo;</a>
+                </div>
+                <div class="amount" id="accbal">$89,000,000</div>
+                <div class="btn-row">
+                    <button class="action-btn">Add Cash</button>
+                    <button class="action-btn">Cash Out</button>
+                </div>
+            </div>
+
+            <div class="grid-container">
+                <div class="small-card">
+                    <div class="card-top">
+                        <span class="card-title">Taxes</span>
+                        <span class="chevron">&rsaquo;</span>
+                    </div>
+                    <div class="icon-circle bg-purple">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z" />
+                        </svg>
+                    </div>
+                    <div class="card-subtitle">Estimate refund</div>
+                </div>
+
+                <div class="small-card">
+                    <div class="card-top">
+                        <span class="card-title">Bitcoin</span>
+                        <span class="chevron">&rsaquo;</span>
+                    </div>
+                    <div class="icon-circle bg-blue">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-1v-1h-1v1H9v-6h1v-1h1v1h1c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2zm0-4h-2v2h2v-2z" />
+                            <path style="font-weight:bold; font-family:serif"
+                                d="M15,9.5 C15,8.5 14.5,8 13.5,8 L11,8 L11,10 L13.5,10 C14.5,10 15,9.5 15,9.5 Z M15,13.5 C15,12.5 14.5,12 13.5,12 L11,12 L11,14 L13.5,14 C14.5,14 15,13.5 15,13.5 Z M17,13.5 C17,15.5 15.5,16 13.5,16 L13,16 L13,17 L11,17 L11,16 L10,16 L10,17 L8,17 L8,16 L7,16 L7,14 L8,14 L8,8 L7,8 L7,6 L8,6 L8,5 L10,5 L10,6 L11,6 L11,5 L13,5 L13,6 L13.5,6 C15.5,6 17,7 17,9 C17,10 16.5,10.5 16,11 C17,11.5 17.5,12 17,13.5 Z" />
+                        </svg>
+                    </div>
+                    <div class="card-subtitle">Learn and invest</div>
+                </div>
+
+                <div class="small-card">
+                    <div class="card-top">
+                        <span class="card-title">Savings</span>
+                        <span class="chevron">&rsaquo;</span>
+                    </div>
+                    <div class="icon-circle bg-green">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.36z" />
+                        </svg>
+                    </div>
+                    <div class="card-subtitle">Save for a goal</div>
+                </div>
+
+                <div class="small-card">
+                    <div class="card-top">
+                        <span class="card-title">Stocks</span>
+                        <span class="chevron">&rsaquo;</span>
+                    </div>
+                    <div class="icon-circle bg-stock-purple">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z" />
+                        </svg>
+                    </div>
+                    <div class="card-subtitle">Invest with $1</div>
+                </div>
+            </div>
+
+            <nav class="footer-nav">
+                <div class="nav-item home-btn">
+                    <div class="nav-balance" style="color: white;">$15</div>
+                </div>
+
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm-1 14H5c-.55 0-1-.45-1-1v-5h16v5c0 .55-.45 1-1 1zm1-10H4V6h16v2z" />
+                    </svg>
+                </div>
+
+                <div class="nav-item" id="calc-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.36z" />
+                    </svg>
+                </div>
+
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                    </svg>
+                </div>
+
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                    </svg>
+                </div>
+            </nav>
+        </div>
+
+        <div id="calculator-screen" class="screen calculator-screen">
+            <header class="header-calculator">
+                <div class="header-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M4 14H2v6c0 1.1.9 2 2 2h6v-2H4v-6zm0-8h2V4h4V2H4c-1.1 0-2 .9-2 2v6zm16 0V4h-4V2h6c1.1 0 2 .9 2 2v6h-2V6zm0 10v4h-6v2h6c1.1 0 2-.9 2-2v-6h-2zM7 11h10v2H7z" />
+                    </svg>
+                </div>
+
+                <div class="profile-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                </div>
+            </header>
+
+            <div class="amount-display">
+                <div class="current-amount" id="currentAmount">$0</div>
+                <select class="currency-selector">
+                    <option value="USD">USD</option>
+                    <option value="CAD">CAD</option>
+                    <option value="EUR">EUR</option>
+                </select>
+            </div>
+
+            <div class="number-pad">
+                <button class="num-btn" data-value="1">1</button>
+                <button class="num-btn" data-value="2">2</button>
+                <button class="num-btn" data-value="3">3</button>
+                <button class="num-btn" data-value="4">4</button>
+                <button class="num-btn" data-value="5">5</button>
+                <button class="num-btn" data-value="6">6</button>
+                <button class="num-btn" data-value="7">7</button>
+                <button class="num-btn" data-value="8">8</button>
+                <button class="num-btn" data-value="9">9</button>
+                <button class="num-btn" data-value=".">.</button>
+                <button class="num-btn" data-value="0">0</button>
+                <button class="num-btn backspace" data-value="backspace">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M22 3H7c-.69 0-1.23.35-1.59.87L1 12l4.41 8.13c.36.52.9.87 1.59.87h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 14 15 11.41 12.41 14 11 12.59 13.59 10 11 7.41 12.41 6l2.59 2.59L17.59 6 19 7.41 16.41 10 19 12.59z" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="action-buttons">
+                <button id="request-btn">Request</button>
+                <button id="pay-btn">Pay</button>
+            </div>
+
+            <nav class="footer-nav">
+                <div class="nav-item home-btn">
+                    <div class="nav-balance">$15</div>
+                </div>
+
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm-1 14H5c-.55 0-1-.45-1-1v-5h16v5c0 .55-.45 1-1 1zm1-10H4V6h16v2z" />
+                    </svg>
+                </div>
+
+                <div class="nav-item active">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.36z" />
+                    </svg>
+                </div>
+
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                    </svg>
+                </div>
+
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                    </svg>
+                </div>
+            </nav>
+        </div>
+
+
+        <div id="send-screen" class="screen send-screen">
+            <div class="header-top">
+                <span class="close-btn" id="send-screen-close">&times;</span>
+
+                <div class="balance-info">
+                    <span class="amount" id="amt-to-send">$0</span>
+                    <div class="label-row">
+                        <span>Cash Balance</span>
+                        <svg style="width: 12px; height: 12px; fill: var(--text-grey);" viewBox="0 0 24 24">
+                            <path d="M7 10l5 5 5-5z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <button class="pay-btn" id="send">Pay</button>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <div class="input-label">To</div>
+                    <input type="text" class="input-field" placeholder="Name, $Cashtag, Phone, Email" id="target">
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">For</div>
+                    <input type="text" class="input-field" placeholder="Add a note">
+                </div>
+            </div>
+
+            <div class="send-as-container">
+                <div class="send-as-group">
+                    <div class="send-as-text">Send as</div>
+                    <div class="send-as-row">
+                        <button class="send-as-btn active">Cash</button>
+                        <button class="send-as-btn">Gift Card</button>
+                        <button class="send-as-btn">Stock</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="suggested-list-header">SUGGESTED</div>
+            <div class="contact-list" id="contact-list">
+
+                <div class="contact-item" data-name="Isaiah Cruz">
+                    <div class="contact-checkbox"></div>
+                    <div class="contact-avatar"
+                        style="background-image: url('data:image/jpeg;base64,...'); background-color: #3CB371;">I</div>
+                    <div class="contact-info">
+                        <div class="contact-name">Isaiah Cruz</div>
+                        <div class="contact-cashtag">$IsaiahCruz</div>
+                    </div>
+                    <div class="contact-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="contact-item" data-name="PTP">
+                    <div class="contact-checkbox"></div>
+                    <div class="contact-avatar" style="background-color: #A0522D;">P</div>
+                    <div class="contact-info">
+                        <div class="contact-name">PTP</div>
+                        <div class="contact-cashtag">$PallettownPokemon</div>
+                    </div>
+                    <div class="contact-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="contact-item" data-name="Manuel Galindo">
+                    <div class="contact-checkbox"></div>
+                    <div class="contact-avatar" style="background-color: #5F9EA0;">M</div>
+                    <div class="contact-info">
+                        <div class="contact-name">Manuel Galindo</div>
+                        <div class="contact-cashtag">$Maccheese21</div>
+                    </div>
+                    <div class="contact-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="contact-item" data-name="D C">
+                    <div class="contact-checkbox"></div>
+                    <div class="contact-avatar" style="background-color: #8A2BE2;">D</div>
+                    <div class="contact-info">
+                        <div class="contact-name">D C</div>
+                        <div class="contact-cashtag">$marzpops</div>
+                    </div>
+                    <div class="contact-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="confirmation-screen" class="screen confirmation-screen">
+            <div class="confirmation-content">
+                <div class="confirmation-icon-circle">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                </div>
+
+                <div class="confirmation-message" id="confirmation-text">
+                    You sent $1<br>
+                    to **Isaiah Cruz**
+                </div>
+            </div>
+
+            <div class="bottom-section">
+                <div class="promo-text">
+                    Payment will be completed within <br>
+                    10 - 24 hours.
+                </div>
+
+                <div class="confirmation-action-buttons">
+                    <button class="invite-btn">Invite</button>
+                    <button class="done-btn" id="done-btn">Done</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Screen Elements ---
+            const calculatorScreen = document.getElementById('calculator-screen');
+            const sendScreen = document.getElementById('send-screen');
+            const confirmationScreen = document.getElementById('confirmation-screen');
+
+            // --- Calculator Elements ---
+            const accountBalance = document.getElementById('accbal');
+            const currentAmountDisplay = document.getElementById('currentAmount');
+            const amountToSend = document.getElementById('amt-to-send');
+            const homeButtons = document.querySelectorAll('.home-btn');
+            const calcButton = document.getElementById('calc-btn');
+            const numPadButtons = document.querySelectorAll('.num-btn');
+            const target = document.getElementById('target');
+            const sendButton = document.getElementById('send');
+            const payBtn = document.getElementById('pay-btn');
+            const requestBtn = document.getElementById('request-btn'); // For completeness, though not functional
+
+            // --- Send Screen Elements ---
+            const contactItems = document.querySelectorAll('#contact-list .contact-item');
+            const sendScreenClose = document.getElementById('send-screen-close');
+
+            // --- Confirmation Elements ---
+            const confirmationText = document.getElementById('confirmation-text');
+            const doneBtn = document.getElementById('done-btn');
+
+            // --- State ---
+            let currentAmount = "0";
+            // let paymentTarget = "Isaiah Cruz"; // Default target
+
+            // Get account balance from local storage
+
+            let balance = String(90000000);
+
+            stored_balance = localStorage.getItem('balance');
+
+            if (stored_balance) {
+                accountBalance.textContent = formatAmount(String(stored_balance));
+                console.log('Getting balance from storage')
+            } else {
+                localStorage.setItem('balance', balance);
+                console.log('Storing balance in storage');
+                accountBalance.textContent = formatAmount(balance);
+            }
+
+            // --- Navigation Function ---
+            function showScreen(screenId) {
+                document.querySelectorAll('.screen').forEach(screen => {
+                    screen.classList.remove('active');
+                });
+                document.getElementById(screenId).classList.add('active');
+            }
+
+            // --- Calculator Logic ---
+            function formatAmount(amountStr) {
+                if (isNaN(parseFloat(amountStr)) || amountStr === "") {
+                    return "0";
+                }
+
+                if (amountStr.length > 1 && amountStr[0] === '0' && amountStr[1] !== '.') {
+                    amountStr = amountStr.substring(1);
+                }
+
+                const parts = amountStr.split('.');
+                let integerPart = parts[0];
+                let decimalPart = parts[1] || '';
+
+                // Ensure two decimal places for amounts over 1
+                if (!amountStr.includes('.') && amountStr !== '0' && amountStr !== '') {
+                    // Do nothing for display formatting
+                } else if (decimalPart.length === 0 && amountStr.includes('.')) {
+                    // Allow single decimal place input: 1.
+                } else if (decimalPart.length === 1) {
+                    // Allow two decimal places input: 1.0
+                } else if (decimalPart.length > 2) {
+                    // Limit to two decimal places
+                    currentAmount = integerPart + '.' + decimalPart.substring(0, 2);
+                    decimalPart = decimalPart.substring(0, 2);
+                }
+
+
+                integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                return `$${integerPart}${parts.length > 1 ? '.' + decimalPart : ''}`;
+            }
+
+            function updateDisplay() {
+                // To keep the amount display clean for input, we format it here
+                currentAmountDisplay.textContent = formatAmount(currentAmount);
+            }
+
+            numPadButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.dataset.value;
+
+                    if (value === "backspace") {
+                        if (currentAmount.length > 0) {
+                            currentAmount = currentAmount.slice(0, -1);
+                        }
+                        if (currentAmount === "") {
+                            currentAmount = "0";
+                        }
+                    } else if (value === ".") {
+                        if (!currentAmount.includes(".")) {
+                            currentAmount += value;
+                        }
+                    } else {
+                        // Handle leading zero
+                        if (currentAmount === "0" && value !== ".") {
+                            currentAmount = value;
+                        } else {
+                            if (currentAmount.includes(".")) {
+                                const parts = currentAmount.split('.');
+                                if (parts.length > 1 && parts[1].length < 2) {
+                                    currentAmount += value;
+                                } else if (parts.length === 1) {
+                                    // Should not happen if split works correctly, but as fallback
+                                    currentAmount += value;
+                                }
+                            } else {
+                                currentAmount += value;
+                            }
+                        }
+                    }
+                    updateDisplay();
+                });
+            });
+
+            // --- Navigation Event Listeners ---
+
+            // 1. Calculator Screen (Pay button) -> Send Screen
+            homeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    showScreen('home-screen');
+                });
+            });
+
+            // 1. Calculator Screen (Pay button) -> Send Screen
+            calcButton.addEventListener('click', () => {
+                showScreen('calculator-screen');
+            });
+
+            // 2. Calculator Screen (Pay button) -> Send Screen
+            payBtn.addEventListener('click', () => {
+                if (parseInt(currentAmount) > 0) {
+                    showScreen('send-screen');
+                    amountToSend.textContent = `${formatAmount(currentAmount)}`;
+                };
+            });
+
+            // 3. Send Screen (Close button) -> Calculator Screen
+            sendScreenClose.addEventListener('click', () => {
+                showScreen('calculator-screen');
+            });
+
+            sendButton.addEventListener('click', () => {
+                paymentTarget = target.value;
+                console.log(paymentTarget);
+                if (paymentTarget) {
+                    // Update confirmation screen text with dynamic values
+                    let new_balance = Number(localStorage.getItem('balance')) - Number(currentAmount);
+                    localStorage.setItem('balance', String(new_balance));
+                    console.log("NEW BALANCE:", localStorage.getItem('balance'));
+                    accountBalance.textContent = formatAmount(localStorage.getItem('balance'));
+
+                    const displayAmount = formatAmount(currentAmount);
+                    currentAmount = "0";
+                    currentAmountDisplay.textContent = currentAmount;
+                    amountToSend.textContent = currentAmount;
+                    target.value = "";
+    
+                    confirmationText.innerHTML = `You sent ${displayAmount}<br>to ${paymentTarget}.`;
+                    showScreen('confirmation-screen');
+                }
+            });
+
+            // 4. Send Screen (Contact selection) -> Confirmation Screen
+            // contactItems.forEach(item => {
+            //     item.addEventListener('click', () => {
+            //         paymentTarget = item.dataset.name;
+
+            //         // Update confirmation screen text with dynamic values
+            //         const displayAmount = currentAmountDisplay.textContent.replace('$', '');
+
+            //         confirmationText.innerHTML = `You sent ${displayAmount}<br>to **${paymentTarget}**`;
+
+            //         showScreen('confirmation-screen');
+            //     });
+            // });
+
+            // 5. Confirmation Screen (Done button) -> Calculator Screen
+            doneBtn.addEventListener('click', () => {
+                showScreen('home-screen');
+            });
+
+
+            // Initialize the display and show the first screen
+            // updateDisplay();
+            showScreen('home-screen');
+
+            history.pushState(null, null, location.href);
+            window.addEventListener('popstate', function() {
+                history.pushState(null, null, location.href);
+            })
+        });
+    </script>
+</body>
+
+</html>
