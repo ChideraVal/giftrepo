@@ -1,5 +1,8 @@
 const scrollArea = document.getElementById("scrollArea");
 const slides = document.querySelectorAll(".slide");
+const scrollUpButton = document.getElementById("navup");
+const scrollDownButton = document.getElementById("navdown");
+
 // alert('SWIPING...')
 console.log('--------CONTENT OF THE PAGE-------:', document.body)
 
@@ -40,6 +43,20 @@ function goToSlide(index) {
     isScrolling = false;
     }, 100);
 }
+
+// SCROLL BUTTONS
+
+scrollUpButton.addEventListener('click', () => {
+    console.log('Scrolling...')
+    // if (adLock || isScrolling) return;
+    goToSlide(currentIndex - 1);
+})
+
+scrollDownButton.addEventListener('click', () => {
+    console.log('Scrolling...')
+    // if (adLock || isScrolling) return;
+    goToSlide(currentIndex + 1);
+})
 
 // WHEEL SCROLL
 scrollArea.addEventListener("wheel", (e) => {

@@ -77,7 +77,9 @@
             if (url !== '/loading/') {
                 fetch(url, {redirect: "follow"})
                     .then(res => {
-                        if (res.redirected) {
+                        let redirect = new URL(res.url);
+                        console.log("RES PATHNAME:", redirect.pathname);
+                        if (res.redirected && redirect.pathname.startsWith('/signin/')) {
                             let next = `/signin/?next=${url}`;
                             // window.open(next, "_parent");
                             window.location.href = next;
@@ -104,7 +106,7 @@
                             neededCss = 'main';
                         } else if (url === '/viewads/') {
                             neededCss = 'ads';
-                        } else if (/^\/gifts\/\d+\/reveal\/?$/.test(url)) {
+                        } else if (/^\/gifts\/\d+\/reveal\/?$/.test(url) || /^\/gifts\/\d+\/revealearly\/?$/.test(url)) {
                             neededCss = 'reveal'
                         }
 

@@ -40,15 +40,12 @@
             {% if not gift_transaction.due_for_expire %}
             {% if gift_transaction.drop_rate > 0 %}
             {% if gift_transaction.is_due_for_drop %}
-            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires"
-                data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
             {% else %}
-            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Drops"
-                data-seconds="{{ gift_transaction.seconds_until_drop }}">Drops in --:--:--:--</p>
+            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Drops" data-seconds="{{ gift_transaction.seconds_until_drop }}">Drops in --:--:--:--</p>
             {% endif %}
             {% else %}
-            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires"
-                data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
+            <p class="timer" id="{{ gift_transaction.id }}" data-prefix="Expires" data-seconds="{{ gift_transaction.seconds_until_expire }}">Expires in --:--:--:--</p>
             {% endif %}
             {% else %}
             <p>Expired</p>

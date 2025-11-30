@@ -1,0 +1,15 @@
+delete deactivated accounts (done)
+integrate ads
+swipe buttons for home page
+withdraw page
+fix ios image style
+
+install button for android/ios
+rewrite models and views for performance and better memory usage
+clean code and text
+upgrage python version and requirements
+
+
+
+
+#667eea

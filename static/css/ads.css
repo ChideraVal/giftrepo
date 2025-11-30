@@ -5,6 +5,17 @@
     margin: 0;
     padding: 0;
     font-family: "DM Sans", sans-serif;
+    box-sizing: border-box;
+}
+
+:root {
+    
+    --button-color: #ff0050;
+    --link-color: #ff0050;
+    --button-hover-color: #ff0050;
+    --card-button-color: white;
+    --padding-value: 1rem;
+    --text-color: black;
 }
 
 html {
@@ -23,10 +34,189 @@ body {
     /* border: 2px solid yellow; */
 }
 
+
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem var(--padding-value);
+    /* Increased vertical padding */
+    background: var(--background-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    /* margin-bottom: .5rem; */
+    /* border: 1px solid green; */
+}
+
+/* Logo container: image + text */
+.logo-container {
+    display: flex;
+    align-items: center;
+    /* vertically center image + text */
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Logo image */
+.logo-image {
+    width: 48px;
+    /* slightly bigger */
+    height: 48px;
+    object-fit: contain;
+    margin-right: 12px;
+}
+
+/* Logo text */
+.logo-text {
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--button-color);
+    line-height: 1;
+    letter-spacing: .05rem;
+    font-family: "Passion One", sans-serif;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-weight: 400;
+    font-style: normal;
+    text-decoration: none;
+
+    /* vertically centered next to image */
+}
+
+/* Profile/login section */
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Login & Signup buttons */
+.btn {
+    padding: 0.5rem 0.5rem;
+    border-radius: 6px;
+    border: 2px solid var(--button-color);
+    background: transparent;
+    color: var(--button-color);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.btn:hover {
+    background: var(--button-color);
+    color: white;
+}
+
+.btn.signup {
+    background: var(--button-color);
+    color: white;
+    border-color: var(--button-color);
+}
+
+/* .btn.signup:hover {
+    background: var(--button-hover-color);
+    border-color: var(--button-hover-color);
+} */
+
+/* Profile picture */
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid var(--button-color);
+    transition: box-shadow 0.3s ease;
+    padding: .2rem;
+    display: block;
+}
+
+.profile-pic:hover {
+    box-shadow: 0 0 8px var(--button-hover-color);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    /* .navbar {
+        padding: 1rem 1rem;
+    } */
+
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .profile-pic {
+        width: 35px;
+        height: 35px;
+    }
+
+    .logo-image {
+        width: 40px;
+        height: 40px;
+        margin-right: 8px;
+    }
+}
+/* End */
+
+div.cost {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+    margin-top: .3rem;
+    color: var(--text-color);
+}
+
+div.cost img {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+
+div.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1rem;
+    /* border: 1px solid red; */
+}
+
+div.empty h1 {
+    font-size: 1.3rem;
+}
+
+div.empty img {
+    width: 150px;
+    height: 150px;
+}
+
+div.empty a {
+    background-color: var(--link-color);
+    color: var(--card-button-color);
+    padding: .7rem;
+    border: none;
+    border-radius: .7em;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    margin: .5rem 0;
+}
+
 #progress {
     height: 5px;
     width: 0%;
-    background: #667eea;
+    background: #ff0050;
     transition: width linear;
 }
 
@@ -64,7 +254,7 @@ body {
 }
 
 #nextBtn {
-    background: #667eea;
+    background: #ff0050;
     border: none;
     color: #fff;
     padding: 12px 20px;

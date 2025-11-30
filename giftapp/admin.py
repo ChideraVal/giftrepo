@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Gift, GiftTransaction, User, ProfilePicture, FastestFingerClaim, CoinPurchase
+from .models import Gift, GiftTransaction, User, ProfilePicture, CoinPurchase
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'coins', 'won_coins', 'keys', 'is_superuser', 'deactivated_at', 'verify_code')
+    list_display = ('username', 'email', 'coins', 'won_coins', 'keys', 'is_superuser', 'is_verified', 'verify_code')
     search_fields = ('username', 'email')
     list_filter = ('is_staff', 'is_superuser')
 
@@ -44,20 +44,20 @@ class GiftTransactionAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(FastestFingerClaim)
-class FastestFingerClaimAdmin(admin.ModelAdmin):
-    list_display = ("id", "ffclaim_gifttransaction_gift_name", "ffclaim_user_username", "claim_time", "reaction_time_ms")
-    list_filter = ("gift_transaction",)
-    search_fields = ("reaction_time_ms",)
+# @admin.register(FastestFingerClaim)
+# class FastestFingerClaimAdmin(admin.ModelAdmin):
+#     list_display = ("id", "ffclaim_gifttransaction_gift_name", "ffclaim_user_username", "claim_time", "reaction_time_ms")
+#     list_filter = ("gift_transaction",)
+#     search_fields = ("reaction_time_ms",)
 
-    def ffclaim_gifttransaction_gift_name(self, obj):
-        return obj.gift_transaction.gift.name
+#     def ffclaim_gifttransaction_gift_name(self, obj):
+#         return obj.gift_transaction.gift.name
 
-    def ffclaim_user_username(self, obj):
-        return obj.user.username
+#     def ffclaim_user_username(self, obj):
+#         return obj.user.username
     
-    ffclaim_gifttransaction_gift_name.short_description = 'Gift Name'
-    ffclaim_user_username.short_description = 'User'
+#     ffclaim_gifttransaction_gift_name.short_description = 'Gift Name'
+#     ffclaim_user_username.short_description = 'User'
 
 
 

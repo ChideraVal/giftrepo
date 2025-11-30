@@ -32,7 +32,7 @@ class User(AbstractUser):
     verify_code = models.CharField(max_length=255, null=True, blank=True)
     change_email_code = models.CharField(max_length=255, null=True, blank=True)
     profile_pic = models.ForeignKey(ProfilePicture, on_delete=models.SET_NULL, related_name='owners', null=True)
-    deactivated_at = models.DateTimeField(null=True, blank=True)
+    # deactivated_at = models.DateTimeField(null=True, blank=True)
     # Add gender, location, etc. if need
 
     USERNAME_FIELD = "email"
@@ -41,23 +41,23 @@ class User(AbstractUser):
     def total_won_coin_value(self):
         return self.won_coins * COIN_BASE_PRICE
     
-    def is_pending_deletion(self):
-        return self.deactivated_at is not None
+    # def is_pending_deletion(self):
+    #     return self.deactivated_at is not None
 
-    def days_since_deactivation(self):
-        if not self.deactivated_at:
-            return None
-        return (timezone.now() - self.deactivated_at).days
+    # def days_since_deactivation(self):
+    #     if not self.deactivated_at:
+    #         return None
+    #     return (timezone.now() - self.deactivated_at).days
     
-    def days_until_deactivation(self):
-        if not self.deactivated_at:
-            return 0
-        return max(0, GRACE_PERIOD_DAYS - self.days_since_deactivation())
+    # def days_until_deactivation(self):
+    #     if not self.deactivated_at:
+    #         return 0
+    #     return max(0, GRACE_PERIOD_DAYS - self.days_since_deactivation())
 
-    def is_grace_period_over(self):
-        if not self.deactivated_at:
-            return False
-        return self.days_since_deactivation() >= GRACE_PERIOD_DAYS
+    # def is_grace_period_over(self):
+    #     if not self.deactivated_at:
+    #         return False
+    #     return self.days_since_deactivation() >= GRACE_PERIOD_DAYS
 
 
 class CoinPurchase(models.Model):
@@ -90,7 +90,7 @@ class GiftTransaction(models.Model):
     gift = models.ForeignKey(Gift, on_delete=models.CASCADE, related_name='transactions')
     quantity = models.PositiveIntegerField(default=1, help_text="Number of this gift to buy.")
     early_claim_fee = models.PositiveIntegerField(default=0, help_text="Number of keys paid to claim the gift early if not dropped. FF gifts cannot have early claim fee greater than 0.")
-    claim_fee = models.PositiveIntegerField(default=0, help_text="Number of keys paid to claim the gift if dropped.")
+    claim_fee = models.PositiveIntegerField(default=1, help_text="Number of keys paid to claim the gift if dropped.")
     paid_users = models.ManyToManyField(User, related_name="paid_gifts", blank=True)
     message = models.CharField(max_length=255, blank=True)
     is_visible = models.BooleanField(default=True, help_text="If the actual gift is shown or hidden.")
@@ -99,7 +99,7 @@ class GiftTransaction(models.Model):
     # expire time set to max of 24 hours
     expire_rate = models.PositiveIntegerField(default=1, help_text="Number of hours before the gift expires (1 - 24). Must be greater than drop rate.")
     # drop time set to max of 23 hours
-    drop_rate = models.PositiveIntegerField(default=0, help_text="Number of hours before the gift drops (0 - 23).")
+    drop_rate = models.PositiveIntegerField(default=0, help_text="Number of hours before the gift drops (0 - 23). Drop rates for FF gifts must be 0.")
     expire_date = models.DateTimeField(default=timezone.now)
     drop_date = models.DateTimeField(default=timezone.now)
     
@@ -160,24 +160,24 @@ class GiftTransaction(models.Model):
         return int((self.seconds_until_drop() / (self.drop_rate * 60 * 60)) * 100)
 
 
-class FastestFingerClaim(models.Model):
-    gift_transaction = models.ForeignKey(GiftTransaction, related_name="ff_claims", on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    claim_time = models.DateTimeField(default=timezone.now)
-    reaction_time_ms = models.FloatField(null=True)
+# class FastestFingerClaim(models.Model):
+#     gift_transaction = models.ForeignKey(GiftTransaction, related_name="ff_claims", on_delete=models.CASCADE)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     claim_time = models.DateTimeField(default=timezone.now)
+#     reaction_time_ms = models.FloatField(null=True)
 
-    # class Meta:
-        # unique_together = ("gift_transaction", "user")  # one claim per user
-        # ordering = ["reaction_time_ms"]     # fastest first
+#     # class Meta:
+#         # unique_together = ("gift_transaction", "user")  # one claim per user
+#         # ordering = ["reaction_time_ms"]     # fastest first
 
-    def __str__(self):
-        return f"{self.user.username} claimed {self.gift_transaction.gift.name} ({self.reaction_time_ms} ms)"
+#     def __str__(self):
+#         return f"{self.user.username} claimed {self.gift_transaction.gift.name} ({self.reaction_time_ms} ms)"
     
-    def claim_speed(self):
-        """
-        Returns the number of seconds the winner claimed the FF gift.
-        """
-        # drop_date = self.gift_transaction.created_at + timedelta(hours=self.gift_transaction.drop_rate)
-        delta = self.claim_time - self.gift_transaction.drop_date
-        return max(0, round(delta.total_seconds(), 1))
+#     def claim_speed(self):
+#         """
+#         Returns the number of seconds the winner claimed the FF gift.
+#         """
+#         # drop_date = self.gift_transaction.created_at + timedelta(hours=self.gift_transaction.drop_rate)
+#         delta = self.claim_time - self.gift_transaction.drop_date
+#         return max(0, round(delta.total_seconds(), 1))
 

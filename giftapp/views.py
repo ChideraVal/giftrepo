@@ -315,8 +315,8 @@ def change_profile_picture(request):
 @login_required
 def use_profile_picture(request, profile_picture_id):
     profile_picture = get_object_or_404(ProfilePicture, id=profile_picture_id)
-
     user = request.user
+    print(user)
     user.profile_pic = profile_picture
     user.save()
 
@@ -335,6 +335,14 @@ def change_password(request):
             return render(request, 'change_password.html', {'form': form})
     form = PasswordChangeForm(user=request.user)
     return render(request, 'change_password.html', {'form': form})
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        return redirect('signin')
+    return render(request, 'verifydelete.html')
 
 @login_required
 def deactivate_account(request):
@@ -503,147 +511,151 @@ def reveal_gift(request, gift_transaction_id):
         return render(request, 'error.html', {'title': 'Error', 'message': f'This gift has expired and is unavailable.'})
     if gift_transaction.gifter == request.user:
         return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot claim your own gift.'})
-    if gift_transaction.drop_rate > 0:
+    # if gift_transaction.drop_rate > 0:
         # gift has wait time
-        if gift_transaction.is_due_for_drop() or request.user in gift_transaction.paid_users.all():
+    if gift_transaction.is_due_for_drop() or request.user in gift_transaction.paid_users.all():
 
-            # charge player entry fee for FF gift
-            # if gift_transaction.claim_fee > 0 and gift_transaction.is_fastest_finger and request.user not in gift_transaction.reveals.all():
-                # if gift_transaction.gifter == request.user:
-                #     return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to claim your own FF gift.'})
-                # total_fee = gift_transaction.claim_fee
-                # if request.user.coins < total_fee:
-                #     rem_amount = total_fee - request.user.coins
-                #     return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this FF gift'})
-                # user = request.user
-                # updated_coins = user.coins - gift_transaction.claim_fee
-                # user.coins = updated_coins
-                # user.save()
-                # # gift_transaction.reveals.add(request.user)
-                # print('CHARGED FOR FF GIFT!')
+        # charge player entry fee for FF gift
+        # if gift_transaction.claim_fee > 0 and gift_transaction.is_fastest_finger and request.user not in gift_transaction.reveals.all():
+            # if gift_transaction.gifter == request.user:
+            #     return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to claim your own FF gift.'})
+            # total_fee = gift_transaction.claim_fee
+            # if request.user.coins < total_fee:
+            #     rem_amount = total_fee - request.user.coins
+            #     return render(request, "need_coins.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this FF gift'})
+            # user = request.user
+            # updated_coins = user.coins - gift_transaction.claim_fee
+            # user.coins = updated_coins
+            # user.save()
+            # # gift_transaction.reveals.add(request.user)
+            # print('CHARGED FOR FF GIFT!')
 
-                # gifter = gift_transaction.gifter
-                # updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.claim_fee)
-                # gifter.won_coins = updated_coins
-                # gifter.save()
-                # print('CREDITED FOR FF GIFT!')
-                # email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.claim_fee, 'FF Entry Fee')
-                # print(email_value)
-            if gift_transaction.claim_fee > 0 and request.user not in gift_transaction.reveals.all() and request.user not in gift_transaction.paid_users.all():
-                if gift_transaction.gifter == request.user:
-                    return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay coins to claim your own gift.'})
-                total_fee = gift_transaction.claim_fee
-                if request.user.keys < total_fee:
-                    rem_amount = total_fee - request.user.keys
-                    return render(request, "need_keys.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this gift'})
-                user = request.user
+            # gifter = gift_transaction.gifter
+            # updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.claim_fee)
+            # gifter.won_coins = updated_coins
+            # gifter.save()
+            # print('CREDITED FOR FF GIFT!')
+            # email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.claim_fee, 'FF Entry Fee')
+            # print(email_value)
+        
+        if gift_transaction.claim_fee > 0 and request.user not in gift_transaction.reveals.all() and request.user not in gift_transaction.paid_users.all():
+            if gift_transaction.gifter == request.user:
+                return render(request, 'error.html', {'title': 'Error', 'message': f'You cannot pay keys to claim your own gift.'})
+            total_fee = gift_transaction.claim_fee
+            if request.user.keys < total_fee:
+                rem_amount = total_fee - request.user.keys
+                return render(request, "need_keys.html", {'gift': gift_transaction, 'rem_amount': rem_amount, 'total_cost': total_fee, 'message': 'claim this gift'})
+            user = request.user
+            if (gift_transaction.is_fastest_finger and not gift_transaction.is_claimed()) or not gift_transaction.is_fastest_finger:
                 updated_keys = user.keys - gift_transaction.claim_fee
                 user.keys = updated_keys
                 user.save()
                 # gift_transaction.reveals.add(request.user)
                 print('CHARGED FOR GIFT!')
-
-                # gifter = gift_transaction.gifter
-                # updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.claim_fee)
-                # gifter.won_coins = updated_coins
-                # gifter.save()
-                # print('CREDITED FOR FF GIFT!')
-                # email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.claim_fee, 'FF Entry Fee')
-                # print(email_value)
-
-
-            # allow claim based on gift mode
-            gift_transaction.reveals.add(request.user)
-
-            if gift_transaction.is_fastest_finger:
-        
-                if gift_transaction.recipient == None:
-                    # user wins, credit coins to user (50% of gift value) only when they claim
-                    gift_transaction.recipient = request.user
-                    # gift_transaction.claim_time = timezone.now()
-                    gift_transaction.claimed_by = request.user
-                    gift_transaction.save()
-
-                    # credit winner
-                    won_coins_to_credit = settings.WIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
-                    print("WON COINS TO CREDIT: ", won_coins_to_credit)
-                    user = request.user
-                    updated_won_coins = user.won_coins + won_coins_to_credit
-                    user.won_coins = updated_won_coins
-                    user.save()
-
-                # check if already claimed by this user and claims is 4 or less
-                if not FastestFingerClaim.objects.filter(gift_transaction=gift_transaction, user=request.user).exists() and not FastestFingerClaim.objects.filter(gift_transaction=gift_transaction).count() >= 5:
-                    # create ff claim record
-                    ff_claim = FastestFingerClaim.objects.create(
-                        gift_transaction=gift_transaction,
-                        user=request.user
-                    )
-
-                    claim_speed = ff_claim.claim_speed()
-                    print(f"CLAIM SPEED: {claim_speed}")
-
-                    ff_claim.reaction_time_ms = claim_speed
-                    ff_claim.save()
-
-
-
-                is_winner = (gift_transaction.recipient == request.user)
-                context = {
-                    "gift_transaction": gift_transaction,
-                    "is_winner": is_winner,
-                    "already_claimed": gift_transaction.is_claimed(),
-                }
-                return render(request, "ff_reveal.html", context)
             else:
-                # credit winner only once
-                if is_winner and not gift_transaction.is_claimed():
-                    won_coins_to_credit = settings.WIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
-                    print("WON COINS TO CREDIT: ", won_coins_to_credit)
-                    user = request.user
-                    updated_won_coins = user.won_coins + won_coins_to_credit
-                    user.won_coins = updated_won_coins
-                    user.save()
+                print('NOT CHARGED!')
 
-                    gift_transaction.claimed_by = request.user
-                    gift_transaction.save()
+            # gifter = gift_transaction.gifter
+            # updated_coins = settings.CREDIT_PERCENT * (gifter.won_coins + gift_transaction.claim_fee)
+            # gifter.won_coins = updated_coins
+            # gifter.save()
+            # print('CREDITED FOR FF GIFT!')
+            # email_value = send_coin_payment_email(request, user.id, gift_transaction.id, settings.CREDIT_PERCENT * gift_transaction.claim_fee, 'FF Entry Fee')
+            # print(email_value)
 
-                context = {
-                    "gift_transaction": gift_transaction,
-                    "is_winner": is_winner,
-                    "already_claimed": gift_transaction.is_claimed(),
-                }
-                return render(request, "reveal.html", context)
-        else:
-            # block claim
-            context = {
-                "gift_transaction": gift_transaction,
-                # "is_winner": is_winner,
-                # "already_claimed": gift_transaction.is_claimed(),
-            }
-            return render(request, "gift_wait.html", context)
-    else:
-        # gift is normal and doesn't have wait time
+
+        # allow claim based on gift mode
         gift_transaction.reveals.add(request.user)
 
-        # credit winner only once
-        if is_winner and not gift_transaction.is_claimed():
-            won_coins_to_credit = settings.WIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
-            print("WON COINS TO CREDIT: ", won_coins_to_credit)
-            user = request.user
-            updated_won_coins = user.won_coins + won_coins_to_credit
-            user.won_coins = updated_won_coins
-            user.save()
+        if gift_transaction.is_fastest_finger:
+    
+            if gift_transaction.recipient == None:
+                # user wins, credit coins to user (50% of gift value) only when they claim
+                gift_transaction.recipient = request.user
+                # gift_transaction.claim_time = timezone.now()
+                gift_transaction.claimed_by = request.user
+                gift_transaction.save()
 
-            gift_transaction.claimed_by = request.user
-            gift_transaction.save()
-        
+                # credit winner
+                won_coins_to_credit = settings.WIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
+                print("WON COINS TO CREDIT: ", won_coins_to_credit)
+                user = request.user
+                updated_won_coins = user.won_coins + won_coins_to_credit
+                user.won_coins = updated_won_coins
+                user.save()
+
+            # check if already claimed by this user and claims is 4 or less
+            # if not FastestFingerClaim.objects.filter(gift_transaction=gift_transaction, user=request.user).exists() and not FastestFingerClaim.objects.filter(gift_transaction=gift_transaction).count() >= 5:
+            #     # create ff claim record
+            #     ff_claim = FastestFingerClaim.objects.create(
+            #         gift_transaction=gift_transaction,
+            #         user=request.user
+            #     )
+
+            #     claim_speed = ff_claim.claim_speed()
+            #     print(f"CLAIM SPEED: {claim_speed}")
+
+            #     ff_claim.reaction_time_ms = claim_speed
+            #     ff_claim.save()
+
+
+
+            is_winner = (gift_transaction.recipient == request.user)
+            context = {
+                "gift_transaction": gift_transaction,
+                "is_winner": is_winner,
+                "already_claimed": gift_transaction.is_claimed(),
+            }
+            return render(request, "ff_reveal.html", context)
+        else:
+            # credit winner only once
+            if is_winner and not gift_transaction.is_claimed():
+                won_coins_to_credit = settings.WIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
+                print("WON COINS TO CREDIT: ", won_coins_to_credit)
+                user = request.user
+                updated_won_coins = user.won_coins + won_coins_to_credit
+                user.won_coins = updated_won_coins
+                user.save()
+
+                gift_transaction.claimed_by = request.user
+                gift_transaction.save()
+
+            context = {
+                "gift_transaction": gift_transaction,
+                "is_winner": is_winner,
+                "already_claimed": gift_transaction.is_claimed(),
+            }
+            return render(request, "reveal.html", context)
+    else:
+        # block claim
         context = {
             "gift_transaction": gift_transaction,
-            "is_winner": is_winner,
-            "already_claimed": gift_transaction.is_claimed(),
+            # "is_winner": is_winner,
+            # "already_claimed": gift_transaction.is_claimed(),
         }
-        return render(request, "reveal.html", context)
+        return render(request, "gift_wait.html", context)
+    # else:
+    #     # gift is normal and doesn't have wait time
+    #     gift_transaction.reveals.add(request.user)
+
+    #     # credit winner only once
+    #     if is_winner and not gift_transaction.is_claimed():
+    #         won_coins_to_credit = settings.WIN_PERCENT * (gift_transaction.gift.cost * gift_transaction.quantity)
+    #         print("WON COINS TO CREDIT: ", won_coins_to_credit)
+    #         user = request.user
+    #         updated_won_coins = user.won_coins + won_coins_to_credit
+    #         user.won_coins = updated_won_coins
+    #         user.save()
+
+    #         gift_transaction.claimed_by = request.user
+    #         gift_transaction.save()
+        
+    #     context = {
+    #         "gift_transaction": gift_transaction,
+    #         "is_winner": is_winner,
+    #         "already_claimed": gift_transaction.is_claimed(),
+    #     }
+    #     return render(request, "reveal.html", context)
 
 
 @login_required

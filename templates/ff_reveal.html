@@ -19,7 +19,8 @@
     </div>
     <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image" style="margin: 2rem 0;">
     <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
-    <p class="msg">Hi {{ request.user.username }}, you successfully claimed {{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }} from {{ gift_transaction.gifter.username }} in {{ gift_transaction.ff_claims.first.reaction_time_ms|format_seconds }}.</p>
+    <!-- <p class="msg">Hi {{ request.user.username }}, you successfully claimed {{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }} from {{ gift_transaction.gifter.username }} in {{ gift_transaction.ff_claims.first.reaction_time_ms|format_seconds }}.</p> -->
+    <p class="msg">Hi {{ request.user.username }}, you successfully claimed {{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }} from {{ gift_transaction.gifter.username }}.</p>
     {% else %}
     <div class="heading">
         <p>Sorry!</p>
@@ -27,7 +28,8 @@
     </div>
     <img src="{{ gift_transaction.gift.gif.url }}" alt="Gift image" style="margin: 2rem 0;">
     <h1>{{ gift_transaction.quantity|intcomma }}x {{ gift_transaction.gift.name }}</h1>
-    <p class="msg">Hi {{ request.user.username }}, {{ gift_transaction.recipient.username }} already claimed this gift from {{ gift_transaction.gifter.username }} in {{ gift_transaction.ff_claims.first.reaction_time_ms|format_seconds }}.</p>
+    <!-- <p class="msg">Hi {{ request.user.username }}, {{ gift_transaction.recipient.username }} already claimed this gift from {{ gift_transaction.gifter.username }} in {{ gift_transaction.ff_claims.first.reaction_time_ms|format_seconds }}.</p> -->
+    <p class="msg">Hi {{ request.user.username }}, {{ gift_transaction.recipient.username }} already claimed this gift from {{ gift_transaction.gifter.username }}.</p>
     {% endif %}
     <a href="{% url 'all_gifts' %}">Browse more gifts</a>
     <a href="{% url 'view_gift_stats' gift_transaction.id %}" style="margin: .5rem 0 1rem 0;">View Stats</a>

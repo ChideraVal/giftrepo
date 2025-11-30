@@ -38,6 +38,8 @@
         const timerEl = document.getElementById("timer");
         const nextBtn = document.getElementById("nextBtn");
 
+        nextBtn.style.visibility = "hidden";
+
         // ----------- PRELOAD ADS FUNCTION -----------
         function preloadAds(adUrls) {
             const promises = adUrls.map(url => new Promise((resolve, reject) => {
@@ -104,6 +106,7 @@
                     } else {
                         timerEl.innerText = `Click "Continue" to Proceed.`;
                     }
+                    nextBtn.style.visibility = "visible";
                     nextBtn.classList.add("enabled");
 
                     if (!viewedAds.includes(ads[index])) {
@@ -116,6 +119,7 @@
 
         // --- Handle next button ---
         nextBtn.onclick = () => {
+            nextBtn.style.visibility = "hidden";
             if (!nextBtn.classList.contains("enabled")) return;
 
             if (currentIndex < ads.length - 1) {
